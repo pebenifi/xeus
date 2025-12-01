@@ -12,8 +12,7 @@ import QtGraphs
 
 Rectangle {
     id: rectangle67
-    width: Constants.width
-    height: Constants.height
+    anchors.fill: parent
     color: "#ffffff"
     border.color: "#293555"
     border.width: 0
@@ -21,16 +20,17 @@ Rectangle {
 
  Item {
     id: screen01
-    width: 1920
-    height: 1080
+    anchors.fill: parent
 
     // Получаем ссылку на главное окно для доступа к функции смены экрана
     property var mainWindow: ApplicationWindow.window ? ApplicationWindow.window : null
 
     Button {
         id: modeButton
-        x: 25
-        y: 28
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        anchors.top: parent.top
+        anchors.topMargin: 28
         width: 160
         height: 70
         text: qsTr("Mode")
@@ -61,8 +61,10 @@ Rectangle {
 
     Button {
         id: button2
-        x: 1745
-        y: 28
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: parent.top
+        anchors.topMargin: 28
         width: 155
         height: 50
         text: qsTr("InLet Fan - 3")
@@ -106,8 +108,10 @@ Rectangle {
 
     Button {
         id: button3
-        x: 1583
-        y: 28
+        anchors.right: button2.left
+        anchors.rightMargin: 7
+        anchors.top: parent.top
+        anchors.topMargin: 28
         width: 155
         height: 50
         text: qsTr("InLet Fan - 2")
@@ -148,8 +152,10 @@ Rectangle {
 
     Button {
         id: button4
-        x: 1421
-        y: 28
+        anchors.right: button3.left
+        anchors.rightMargin: 7
+        anchors.top: parent.top
+        anchors.topMargin: 28
         width: 155
         height: 50
         text: qsTr("InLet Fan - 1")
@@ -790,9 +796,12 @@ Rectangle {
 
     Rectangle {
         id: rectangle
-        x: 204
-        y: 28
-        width: 1197
+        anchors.left: modeButton.right
+        anchors.leftMargin: 19
+        anchors.right: button4.left
+        anchors.rightMargin: 20
+        anchors.top: parent.top
+        anchors.topMargin: 28
         height: 37
         color: "#979797"
         radius: 8
@@ -800,8 +809,9 @@ Rectangle {
 
         Text {
             id: text1
-            x: 8
-            y: 4
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
             width: 71
             height: 29
             color: "#ffffff"
@@ -815,8 +825,8 @@ Rectangle {
 
         TextInput {
             id: textInput
-            x: 797
-            y: 6
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             width: 249
             height: 25
             color: "#ffffff"
@@ -826,8 +836,9 @@ Rectangle {
 
         Button {
             id: connectionButton
-            x: 1043
-            y: 3
+            anchors.right: parent.right
+            anchors.rightMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
             width: 148
             height: 30
             
@@ -871,8 +882,9 @@ Rectangle {
 
         Label {
             id: label
-            x: 85
-            y: 4
+            anchors.left: text1.right
+            anchors.leftMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
             width: 435
             height: 30
             visible: true
@@ -893,10 +905,31 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: rectangle1
+        anchors.right: parent.right
+        anchors.rightMargin: 18
+        anchors.top: rectangle.bottom
+        anchors.topMargin: 308
+        width: 480
+        height: 33
+        color: "#979797"
+    }
+
+    Text {
+        id: text2
+        anchors.centerIn: rectangle1
+        color: "#ffffff"
+        text: qsTr("NMR spectrum")
+        font.pixelSize: 20
+    }
+
     GraphsView {
         id: spline
-        x: 1421
-        y: 422
+        anchors.right: parent.right
+        anchors.rightMargin: 19
+        anchors.top: rectangle1.bottom
+        anchors.topMargin: 16
         width: 480
         height: 289
         SplineSeries {
@@ -925,8 +958,10 @@ Rectangle {
 
     GraphsView {
         id: spline1
-        x: 1421
-        y: 781
+        anchors.right: parent.right
+        anchors.rightMargin: 19
+        anchors.top: spline.bottom
+        anchors.topMargin: 70
         width: 480
         height: 279
         SplineSeries {
@@ -953,28 +988,12 @@ Rectangle {
         }
     }
 
-
-    Rectangle {
-        id: rectangle1
-        x: 1422
-        y: 373
-        width: 480
-        height: 33
-        color: "#979797"
-    }
-
-    Text {
-        id: text2
-        anchors.centerIn: rectangle1
-        color: "#ffffff"
-        text: qsTr("NMR spectrum")
-        font.pixelSize: 20
-    }
-
     Rectangle {
         id: rectangle2
-        x: 1422
-        y: 731
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: spline1.bottom
+        anchors.topMargin: 19
         width: 478
         height: 33
         color: "#979797"
@@ -3722,16 +3741,17 @@ Rectangle {
 
     Rectangle {
         id: rectangle66
-        x: 25
-        y: 95
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        anchors.top: modeButton.bottom
+        anchors.topMargin: -3
         width: 160
         height: 59
         color: "#545454"
 
         Text {
             id: text29
-            x: 37
-            y: 17
+            anchors.centerIn: parent
             color: "#fafafa"
             text: qsTr("Research")
             font.pixelSize: 22

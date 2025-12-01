@@ -5,32 +5,32 @@ import QtQuick.VirtualKeyboard
 
 Item {
     id: root
-    width: Constants.width
-    height: Constants.height
+    anchors.fill: parent
 
     Rectangle {
         id: rectangle
-        x: 0
-        y: 0
-        width: 1928
-        height: 1080
+        anchors.fill: parent
         color: "#ffffff"
 
     }
 
     Rectangle {
         id: rectangle1
-        x: 204
-        y: 28
-        width: 1197
+        anchors.left: button.right
+        anchors.leftMargin: 19
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: parent.top
+        anchors.topMargin: 28
         height: 37
         color: "#979797"
         radius: 8
         border.width: 0
         Text {
             id: text1
-            x: 8
-            y: 4
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
             width: 71
             height: 29
             color: "#ffffff"
@@ -44,8 +44,8 @@ Item {
 
         TextInput {
             id: textInput
-            x: 797
-            y: 6
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             width: 249
             height: 25
             color: "#ffffff"
@@ -55,8 +55,9 @@ Item {
 
         Button {
             id: connectionButton
-            x: 1043
-            y: 3
+            anchors.right: parent.right
+            anchors.rightMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
             width: 148
             height: 30
             
@@ -100,8 +101,9 @@ Item {
 
         Label {
             id: label
-            x: 85
-            y: 4
+            anchors.left: text1.right
+            anchors.leftMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
             width: 435
             height: 30
             visible: true
@@ -117,16 +119,17 @@ Item {
 
     Rectangle {
         id: rectangle3
-        x: 1422
-        y: 376
+        anchors.right: parent.right
+        anchors.rightMargin: 18
+        anchors.top: rectangle5.bottom
+        anchors.topMargin: 316
         width: 480
         height: 33
         color: "#979797"
 
         Text {
             id: text3
-            x: 175
-            y: 5
+            anchors.centerIn: parent
             color: "#ffffff"
             text: qsTr("NMR spectrum ")
             font.pixelSize: 20
@@ -135,16 +138,17 @@ Item {
 
     Rectangle {
         id: rectangle4
-        x: 1422
-        y: 728
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: spline.bottom
+        anchors.topMargin: 19
         width: 478
         height: 33
         color: "#979797"
 
         Text {
             id: text4
-            x: 187
-            y: 5
+            anchors.centerIn: parent
             color: "#ffffff"
             text: qsTr("IR spectrum ")
             font.pixelSize: 20
@@ -153,15 +157,16 @@ Item {
 
     Rectangle {
         id: rectangle5
-        x: 1422
-        y: 27
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: parent.top
+        anchors.topMargin: 27
         width: 478
         height: 33
         color: "#979797"
         Text {
             id: text5
-            x: 196
-            y: 5
+            anchors.centerIn: parent
             color: "#ffffff"
             text: qsTr("PXE Chart")
             font.pixelSize: 20
@@ -170,16 +175,17 @@ Item {
 
     Item {
         id: clinicalModeRoot
-        width: 1920
-        height: 1080
+        anchors.fill: parent
 
         // Получаем ссылку на главное окно для доступа к функции смены экрана
         property var mainWindow: ApplicationWindow.window ? ApplicationWindow.window : null
 
         Button {
             id: button
-            x: 25
-            y: 28
+            anchors.left: parent.left
+            anchors.leftMargin: 25
+            anchors.top: parent.top
+            anchors.topMargin: 28
             width: 160
             height: 70
             text: qsTr("Mode")
@@ -203,15 +209,16 @@ Item {
 
     Rectangle {
         id: rectangle2
-        x: 25
-        y: 98
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        anchors.top: button.bottom
+        anchors.topMargin: 0
         width: 160
         height: 59
         color: "#545454"
         Text {
             id: text2
-            x: 47
-            y: 17
+            anchors.centerIn: parent
             color: "#fafafa"
             text: qsTr("Clinical")
             font.pixelSize: 22
@@ -280,10 +287,13 @@ Item {
     // Область для отображения информации о параметре (справа от sidebar)
     Rectangle {
         id: infoPanel
-        x: 340
-        y: 166
+        anchors.left: sidebar.right
+        anchors.leftMargin: 15
+        anchors.top: rectangle2.bottom
+        anchors.topMargin: 9
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
         width: 500
-        height: 900
         color: "#f5f5f5"
         border.color: "#d3d3d3"
         border.width: 1
@@ -366,10 +376,13 @@ Item {
     // Панель с текущими значениями параметров (справа от infoPanel)
     Rectangle {
         id: valuesPanel
-        x: 860
-        y: 166
+        anchors.left: infoPanel.right
+        anchors.leftMargin: 20
+        anchors.top: rectangle2.bottom
+        anchors.topMargin: 9
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
         width: 547
-        height: 900
         color: "#f5f5f5"
         border.color: "#d3d3d3"
         border.width: 1
@@ -593,10 +606,13 @@ Item {
     // Sidebar с меню параметров (с выпадающими списками)
     Rectangle {
         id: sidebar
-        x: 25
-        y: 166  // Под прямоугольником "Clinical" с отступом
+        anchors.left: parent.left
+        anchors.leftMargin: 25
+        anchors.top: rectangle2.bottom
+        anchors.topMargin: 9
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
         width: 300
-        height: 900
         color: "#ffffff"
         border.color: "#d3d3d3"
         border.width: 0
@@ -782,8 +798,10 @@ Item {
 
     GraphsView {
         id: spline2
-        x: 1422
-        y: 430
+        anchors.right: parent.right
+        anchors.rightMargin: 18
+        anchors.top: rectangle3.bottom
+        anchors.topMargin: 21
         width: 480
         height: 280
         SplineSeries {
@@ -812,8 +830,10 @@ Item {
 
     GraphsView {
         id: spline
-        x: 1422
-        y: 778
+        anchors.right: parent.right
+        anchors.rightMargin: 18
+        anchors.top: rectangle4.bottom
+        anchors.topMargin: 19
         width: 480
         height: 280
         SplineSeries {
@@ -842,8 +862,10 @@ Item {
 
     GraphsView {
         id: spline1
-        x: 1422
-        y: 75
+        anchors.right: parent.right
+        anchors.rightMargin: 18
+        anchors.top: rectangle5.bottom
+        anchors.topMargin: 15
         width: 480
         height: 280
         SplineSeries {
@@ -875,17 +897,21 @@ Item {
 
     Rectangle {
         id: rectangle14
-        x: 202
-        y: 80
-        width: 1197
+        anchors.left: rectangle2.right
+        anchors.leftMargin: 17
+        anchors.right: valuesPanel.right
+        anchors.rightMargin: 0
+        anchors.top: rectangle1.bottom
+        anchors.topMargin: 15
         height: 39
         color: "#424242"
         radius: 15
 
         Text {
             id: text14
-            x: 8
-            y: 6
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
             color: "#ffffff"
             text: qsTr("Progress: Now")
             font.pixelSize: 22
@@ -893,8 +919,9 @@ Item {
 
         Label {
             id: label2
-            x: 149
-            y: 6
+            anchors.left: text14.right
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
             color: "#ffffff"
             text: qsTr("Label synthesis, NEXT: label synthesis")
             font.pointSize: 22
