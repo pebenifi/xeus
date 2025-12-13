@@ -30,7 +30,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 25
         anchors.top: parent.top
-        anchors.topMargin: 28
+        anchors.topMargin: 78
         width: 160
         height: 70
         text: qsTr("Mode")
@@ -796,8 +796,8 @@ Rectangle {
 
     Rectangle {
         id: rectangle
-        anchors.left: modeButton.right
-        anchors.leftMargin: 19
+        anchors.left: parent.left
+        anchors.leftMargin: 204
         anchors.right: button4.left
         anchors.rightMargin: 20
         anchors.top: parent.top
@@ -823,16 +823,6 @@ Rectangle {
             transformOrigin: Item.Center
         }
 
-        TextInput {
-            id: textInput
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: 249
-            height: 25
-            color: "#ffffff"
-            text: qsTr("XEUS DRIVER STATUS:")
-            font.pixelSize: 24
-        }
 
         Button {
             id: connectionButton
@@ -956,12 +946,23 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: rectangle2
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.top: spline.bottom
+        anchors.topMargin: 19
+        width: 478
+        height: 33
+        color: "#979797"
+    }
+
     GraphsView {
         id: spline1
         anchors.right: parent.right
         anchors.rightMargin: 19
-        anchors.top: spline.bottom
-        anchors.topMargin: 70
+        anchors.top: rectangle2.bottom
+        anchors.topMargin: 16
         width: 480
         height: 279
         SplineSeries {
@@ -986,17 +987,6 @@ Rectangle {
                 y: 5
             }
         }
-    }
-
-    Rectangle {
-        id: rectangle2
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        anchors.top: spline1.bottom
-        anchors.topMargin: 19
-        width: 478
-        height: 33
-        color: "#979797"
     }
 
     Text {
@@ -1042,8 +1032,8 @@ Rectangle {
                 width: parent.width - 28
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -1061,9 +1051,9 @@ Rectangle {
                     color: "#ffffff"
                     text: {
                         if (modbusManager && modbusManager.n2Setpoint !== undefined) {
-                            return modbusManager.n2Setpoint.toFixed(2)
+                            return (modbusManager.n2Setpoint / 1000.0).toFixed(3)
                         } else {
-                            return "0.00"
+                            return "0.000"
                         }
                     }
                     font.pixelSize: 15
@@ -1082,8 +1072,8 @@ Rectangle {
                         function onN2SetpointChanged(setpoint) {
                             if (!textInput3.activeFocus) {
                                 var currentText = parseFloat(textInput3.text)
-                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.01) {
-                                    textInput3.text = setpoint.toFixed(2)
+                                if (isNaN(currentText) || Math.abs(currentText - setpoint / 1000.0) > 0.001) {
+                                    textInput3.text = (setpoint / 1000.0).toFixed(3)
                                 }
                             }
                         }
@@ -1115,9 +1105,11 @@ Rectangle {
                         if (modbusManager && text.trim() !== "") {
                             var value = parseFloat(text)
                             if (!isNaN(value) && value >= 0) {
+                                // Умножаем на 1000 для сравнения с внутренним значением
+                                var deviceValue = value * 1000.0
                                 var currentSetpoint = modbusManager.n2Setpoint
-                                if (Math.abs(value - currentSetpoint) > 0.01) {
-                                    modbusManager.setN2SetpointValue(value)
+                                if (Math.abs(deviceValue - currentSetpoint) > 1.0) {
+                                    modbusManager.setN2SetpointValue(deviceValue)
                                 }
                             }
                         }
@@ -1141,8 +1133,8 @@ Rectangle {
                         id: n2TempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1165,13 +1157,14 @@ Rectangle {
                             var currentValue = parseFloat(textValue)
                             
                             if (isNaN(currentValue) || currentValue < 0 || textValue === "") {
-                                currentValue = modbusManager.n2Setpoint
+                                currentValue = modbusManager.n2Setpoint / 1000.0
                             }
                             
-                            // Вычисляем новое значение (увеличиваем на 0.01)
-                            var newValue = currentValue + 0.01
-                            textInput3.text = newValue.toFixed(2)
-                            modbusManager.setN2SetpointValue(newValue)
+                            // Вычисляем новое значение (увеличиваем на 0.001)
+                            var newValue = currentValue + 0.001
+                            textInput3.text = newValue.toFixed(3)
+                            // Умножаем на 1000 для отправки на устройство
+                            modbusManager.setN2SetpointValue(newValue * 1000.0)
                         }
                     }
                     
@@ -1179,8 +1172,8 @@ Rectangle {
                         id: n2TempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1203,14 +1196,15 @@ Rectangle {
                             var currentValue = parseFloat(textValue)
                             
                             if (isNaN(currentValue) || currentValue < 0 || textValue === "") {
-                                currentValue = modbusManager.n2Setpoint
+                                currentValue = modbusManager.n2Setpoint / 1000.0
                             }
                             
-                            // Вычисляем новое значение (уменьшаем на 0.01)
-                            var newValue = currentValue - 0.01
+                            // Вычисляем новое значение (уменьшаем на 0.001)
+                            var newValue = currentValue - 0.001
                             if (newValue < 0) newValue = 0  // Не позволяем отрицательные значения
-                            textInput3.text = newValue.toFixed(2)
-                            modbusManager.setN2SetpointValue(newValue)
+                            textInput3.text = newValue.toFixed(3)
+                            // Умножаем на 1000 для отправки на устройство
+                            modbusManager.setN2SetpointValue(newValue * 1000.0)
                         }
                     }
                 }
@@ -1244,8 +1238,10 @@ Rectangle {
                     if (modbusManager && modbusManager.isConnected) {
                         var value = parseFloat(textInput3.text)
                         if (!isNaN(value) && value >= 0) {
-                            modbusManager.setN2SetpointValue(value)
-                            modbusManager.setN2Pressure(value)
+                            // Умножаем на 1000 для отправки на устройство
+                            var deviceValue = value * 1000.0
+                            modbusManager.setN2SetpointValue(deviceValue)
+                            modbusManager.setN2Pressure(deviceValue)
                         }
                     }
                 }
@@ -1259,13 +1255,13 @@ Rectangle {
             width: 77
             height: 18
             color: "#ffffff"
-            text: modbusManager ? (modbusManager.n2Pressure.toFixed(2) + " Torr") : qsTr("--")
+            text: modbusManager ? ((modbusManager.n2Pressure / 1000.0).toFixed(3) + " Torr") : qsTr("--")
             font.pointSize: 15
             
             Connections {
                 target: modbusManager
                 function onN2PressureChanged(pressure) {
-                    label2.text = pressure.toFixed(2) + " Torr"
+                    label2.text = (pressure / 1000.0).toFixed(3) + " Torr"
                 }
             }
         }
@@ -1322,8 +1318,8 @@ Rectangle {
                 width: parent.width - 28
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -1341,9 +1337,9 @@ Rectangle {
                     color: "#ffffff"
                     text: {
                         if (modbusManager && modbusManager.magnetPSUSetpoint !== undefined) {
-                            return modbusManager.magnetPSUSetpoint.toFixed(2)
+                            return modbusManager.magnetPSUSetpoint.toFixed(3)
                         } else {
-                            return "0.00"
+                            return "0.000"
                         }
                     }
                     font.pixelSize: 15
@@ -1362,8 +1358,8 @@ Rectangle {
                         function onMagnetPSUSetpointChanged(setpoint) {
                             if (!textInput5.activeFocus) {
                                 var currentText = parseFloat(textInput5.text)
-                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.01) {
-                                    textInput5.text = setpoint.toFixed(2)
+                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.001) {
+                                    textInput5.text = setpoint.toFixed(3)
                                 }
                             }
                         }
@@ -1379,7 +1375,7 @@ Rectangle {
                                     modbusManager.setMagnetPSUTemperature(value)
                                 }
                             } else {
-                                text = modbusManager ? modbusManager.magnetPSUSetpoint.toFixed(2) : "0.00"
+                                text = modbusManager ? modbusManager.magnetPSUSetpoint.toFixed(3) : "0.000"
                             }
                         }
                     }
@@ -1396,7 +1392,7 @@ Rectangle {
                             var value = parseFloat(text)
                             if (!isNaN(value) && value >= 0) {
                                 var currentSetpoint = modbusManager.magnetPSUSetpoint
-                                if (Math.abs(value - currentSetpoint) > 0.01) {
+                                if (Math.abs(value - currentSetpoint) > 0.001) {
                                     modbusManager.setMagnetPSUSetpointValue(value)
                                 }
                             }
@@ -1421,8 +1417,8 @@ Rectangle {
                         id: magnetPSUTempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1459,8 +1455,8 @@ Rectangle {
                         id: magnetPSUTempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1486,10 +1482,10 @@ Rectangle {
                                 currentValue = modbusManager.magnetPSUSetpoint
                             }
                             
-                            // Вычисляем новое значение (уменьшаем на 0.01)
-                            var newValue = currentValue - 0.01
+                            // Вычисляем новое значение (уменьшаем на 0.001)
+                            var newValue = currentValue - 0.001
                             if (newValue < 0) newValue = 0  // Не позволяем отрицательные значения
-                            textInput5.text = newValue.toFixed(2)
+                            textInput5.text = newValue.toFixed(3)
                             modbusManager.setMagnetPSUSetpointValue(newValue)
                         }
                     }
@@ -1584,8 +1580,8 @@ Rectangle {
                 width: parent.width - 28
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -1683,8 +1679,8 @@ Rectangle {
                         id: laserPSUTempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1721,8 +1717,8 @@ Rectangle {
                         id: laserPSUTempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1846,8 +1842,8 @@ Rectangle {
                 width: parent.width - 28  // Увеличили еще на 7 пикселей (было -35, теперь -28)
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"  // Светлая рамка
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -1865,9 +1861,9 @@ Rectangle {
                     color: "#ffffff"
                     text: {
                         if (modbusManager && modbusManager.xenonSetpoint !== undefined) {
-                            return modbusManager.xenonSetpoint.toFixed(2)
+                            return (modbusManager.xenonSetpoint / 1000.0).toFixed(3)
                         } else {
-                            return "0.00"
+                            return "0.000"
                         }
                     }
                     font.pixelSize: 15
@@ -1890,8 +1886,8 @@ Rectangle {
                             // и только если значение действительно изменилось
                             if (!textInput4.activeFocus) {
                                 var currentText = parseFloat(textInput4.text)
-                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.01) {
-                                    textInput4.text = setpoint.toFixed(2)
+                                if (isNaN(currentText) || Math.abs(currentText - setpoint / 1000.0) > 0.001) {
+                                    textInput4.text = (setpoint / 1000.0).toFixed(3)
                                 }
                             }
                         }
@@ -1903,15 +1899,17 @@ Rectangle {
                             var textValue = text.trim()
                             var value = parseFloat(textValue)
                             if (!isNaN(value) && value >= 0) {
+                                // Умножаем на 1000 для отправки на устройство
+                                var deviceValue = value * 1000.0
                                 // Обновляем внутреннее значение (чтобы стрелки работали с актуальным значением)
-                                modbusManager.setXenonSetpointValue(value)
+                                modbusManager.setXenonSetpointValue(deviceValue)
                                 // Отправляем на устройство только если подключены
                                 if (modbusManager.isConnected) {
-                                    modbusManager.setXenonPressure(value)
+                                    modbusManager.setXenonPressure(deviceValue)
                                 }
                             } else {
                                 // Если ввод некорректный, восстанавливаем предыдущее значение
-                                text = modbusManager ? modbusManager.xenonSetpoint.toFixed(2) : "0.00"
+                                text = modbusManager ? (modbusManager.xenonSetpoint / 1000.0).toFixed(3) : "0.000"
                             }
                         }
                     }
@@ -1932,10 +1930,12 @@ Rectangle {
                         if (modbusManager && text.trim() !== "") {
                             var value = parseFloat(text)
                             if (!isNaN(value) && value >= 0) {
+                                // Умножаем на 1000 для сравнения с внутренним значением
+                                var deviceValue = value * 1000.0
                                 // Обновляем только если значение действительно изменилось
                                 var currentSetpoint = modbusManager.xenonSetpoint
-                                if (Math.abs(value - currentSetpoint) > 0.01) {
-                                    modbusManager.setXenonSetpointValue(value)
+                                if (Math.abs(deviceValue - currentSetpoint) > 1.0) {
+                                    modbusManager.setXenonSetpointValue(deviceValue)
                                 }
                             }
                         }
@@ -1961,8 +1961,8 @@ Rectangle {
                         id: xenonTempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -1987,18 +1987,18 @@ Rectangle {
                             
                             // Если не удалось распарсить или значение некорректное, пробуем взять из внутреннего состояния
                             if (isNaN(currentValue) || currentValue < 0 || textValue === "") {
-                                currentValue = modbusManager.xenonSetpoint
+                                currentValue = modbusManager.xenonSetpoint / 1000.0
                             }
                             
-                            // Вычисляем новое значение (увеличиваем на 0.01 Torr)
-                            var newValue = currentValue + 0.01
+                            // Вычисляем новое значение (увеличиваем на 0.001 Torr)
+                            var newValue = currentValue + 0.001
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput4.text = newValue.toFixed(2)
+                            textInput4.text = newValue.toFixed(3)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
-                            modbusManager.setXenonSetpointValue(newValue)
+                            modbusManager.setXenonSetpointValue(newValue * 1000.0)
                         }
                     }
                     
@@ -2007,8 +2007,8 @@ Rectangle {
                         id: xenonTempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -2033,19 +2033,19 @@ Rectangle {
                             
                             // Если не удалось распарсить или значение некорректное, пробуем взять из внутреннего состояния
                             if (isNaN(currentValue) || currentValue < 0 || textValue === "") {
-                                currentValue = modbusManager.xenonSetpoint
+                                currentValue = modbusManager.xenonSetpoint / 1000.0
                             }
                             
-                            // Вычисляем новое значение (уменьшаем на 0.01 Torr)
-                            var newValue = currentValue - 0.01
+                            // Вычисляем новое значение (уменьшаем на 0.001 Torr)
+                            var newValue = currentValue - 0.001
                             if (newValue < 0) newValue = 0  // Не позволяем отрицательные значения
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput4.text = newValue.toFixed(2)
+                            textInput4.text = newValue.toFixed(3)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
-                            modbusManager.setXenonSetpointValue(newValue)
+                            modbusManager.setXenonSetpointValue(newValue * 1000.0)
                         }
                     }
                 }
@@ -2079,10 +2079,12 @@ Rectangle {
                     if (modbusManager && modbusManager.isConnected) {
                         var value = parseFloat(textInput4.text)
                         if (!isNaN(value) && value >= 0) {
+                            // Умножаем на 1000 для отправки на устройство
+                            var deviceValue = value * 1000.0
                             // Сначала обновляем внутреннее значение
-                            modbusManager.setXenonSetpointValue(value)
+                            modbusManager.setXenonSetpointValue(deviceValue)
                             // Затем отправляем на устройство
-                            modbusManager.setXenonPressure(value)
+                            modbusManager.setXenonPressure(deviceValue)
                         }
                     }
                 }
@@ -2113,13 +2115,13 @@ Rectangle {
             x: 42
             y: 43
             color: "#ffffff"
-            text: modbusManager ? (modbusManager.vacuumPressure.toFixed(2) + " Torr") : qsTr("--")
+            text: modbusManager ? (modbusManager.vacuumPressure.toFixed(2) + " mTorr") : qsTr("--")
             font.pointSize: 15
             
             Connections {
                 target: modbusManager
                 function onVacuumPressureChanged(pressure) {
-                    label4.text = pressure.toFixed(2) + " Torr"
+                    label4.text = pressure.toFixed(2) + " mTorr"
                 }
             }
         }
@@ -2176,8 +2178,8 @@ Rectangle {
                 width: parent.width - 28  // Увеличили еще на 7 пикселей (было -35, теперь -28)
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"  // Светлая рамка
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -2193,7 +2195,7 @@ Rectangle {
                     width: parent.width - 48  // Освобождаем место для стрелок (16px) и кнопки "set" (30px) + отступы
                     height: parent.height
                     color: "#ffffff"
-                    text: modbusManager ? modbusManager.waterChillerSetpoint.toFixed(0) : qsTr("--")
+                    text: modbusManager ? modbusManager.waterChillerSetpoint.toFixed(1) : qsTr("--")
                     font.pixelSize: 15
                     selectByMouse: true
                     verticalAlignment: Text.AlignVCenter
@@ -2214,8 +2216,8 @@ Rectangle {
                             // и только если значение действительно изменилось
                             if (!textInput7.activeFocus) {
                                 var currentText = parseFloat(textInput7.text)
-                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.1) {
-                                    textInput7.text = setpoint.toFixed(0)
+                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.01) {
+                                    textInput7.text = setpoint.toFixed(1)
                                 }
                             }
                         }
@@ -2235,7 +2237,7 @@ Rectangle {
                                 }
                             } else {
                                 // Если ввод некорректный, восстанавливаем предыдущее значение
-                                text = modbusManager ? modbusManager.waterChillerSetpoint.toFixed(0) : "0"
+                                text = modbusManager ? modbusManager.waterChillerSetpoint.toFixed(1) : "0.0"
                             }
                         }
                     }
@@ -2258,7 +2260,7 @@ Rectangle {
                             if (!isNaN(value) && value >= 0) {
                                 // Обновляем только если значение действительно изменилось
                                 var currentSetpoint = modbusManager.waterChillerSetpoint
-                                if (Math.abs(value - currentSetpoint) > 0.1) {
+                                if (Math.abs(value - currentSetpoint) > 0.01) {
                                     modbusManager.setWaterChillerSetpointValue(value)
                                 }
                             }
@@ -2285,8 +2287,8 @@ Rectangle {
                         id: tempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -2314,11 +2316,11 @@ Rectangle {
                                 currentValue = modbusManager.waterChillerSetpoint
                             }
                             
-                            // Вычисляем новое значение
-                            var newValue = currentValue + 1.0
+                            // Вычисляем новое значение (увеличиваем на 0.1)
+                            var newValue = currentValue + 0.1
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput7.text = newValue.toFixed(0)
+                            textInput7.text = newValue.toFixed(1)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
@@ -2331,8 +2333,8 @@ Rectangle {
                         id: tempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -2360,11 +2362,11 @@ Rectangle {
                                 currentValue = modbusManager.waterChillerSetpoint
                             }
                             
-                            // Вычисляем новое значение
-                            var newValue = currentValue - 1.0
+                            // Вычисляем новое значение (уменьшаем на 0.1)
+                            var newValue = currentValue - 0.1
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput7.text = newValue.toFixed(0)
+                            textInput7.text = newValue.toFixed(1)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
@@ -2465,8 +2467,8 @@ Rectangle {
                 width: parent.width - 28  // Увеличили еще на 7 пикселей (было -35, теперь -28)
                 height: parent.height
                 color: "transparent"
-                border.color: "#d3d3d3"  // Светлая рамка
-                border.width: 1
+                border.color: "transparent"
+                border.width: 0
                 radius: 3
             }
             
@@ -2482,7 +2484,7 @@ Rectangle {
                     width: parent.width - 48  // Освобождаем место для стрелок (16px) и кнопки "set" (30px) + отступы
                     height: parent.height
                     color: "#ffffff"
-                    text: modbusManager ? modbusManager.seopCellSetpoint.toFixed(0) : qsTr("--")
+                    text: modbusManager ? modbusManager.seopCellSetpoint.toFixed(1) : qsTr("--")
                     font.pixelSize: 15
                     selectByMouse: true
                     verticalAlignment: Text.AlignVCenter
@@ -2503,8 +2505,8 @@ Rectangle {
                             // и только если значение действительно изменилось
                             if (!textInput8.activeFocus) {
                                 var currentText = parseFloat(textInput8.text)
-                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.1) {
-                                    textInput8.text = setpoint.toFixed(0)
+                                if (isNaN(currentText) || Math.abs(currentText - setpoint) > 0.01) {
+                                    textInput8.text = setpoint.toFixed(1)
                                 }
                             }
                         }
@@ -2524,7 +2526,7 @@ Rectangle {
                                 }
                             } else {
                                 // Если ввод некорректный, восстанавливаем предыдущее значение
-                                text = modbusManager ? modbusManager.seopCellSetpoint.toFixed(0) : "0"
+                                text = modbusManager ? modbusManager.seopCellSetpoint.toFixed(1) : "0.0"
                             }
                         }
                     }
@@ -2547,7 +2549,7 @@ Rectangle {
                             if (!isNaN(value) && value >= 0) {
                                 // Обновляем только если значение действительно изменилось
                                 var currentSetpoint = modbusManager.seopCellSetpoint
-                                if (Math.abs(value - currentSetpoint) > 0.1) {
+                                if (Math.abs(value - currentSetpoint) > 0.01) {
                                     modbusManager.setSeopCellSetpointValue(value)
                                 }
                             }
@@ -2574,8 +2576,8 @@ Rectangle {
                         id: seopTempUpButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▲"
-                        font.pixelSize: 8
+                        text: "+"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -2603,11 +2605,11 @@ Rectangle {
                                 currentValue = modbusManager.seopCellSetpoint
                             }
                             
-                            // Вычисляем новое значение
-                            var newValue = currentValue + 1.0
+                            // Вычисляем новое значение (увеличиваем на 0.1)
+                            var newValue = currentValue + 0.1
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput8.text = newValue.toFixed(0)
+                            textInput8.text = newValue.toFixed(1)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
@@ -2620,8 +2622,8 @@ Rectangle {
                         id: seopTempDownButton
                         width: parent.width
                         height: parent.height / 2
-                        text: "▼"
-                        font.pixelSize: 8
+                        text: "-"
+                        font.pixelSize: 14
                         
                         background: Rectangle {
                             color: "transparent"
@@ -2649,11 +2651,11 @@ Rectangle {
                                 currentValue = modbusManager.seopCellSetpoint
                             }
                             
-                            // Вычисляем новое значение
-                            var newValue = currentValue - 1.0
+                            // Вычисляем новое значение (уменьшаем на 0.1)
+                            var newValue = currentValue - 0.1
                             
                             // Сразу обновляем текст в поле ввода для мгновенной обратной связи
-                            textInput8.text = newValue.toFixed(0)
+                            textInput8.text = newValue.toFixed(1)
                             
                             // Обновляем только внутреннее значение (без отправки на устройство)
                             // Запись на устройство произойдет только при нажатии на кнопку "set"
@@ -3022,7 +3024,7 @@ Rectangle {
         height: 75
         color: "#5596a0"
         radius: 25
-        border.color: "#676767"
+        border.width: 0
 
         TextInput {
             id: textInput1
@@ -3045,7 +3047,7 @@ Rectangle {
         height: 75
         color: "#965b5b"
         radius: 25
-        border.color: "#676767"
+        border.width: 0
 
         TextInput {
             id: textInput2
@@ -3743,8 +3745,8 @@ Rectangle {
         id: rectangle66
         anchors.left: parent.left
         anchors.leftMargin: 25
-        anchors.top: modeButton.bottom
-        anchors.topMargin: -3
+        anchors.top: parent.top
+        anchors.topMargin: 28
         width: 160
         height: 59
         color: "#545454"

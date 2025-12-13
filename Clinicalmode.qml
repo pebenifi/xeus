@@ -16,10 +16,10 @@ Item {
 
     Rectangle {
         id: rectangle1
-        anchors.left: button.right
-        anchors.leftMargin: 19
-        anchors.right: parent.right
-        anchors.rightMargin: 20
+        anchors.left: rectangle2.right
+        anchors.leftMargin: 17
+        anchors.right: valuesPanel.right
+        anchors.rightMargin: 0
         anchors.top: parent.top
         anchors.topMargin: 28
         height: 37
@@ -37,20 +37,9 @@ Item {
             text: qsTr("Status:")
             font.pixelSize: 24
             horizontalAlignment: Text.AlignLeft
-            transformOrigin: Item.Center
             textFormat: Text.AutoText
             scale: 1
-        }
-
-        TextInput {
-            id: textInput
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: 249
-            height: 25
-            color: "#ffffff"
-            text: qsTr("XEUS DRIVER STATUS:")
-            font.pixelSize: 24
+            transformOrigin: Item.Center
         }
 
         Button {
@@ -121,8 +110,8 @@ Item {
         id: rectangle3
         anchors.right: parent.right
         anchors.rightMargin: 18
-        anchors.top: rectangle5.bottom
-        anchors.topMargin: 316
+        anchors.top: spline.bottom
+        anchors.topMargin: 19
         width: 480
         height: 33
         color: "#979797"
@@ -140,7 +129,7 @@ Item {
         id: rectangle4
         anchors.right: parent.right
         anchors.rightMargin: 20
-        anchors.top: spline.bottom
+        anchors.top: spline1.bottom
         anchors.topMargin: 19
         width: 478
         height: 33
@@ -185,7 +174,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 25
             anchors.top: parent.top
-            anchors.topMargin: 28
+            anchors.topMargin: 78
             width: 160
             height: 70
             text: qsTr("Mode")
@@ -211,8 +200,8 @@ Item {
         id: rectangle2
         anchors.left: parent.left
         anchors.leftMargin: 25
-        anchors.top: button.bottom
-        anchors.topMargin: 0
+        anchors.top: parent.top
+        anchors.topMargin: 27
         width: 160
         height: 59
         color: "#545454"
@@ -290,7 +279,7 @@ Item {
         anchors.left: sidebar.right
         anchors.leftMargin: 15
         anchors.top: rectangle2.bottom
-        anchors.topMargin: 9
+        anchors.topMargin: 59
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 5
         width: 500
@@ -379,7 +368,7 @@ Item {
         anchors.left: infoPanel.right
         anchors.leftMargin: 20
         anchors.top: rectangle2.bottom
-        anchors.topMargin: 9
+        anchors.topMargin: 59
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 5
         width: 547
@@ -609,7 +598,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 25
         anchors.top: rectangle2.bottom
-        anchors.topMargin: 9
+        anchors.topMargin: 59
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 5
         width: 300
@@ -801,7 +790,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 18
         anchors.top: rectangle3.bottom
-        anchors.topMargin: 21
+        anchors.topMargin: 16
         width: 480
         height: 280
         SplineSeries {
@@ -833,7 +822,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 18
         anchors.top: rectangle4.bottom
-        anchors.topMargin: 19
+        anchors.topMargin: 16
         width: 480
         height: 280
         SplineSeries {
@@ -865,7 +854,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 18
         anchors.top: rectangle5.bottom
-        anchors.topMargin: 15
+        anchors.topMargin: 16
         width: 480
         height: 280
         SplineSeries {
@@ -902,7 +891,7 @@ Item {
         anchors.right: valuesPanel.right
         anchors.rightMargin: 0
         anchors.top: rectangle1.bottom
-        anchors.topMargin: 15
+        anchors.topMargin: 20
         height: 39
         color: "#424242"
         radius: 15
