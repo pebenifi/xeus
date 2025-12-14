@@ -6,6 +6,28 @@ import QtQuick.VirtualKeyboard
 Item {
     id: root
     anchors.fill: parent
+    
+    // Кэшируем состояние подключения для мгновенного доступа без синхронных операций
+    // Инициализируем через сигнал после загрузки компонента, чтобы не блокировать рендеринг
+    property bool cachedIsConnected: false
+    
+    // Обновляем кэш при изменении состояния подключения через сигнал (не блокирует UI)
+    Connections {
+        target: modbusManager
+        function onConnectionStatusChanged(connected) {
+            cachedIsConnected = connected
+        }
+    }
+    
+    // Инициализируем кэш после загрузки компонента асинхронно
+    Component.onCompleted: {
+        // Устанавливаем начальное значение асинхронно, чтобы не блокировать рендеринг
+        Qt.callLater(function() {
+            if (modbusManager) {
+                cachedIsConnected = modbusManager.isConnected
+            }
+        })
+    }
 
     Rectangle {
         id: rectangle
@@ -50,8 +72,8 @@ Item {
             width: 148
             height: 30
             
-            // Привязываем текст к статусу из modbusManager
-            text: modbusManager ? modbusManager.statusText : qsTr("Disconnected")
+            // Привязываем текст к тексту кнопки подключения из modbusManager (только "Connect" или "Disconnect")
+            text: modbusManager ? modbusManager.connectionButtonText : qsTr("Connect")
             font.pointSize: 20
             font.weight: Font.Normal
             
@@ -60,9 +82,10 @@ Item {
             hoverEnabled: true
             
             // Стилизация кнопки с видимым фоном
+            // Используем кэшированное значение для мгновенного доступа без синхронных операций
             background: Rectangle {
-                color: connectionButton.hovered ? "#888888" : (modbusManager && modbusManager.isConnected ? "#2d5a2d" : "#7a7a7a")
-                border.color: modbusManager && modbusManager.isConnected ? "#00ff00" : "#888888"
+                color: connectionButton.hovered ? "#888888" : (root.cachedIsConnected ? "#2d5a2d" : "#7a7a7a")
+                border.color: root.cachedIsConnected ? "#00ff00" : "#888888"
                 border.width: 1
                 radius: 4
             }
@@ -71,7 +94,7 @@ Item {
             contentItem: Text {
                 text: connectionButton.text
                 font: connectionButton.font
-                color: modbusManager && modbusManager.isConnected ? "#00ff00" : "#ffffff"
+                color: root.cachedIsConnected ? "#00ff00" : "#ffffff"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -79,7 +102,7 @@ Item {
             
             // Обработчик клика
             onClicked: {
-                console.log("Кнопка подключения нажата, текущий статус:", modbusManager ? modbusManager.isConnected : "modbusManager не доступен")
+                console.log("Кнопка подключения нажата, текущий статус:", root.cachedIsConnected)
                 if (modbusManager) {
                     modbusManager.toggleConnection()
                 } else {

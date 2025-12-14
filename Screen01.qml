@@ -86,8 +86,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            // button2.checked уже обновлен автоматически при клике
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(2, button2.checked)  // InLet Fan - 3
             }
         }
@@ -133,7 +133,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(1, button3.checked)  // InLet Fan - 2
             }
         }
@@ -177,7 +178,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(0, button4.checked)  // InLet Fan - 1
             }
         }
@@ -219,7 +221,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(5, button5.checked)  // OutLet Fan - 2
             }
         }
@@ -261,7 +264,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(4, button6.checked)  // OutLet Fan - 1
             }
         }
@@ -302,7 +306,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(3, button7.checked)  // InLet Fan - 4
             }
         }
@@ -343,7 +348,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(8, button8.checked)  // OpCell Fan - 3
             }
         }
@@ -384,7 +390,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(7, button9.checked)  // OpCell Fan - 2
             }
         }
@@ -425,7 +432,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(6, button10.checked)  // OpCell Fan - 1
             }
         }
@@ -466,7 +474,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setLaserPSU, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setLaserPSU(button11.checked)
             }
         }
@@ -507,7 +516,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(10, button12.checked)  // Laser Fans
             }
         }
@@ -548,7 +558,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setFan, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setFan(9, button13.checked)  // OpCell Fan - 4
             }
         }
@@ -589,7 +600,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setMagnetPSU, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setMagnetPSU(button14.checked)
             }
         }
@@ -629,7 +641,8 @@ Rectangle {
         }
         
         onClicked: {
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setPIDController, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setPIDController(button15.checked)
             }
         }
@@ -670,7 +683,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setWaterChiller, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setWaterChiller(button16.checked)
             }
         }
@@ -736,7 +750,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setVacuumGauge, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setVacuumGauge(button18.checked)
             }
         }
@@ -778,7 +793,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setVacuumPump, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setVacuumPump(button19.checked)
             }
         }
@@ -832,8 +848,8 @@ Rectangle {
             width: 148
             height: 30
             
-            // Привязываем текст к статусу из modbusManager
-            text: modbusManager ? modbusManager.statusText : qsTr("Disconnected")
+            // Привязываем текст к тексту кнопки подключения из modbusManager (только "Connect" или "Disconnect")
+            text: modbusManager ? modbusManager.connectionButtonText : qsTr("Connect")
             font.pointSize: 20
             font.weight: Font.Normal
             
@@ -2734,7 +2750,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(9, button20.checked)  // Valve X10 (индекс 9)
             }
         }
@@ -2781,7 +2798,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(7, button21.checked)  // Valve X8 (индекс 7)
             }
         }
@@ -2930,7 +2948,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(8, button26.checked)  // Valve X9 (индекс 8)
             }
         }
@@ -3001,7 +3020,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(5, button22.checked)  // Valve X6 (индекс 5)
             }
         }
@@ -3093,7 +3113,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(10, button23.checked)  // Valve X11 (индекс 10)
             }
         }
@@ -3208,7 +3229,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(11, button24.checked)  // Valve X12 (индекс 11)
             }
         }
@@ -3254,7 +3276,8 @@ Rectangle {
         
         onClicked: {
             // Мгновенное обновление UI - не ждем ответа от устройства
-            if (modbusManager && modbusManager.isConnected) {
+            // Проверка подключения выполняется внутри setValve, UI обновляется мгновенно
+            if (modbusManager) {
                 modbusManager.setValve(6, button25.checked)  // Valve X7 (индекс 6)
             }
         }

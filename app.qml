@@ -14,18 +14,53 @@ Window {
     title: "Xeus"
     flags: Qt.Window
 
-    // Свойство для управления текущим экраном
-    property string currentScreen: "Screen01"
-
-    // Функция для смены экрана
+    // Функция для смены экрана - пауза опросов, затем мгновенное переключение через z-order
     function changeScreen(screenName) {
-        currentScreen = screenName;
+        console.log("⚡ changeScreen вызван:", screenName, "время:", Date.now())
+        // Приостанавливаем опрос Modbus, чтобы не блокировать UI
+        if (typeof modbusManager !== 'undefined' && modbusManager) {
+            modbusManager.pausePolling()
+        }
+
+        if (screenName === "Screen01") {
+            screen01Item.z = 1
+            clinicalModeLoader.z = 0
+            console.log("✅ Screen01 показан, время:", Date.now())
+        } else if (screenName === "Clinicalmode") {
+            if (clinicalModeLoader.status === Loader.Ready && clinicalModeLoader.item) {
+                screen01Item.z = 0
+                clinicalModeLoader.z = 1
+                clinicalModeLoader.item.visible = true
+                console.log("✅ Clinicalmode показан, время:", Date.now())
+            } else {
+                console.log("⏳ Clinicalmode еще не готов, статус:", clinicalModeLoader.status)
+            }
+        }
+
+        // Возобновляем опрос Modbus после переключения
+        if (typeof modbusManager !== 'undefined' && modbusManager) {
+            Qt.callLater(function() { modbusManager.resumePolling() })
+        }
     }
 
-    // Загрузчик для отображения текущего экрана
-    Loader {
-        id: screenLoader
+    Item {
+        id: screen01Item
         anchors.fill: parent
-        source: currentScreen + ".qml"
+        visible: true
+        enabled: true
+        z: 1
+        Screen01 { anchors.fill: parent }
+    }
+
+    Loader {
+        id: clinicalModeLoader
+        anchors.fill: parent
+        source: "Clinicalmode.qml"
+        active: true
+        asynchronous: true
+        visible: true
+        enabled: true
+        z: 0
+        onLoaded: { if (item) item.visible = true }
     }
 }

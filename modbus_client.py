@@ -76,12 +76,13 @@ class ModbusClient:
                         logger.info(f"Modbus {direction}: {hex_str}")
                         return packet
                     
+                    # Максимально короткий таймаут и без повторов, чтобы не блокировать UI
                     self.client = ModbusTcpClient(
                         host=self.host, 
                         port=self.port, 
                         framer=actual_framer,
-                        timeout=3,  # Таймаут 3 секунды - даем устройству больше времени на ответ
-                        retries=1,  # 1 повторная попытка для надежности
+                        timeout=0.05,  # было 1с -> 50мс, чтобы не висеть на медленных ответах
+                        retries=0,     # без повторов, чтобы не удлинять ожидание
                         trace_packet=trace_packet  # Трассировка пакетов для отладки
                     )
                     
@@ -225,86 +226,11 @@ class ModbusClient:
             self._connected = False
     
     def is_connected(self) -> bool:
-        """Проверка состояния подключения с автоматическим переподключением"""
-        if self.client is None:
-            return False
-        try:
-            socket_open = self.client.is_socket_open()
-            # Если сокет открыт, считаем соединение активным, даже если были ошибки чтения
-            if socket_open:
-                self._connected = True
-                return True
-            else:
-                # Если сокет закрыт, но мы были подключены, пытаемся переподключиться
-                # Это может произойти, если pymodbus закрыл соединение из-за ошибки
-                if self._connected:
-                    logger.debug("Сокет закрыт, но соединение было активным, пытаемся переподключиться")
-                    try:
-                        # Пытаемся переподключиться - pymodbus может переиспользовать существующий клиент
-                        connection_result = self.client.connect()
-                        if connection_result:
-                            socket_open_after = self.client.is_socket_open()
-                            if socket_open_after:
-                                # Настраиваем TCP keep-alive при переподключении
-                                try:
-                                    import socket
-                                    sock = None
-                                    
-                                    # Пробуем разные способы доступа к сокету (те же, что и при подключении)
-                                    if hasattr(self.client, 'socket') and self.client.socket:
-                                        sock = self.client.socket
-                                    elif hasattr(self.client, 'transport'):
-                                        transport = self.client.transport
-                                        if hasattr(transport, 'socket') and transport.socket:
-                                            sock = transport.socket
-                                        elif hasattr(transport, '_socket') and transport._socket:
-                                            sock = transport._socket
-                                        elif hasattr(transport, 'sock') and transport.sock:
-                                            sock = transport.sock
-                                        elif hasattr(transport, '_sock') and transport._sock:
-                                            sock = transport._sock
-                                        elif hasattr(transport, 'get_socket'):
-                                            try:
-                                                sock = transport.get_socket()
-                                            except:
-                                                pass
-                                    
-                                    if sock:
-                                        sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-                                        try:
-                                            # Настраиваем параметры keep-alive (Linux/Mac)
-                                            if hasattr(socket, 'TCP_KEEPIDLE'):
-                                                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 2)
-                                                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 2)
-                                                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 3)
-                                                logger.debug("TCP keep-alive настроен при переподключении (Linux): пинг каждые 2 секунды")
-                                            elif hasattr(socket, 'TCP_KEEPALIVE'):
-                                                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPALIVE, 2)
-                                                logger.debug("TCP keep-alive настроен при переподключении (macOS): используем TCP_KEEPALIVE")
-                                            else:
-                                                logger.debug("TCP keep-alive включен при переподключении (macOS): используем Modbus keep-alive")
-                                        except (AttributeError, OSError):
-                                            pass
-                                except Exception:
-                                    pass
-                                
-                                self._connected = True
-                                logger.info("Автоматическое переподключение успешно в is_connected()")
-                                return True
-                            else:
-                                logger.debug("connect() вернул True, но сокет все еще закрыт")
-                        else:
-                            logger.debug("connect() вернул False при попытке переподключения")
-                    except Exception as e:
-                        logger.debug(f"Не удалось переподключиться в is_connected(): {e}")
-                
-                self._connected = False
-                return False
-        except Exception as e:
-            logger.debug(f"Исключение в is_connected(): {e}")
-            # Только при исключении помечаем как отключенное
-            self._connected = False
-            return False
+        """Проверка состояния подключения БЕЗ синхронных операций (для мгновенной проверки)"""
+        # ВСЕГДА возвращаем только кэшированное значение БЕЗ вызова is_socket_open()
+        # Вызов is_socket_open() может блокировать UI на несколько секунд
+        # Реальное состояние подключения проверяется асинхронно через таймер в ModbusManager
+        return self._connected
     
     def read_holding_register(self, address: int) -> Optional[int]:
         """
@@ -553,7 +479,7 @@ class ModbusClient:
             return value
         else:
             logger.warning(f"CRC не совпадает для регистра 1021: получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1021_direct(self) -> Optional[int]:
         """Чтение регистра 1021 через прямой сокет (функция 04)"""
@@ -587,7 +513,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1021(resp)
@@ -599,7 +525,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -642,7 +568,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи
                     resp = sock.recv(256)
                     if resp and len(resp) >= 8:
                         # Проверяем, что ответ соответствует запросу
@@ -655,7 +581,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return success
         except Exception as e:
@@ -745,7 +671,7 @@ class ModbusClient:
             return value
         else:
             logger.warning(f"CRC не совпадает для регистра 1111: получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1111_direct(self) -> Optional[int]:
         """Чтение регистра 1111 через прямой сокет (функция 04)"""
@@ -779,7 +705,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1111(resp)
@@ -791,7 +717,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -834,7 +760,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp and len(resp) >= 8:
                         # Проверяем, что ответ соответствует запросу
@@ -847,7 +773,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return success
         except Exception as e:
@@ -917,7 +843,7 @@ class ModbusClient:
             return value
         else:
             logger.warning(f"CRC не совпадает для регистра 1511: получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1511_direct(self) -> Optional[int]:
         """Чтение регистра 1511 (температура Water Chiller) через прямой сокет (функция 04)"""
@@ -951,7 +877,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1511(resp)
@@ -963,7 +889,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -1021,7 +947,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         logger.debug(f"Ответ на запись в регистр 1531 (попытка {i+1}): {resp.hex().upper()}")
@@ -1050,7 +976,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1531: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1531 после 2 попыток")
@@ -1111,7 +1037,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         logger.debug(f"Ответ на запись в регистр 1331 (попытка {i+1}): {resp.hex().upper()}")
@@ -1140,7 +1066,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1331: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1331 после 2 попыток")
@@ -1201,7 +1127,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         logger.debug(f"Ответ на запись в регистр 1241 (попытка {i+1}): {resp.hex().upper()}")
@@ -1230,7 +1156,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1241: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1241 после 2 попыток")
@@ -1310,7 +1236,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1421: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1421 после 2 попыток")
@@ -1414,7 +1340,7 @@ class ModbusClient:
                     sock.settimeout(2.0)  # Возвращаем нормальный таймаут
                     
                     sock.sendall(read_frame)
-                    time.sleep(0.1)  # Увеличиваем задержку для надежности
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи
                     resp = sock.recv(256)
                     if resp:
                         hex_resp = ' '.join(f'{b:02X}' for b in resp)
@@ -1432,7 +1358,7 @@ class ModbusClient:
                     if i == 1:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -1472,7 +1398,7 @@ class ModbusClient:
             return value
         else:
             logger.warning(f"CRC не совпадает для регистра 1341: получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1341_direct(self) -> Optional[int]:
         """Чтение регистра 1341 (ток Magnet PSU) через прямой сокет (функция 04)"""
@@ -1506,7 +1432,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1341(resp)
@@ -1518,7 +1444,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -1558,7 +1484,7 @@ class ModbusClient:
             return value
         else:
             logger.warning(f"CRC не совпадает для регистра 1251: получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1251_direct(self) -> Optional[int]:
         """Чтение регистра 1251 (ток Laser PSU) через прямой сокет (функция 04)"""
@@ -1592,7 +1518,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1251(resp)
@@ -1604,7 +1530,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -1648,9 +1574,8 @@ class ModbusClient:
             hex_data = ' '.join(f'{b:02X}' for b in data_for_crc)
             logger.debug(f"Регистр 1611: CRC не совпадает - получен {received_crc:04X}, ожидался {calculated_crc:04X}")
             logger.debug(f"  Полный ответ: {hex_resp}, длина: {len(resp)}, данные для CRC: {hex_data}")
-            # Все равно возвращаем значение, если CRC не совпал
-            # Это может быть нормально, если устройство использует немного другой формат или есть дополнительные байты
-            return value
+            # Не возвращаем некорректные данные при ошибке CRC
+            return None
     
     def read_register_1611_direct(self) -> Optional[int]:
         """Чтение регистра 1611 (давление Xenon) через прямой сокет (функция 04)"""
@@ -1684,7 +1609,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         # Логируем полный ответ для отладки
@@ -1699,7 +1624,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -1776,7 +1701,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1621: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1621 после 2 попыток")
@@ -1837,7 +1762,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         logger.debug(f"Ответ на запись в регистр 1661 (попытка {i+1}): {resp.hex().upper()}")
@@ -1866,7 +1791,7 @@ class ModbusClient:
                         logger.error(f"Ошибка при записи в регистр 1661: {e}")
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             if not success:
                 logger.error(f"❌ Не удалось записать в регистр 1661 после 2 попыток")
@@ -1913,9 +1838,8 @@ class ModbusClient:
             hex_data = ' '.join(f'{b:02X}' for b in data_for_crc)
             logger.debug(f"Регистр 1651: CRC не совпадает - получен {received_crc:04X}, ожидался {calculated_crc:04X}")
             logger.debug(f"  Полный ответ: {hex_resp}, длина: {len(resp)}, данные для CRC: {hex_data}")
-            # Все равно возвращаем значение, если CRC не совпал
-            # Это может быть нормально, если устройство использует немного другой формат или есть дополнительные байты
-            return value
+            # Не возвращаем некорректные данные при ошибке CRC
+            return None
     
     def read_register_1651_direct(self) -> Optional[int]:
         """Чтение регистра 1651 (давление N2) через прямой сокет (функция 04)"""
@@ -1949,7 +1873,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         # Логируем полный ответ для отладки
@@ -1964,7 +1888,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -2008,9 +1932,8 @@ class ModbusClient:
             hex_data = ' '.join(f'{b:02X}' for b in data_for_crc)
             logger.debug(f"Регистр 1701: CRC не совпадает - получен {received_crc:04X}, ожидался {calculated_crc:04X}")
             logger.debug(f"  Полный ответ: {hex_resp}, длина: {len(resp)}, данные для CRC: {hex_data}")
-            # Все равно возвращаем значение, если CRC не совпал
-            # Это может быть нормально, если устройство использует немного другой формат или есть дополнительные байты
-            return value
+            # Не возвращаем некорректные данные при ошибке CRC
+            return None
     
     def read_register_1701_direct(self) -> Optional[int]:
         """Чтение регистра 1701 (давление Vacuum) через прямой сокет (функция 04)"""
@@ -2044,7 +1967,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1701(resp)
@@ -2056,7 +1979,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -2110,7 +2033,7 @@ class ModbusClient:
             return value
         else:
             logger.debug(f"Регистр 1131: CRC не совпадает - получен {received_crc:04X}, ожидался {calculated_crc:04X}")
-            return value  # Все равно возвращаем значение, если CRC не совпал
+            return None  # Не возвращаем некорректные данные
     
     def read_register_1131_direct(self) -> Optional[int]:
         """Чтение регистра 1131 (fans) через прямой сокет (функция 04)"""
@@ -2144,7 +2067,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1131(resp)
@@ -2156,7 +2079,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return parsed
         except Exception as e:
@@ -2199,7 +2122,7 @@ class ModbusClient:
             for i in range(2):
                 try:
                     sock.sendall(write_frame)
-                    time.sleep(0.05)  # Уменьшаем задержку для избежания блокировки UI
+                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
                     resp = sock.recv(256)
                     if resp and len(resp) >= 8:
                         # Проверяем, что ответ соответствует запросу
@@ -2212,7 +2135,7 @@ class ModbusClient:
                     else:
                         raise
                 if i < 1:
-                    time.sleep(0.2)  # Уменьшаем задержку между попытками
+                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
             
             return success
         except Exception as e:

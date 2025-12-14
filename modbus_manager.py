@@ -16,6 +16,7 @@ class ModbusManager(QObject):
     # Сигналы для QML
     connectionStatusChanged = Signal(bool)
     statusTextChanged = Signal(str)
+    connectionButtonTextChanged = Signal(str)  # Отдельный сигнал для текста кнопки подключения
     errorOccurred = Signal(str)
     
     # Сигналы для синхронизации состояний устройств
@@ -42,12 +43,15 @@ class ModbusManager(QObject):
     vacuumGaugeStateChanged = Signal(bool)
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
+    # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
+    pollingPausedChanged = Signal(bool)
     
     def __init__(self, parent=None):
         super().__init__(parent)
         self._modbus_client: ModbusClient = None
         self._is_connected = False
         self._status_text = "Disconnected"
+        self._connection_button_text = "Connect"  # Текст кнопки подключения: "Connect" или "Disconnect"
         self._water_chiller_temperature = 0.0  # Текущая температура Water Chiller (регистр 1511)
         self._water_chiller_setpoint = 0.0  # Заданная температура Water Chiller (регистр 1531)
         self._water_chiller_setpoint_user_interaction = False  # Флаг: пользователь взаимодействует с полем ввода
@@ -89,6 +93,28 @@ class ModbusManager(QObject):
         self._n2_setpoint_auto_update_timer.timeout.connect(self._autoUpdateN2Setpoint)
         self._n2_setpoint_auto_update_timer.setInterval(20000)  # 20 секунд
         self._vacuum_pressure = 0.0  # Давление Vacuum в Torr (регистр 1701)
+        
+        # Буфер состояний устройств для мгновенного отображения при переключении страниц
+        # Реле (регистр 1021)
+        self._relay_states = {
+            'water_chiller': False,
+            'magnet_psu': False,
+            'laser_psu': False,
+            'vacuum_pump': False,
+            'vacuum_gauge': False,
+            'pid_controller': False,
+            'op_cell_heating': False
+        }
+        # Клапаны (регистр 1111) - индексы 5-11 для X6-X12
+        self._valve_states = {i: False for i in range(5, 12)}
+        # Вентиляторы (регистр 1131) - индексы 0-10
+        self._fan_states = {i: False for i in range(11)}
+        self._fan_optimistic_updates = {}  # Флаги оптимистичных обновлений вентиляторов: fanIndex -> timestamp
+        # Буфер для регистров (для быстрого доступа без блокировки UI)
+        self._register_cache = {}  # address -> value
+        # Флаг паузы опросов (чтобы при переключении экранов не блокировать UI)
+        self._polling_paused = False
+        
         # Статичные параметры подключения к XeUS driver
         self._host = "192.168.4.1"
         self._port = 503
@@ -97,13 +123,13 @@ class ModbusManager(QObject):
         # Таймер для периодической проверки подключения и keep-alive
         self._connection_check_timer = QTimer(self)
         self._connection_check_timer.timeout.connect(self._check_connection)
-        self._connection_check_timer.setInterval(2000)  # Проверка каждые 2 секунды + keep-alive
+        self._connection_check_timer.setInterval(500)  # Проверка каждые 0.5 секунды + keep-alive
         self._connection_fail_count = 0  # Счетчик неудачных проверок
         
         # Таймер для синхронизации состояний устройств
         self._sync_timer = QTimer(self)
         self._sync_timer.timeout.connect(self._syncDeviceStates)
-        self._sync_timer.setInterval(5000)  # Начальный интервал 5 секунд для снижения нагрузки
+        self._sync_timer.setInterval(1000)  # Интервал 1 секунда для быстрого обновления
         self._syncing = False  # Флаг для предотвращения параллельных синхронизаций
         self._sync_fail_count = 0  # Счетчик неудачных синхронизаций
         self._last_sync_time = 0  # Время последней синхронизации
@@ -119,59 +145,80 @@ class ModbusManager(QObject):
         self._reading_1651 = False
         self._reading_1701 = False
         self._reading_1131 = False
+        # Флаги оптимистичных обновлений
+        self._fan_optimistic_updates = {}  # Флаги оптимистичных обновлений вентиляторов: fanIndex -> timestamp
+        # Список таймеров, которые можно приостанавливать (для быстрой смены экранов)
+        self._polling_timers = []
         
-        # Таймер для чтения регистра 1021 (реле) раз в 2 секунды
+        # Таймер для чтения регистра 1021 (реле) - быстрое обновление
         self._relay_1021_timer = QTimer(self)
         self._relay_1021_timer.timeout.connect(self._readRelay1021)
-        self._relay_1021_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._relay_1021_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1111 (клапаны X6-X12) раз в 2 секунды
+        # Таймер для чтения регистра 1111 (клапаны X6-X12) - быстрое обновление
         self._valve_1111_timer = QTimer(self)
         self._valve_1111_timer.timeout.connect(self._readValve1111)
-        self._valve_1111_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._valve_1111_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1511 (температура Water Chiller) раз в 2 секунды
+        # Таймер для чтения регистра 1511 (температура Water Chiller) - быстрое обновление
         self._water_chiller_temp_timer = QTimer(self)
         self._water_chiller_temp_timer.timeout.connect(self._readWaterChillerTemperature)
-        self._water_chiller_temp_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._water_chiller_temp_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1411 (температура SEOP Cell) раз в 2 секунды
+        # Таймер для чтения регистра 1411 (температура SEOP Cell) - быстрое обновление
         self._seop_cell_temp_timer = QTimer(self)
         self._seop_cell_temp_timer.timeout.connect(self._readSeopCellTemperature)
-        self._seop_cell_temp_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._seop_cell_temp_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1341 (ток Magnet PSU) раз в 2 секунды
+        # Таймер для чтения регистра 1341 (ток Magnet PSU) - быстрое обновление
         self._magnet_psu_current_timer = QTimer(self)
         self._magnet_psu_current_timer.timeout.connect(self._readMagnetPSUCurrent)
-        self._magnet_psu_current_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._magnet_psu_current_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1251 (ток Laser PSU) раз в 2 секунды
+        # Таймер для чтения регистра 1251 (ток Laser PSU) - быстрое обновление
         self._laser_psu_current_timer = QTimer(self)
         self._laser_psu_current_timer.timeout.connect(self._readLaserPSUCurrent)
-        self._laser_psu_current_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._laser_psu_current_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1611 (давление Xenon) раз в 2 секунды
+        # Таймер для чтения регистра 1611 (давление Xenon) - быстрое обновление
         self._xenon_pressure_timer = QTimer(self)
         self._xenon_pressure_timer.timeout.connect(self._readXenonPressure)
-        self._xenon_pressure_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._xenon_pressure_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1651 (давление N2) раз в 2 секунды
+        # Таймер для чтения регистра 1651 (давление N2) - быстрое обновление
         self._n2_pressure_timer = QTimer(self)
         self._n2_pressure_timer.timeout.connect(self._readN2Pressure)
-        self._n2_pressure_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._n2_pressure_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1701 (давление Vacuum) раз в 2 секунды
+        # Таймер для чтения регистра 1701 (давление Vacuum) - быстрое обновление
         self._vacuum_pressure_timer = QTimer(self)
         self._vacuum_pressure_timer.timeout.connect(self._readVacuumPressure)
-        self._vacuum_pressure_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._vacuum_pressure_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         
-        # Таймер для чтения регистра 1131 (fans) раз в 2 секунды
+        # Таймер для чтения регистра 1131 (fans) - быстрое обновление
         self._fan_1131_timer = QTimer(self)
         self._fan_1131_timer.timeout.connect(self._readFan1131)
-        self._fan_1131_timer.setInterval(2000)  # Чтение раз в 2 секунды
+        self._fan_1131_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
+
+        # Список таймеров для паузы/возобновления опросов
+        self._polling_timers = [
+            self._connection_check_timer,
+            self._sync_timer,
+            self._relay_1021_timer,
+            self._valve_1111_timer,
+            self._water_chiller_temp_timer,
+            self._seop_cell_temp_timer,
+            self._magnet_psu_current_timer,
+            self._laser_psu_current_timer,
+            self._xenon_pressure_timer,
+            self._n2_pressure_timer,
+            self._vacuum_pressure_timer,
+            self._fan_1131_timer,
+        ]
         
         # Очередь задач для асинхронного выполнения операций Modbus
-        self._modbus_task_queue = deque()
+        self._modbus_task_queue = deque()  # Обычные задачи (чтения)
+        self._modbus_priority_queue = deque()  # Приоритетные задачи (записи)
         self._modbus_task_processing = False
         self._modbus_task_timer = QTimer(self)
         self._modbus_task_timer.timeout.connect(self._processModbusTaskQueue)
@@ -179,8 +226,13 @@ class ModbusManager(QObject):
     
     @Property(str, notify=statusTextChanged)
     def statusText(self):
-        """Текст статуса подключения"""
+        """Текст статуса последнего действия (для отображения в статусной строке)"""
         return self._status_text
+    
+    @Property(str, notify=connectionButtonTextChanged)
+    def connectionButtonText(self):
+        """Текст кнопки подключения: 'Connect' или 'Disconnect'"""
+        return self._connection_button_text
     
     def _updateActionStatus(self, action: str):
         """Обновление статуса последнего действия пользователя"""
@@ -188,6 +240,71 @@ class ModbusManager(QObject):
         self._status_text = action
         self.statusTextChanged.emit(self._status_text)
         logger.info(f"✅ Статус обновлен, эмитирован сигнал. Текущий статус: {self._status_text}")
+    
+    def _emitCachedStates(self):
+        """Отправка всех состояний из буфера в UI для мгновенного отображения при переключении страниц"""
+        # Отправляем состояния реле из буфера
+        self.waterChillerStateChanged.emit(self._relay_states['water_chiller'])
+        self.magnetPSUStateChanged.emit(self._relay_states['magnet_psu'])
+        self.laserPSUStateChanged.emit(self._relay_states['laser_psu'])
+        self.vacuumPumpStateChanged.emit(self._relay_states['vacuum_pump'])
+        self.vacuumGaugeStateChanged.emit(self._relay_states['vacuum_gauge'])
+        self.pidControllerStateChanged.emit(self._relay_states['pid_controller'])
+        self.opCellHeatingStateChanged.emit(self._relay_states['op_cell_heating'])
+        
+        # Отправляем состояния клапанов из буфера
+        for valve_index in range(5, 12):
+            self.valveStateChanged.emit(valve_index, self._valve_states[valve_index])
+        
+        # Отправляем состояния вентиляторов из буфера
+        for fan_index in range(11):
+            self.fanStateChanged.emit(fan_index, self._fan_states[fan_index])
+        
+        # Отправляем числовые значения (температуры, токи, давления) - они уже хранятся в свойствах
+        # и автоматически доступны через Properties, но можно явно эмитировать сигналы для обновления UI
+        self.waterChillerTemperatureChanged.emit(self._water_chiller_temperature)
+        self.waterChillerSetpointChanged.emit(self._water_chiller_setpoint)
+        self.seopCellTemperatureChanged.emit(self._seop_cell_temperature)
+        self.seopCellSetpointChanged.emit(self._seop_cell_setpoint)
+        self.magnetPSUCurrentChanged.emit(self._magnet_psu_current)
+        self.magnetPSUSetpointChanged.emit(self._magnet_psu_setpoint)
+        self.laserPSUCurrentChanged.emit(self._laser_psu_current)
+        self.laserPSUSetpointChanged.emit(self._laser_psu_setpoint)
+        self.xenonPressureChanged.emit(self._xenon_pressure)
+        self.xenonSetpointChanged.emit(self._xenon_setpoint)
+        self.n2PressureChanged.emit(self._n2_pressure)
+        self.n2SetpointChanged.emit(self._n2_setpoint)
+        self.vacuumPressureChanged.emit(self._vacuum_pressure)
+
+    @Slot()
+    def pausePolling(self):
+        """Приостановить все таймеры опроса (используется при переключении экранов)"""
+        if self._polling_paused:
+            return
+        self._polling_paused = True
+        for t in self._polling_timers:
+            t.stop()
+        self._modbus_task_timer.stop()
+        self.pollingPausedChanged.emit(True)
+        logger.info("⏸ Опрос Modbus приостановлен для переключения экрана")
+
+    @Slot()
+    def resumePolling(self):
+        """Возобновить таймеры опроса после паузы"""
+        if not self._polling_paused:
+            return
+        self._polling_paused = False
+        for t in self._polling_timers:
+            t.start()
+        if self._modbus_priority_queue or self._modbus_task_queue:
+            self._modbus_task_timer.start(5)
+        self.pollingPausedChanged.emit(False)
+        logger.info("▶️ Опрос Modbus возобновлен после переключения экрана")
+    
+    @Slot()
+    def refreshUIFromCache(self):
+        """Публичный метод для принудительного обновления UI из буфера (можно вызывать из QML при переключении страниц)"""
+        self._emitCachedStates()
     
     @Property(bool, notify=connectionStatusChanged)
     def isConnected(self):
@@ -340,53 +457,58 @@ class ModbusManager(QObject):
             if self._modbus_client.connect():
                 self._is_connected = True
                 self._status_text = "Connected"
+                self._connection_button_text = "Disconnect"
                 self.connectionStatusChanged.emit(self._is_connected)
                 self.statusTextChanged.emit(self._status_text)
+                self.connectionButtonTextChanged.emit(self._connection_button_text)
                 self._connection_check_timer.start()
                 self._connection_fail_count = 0  # Сбрасываем счетчик при успешном подключении
                 self._sync_fail_count = 0  # Сбрасываем счетчик неудачных синхронизаций
-                # Запускаем синхронизацию с задержкой, чтобы не блокировать UI при подключении
-                # Увеличиваем задержку до 2 секунд, чтобы устройство успело инициализироваться
-                QTimer.singleShot(2000, lambda: self._sync_timer.start())
-                # Запускаем чтение регистра 1021 (реле) с задержками, чтобы не перегружать устройство
+                # Немедленно отправляем текущие состояния из буфера в UI для мгновенного отображения
+                self._emitCachedStates()
+                # Запускаем синхронизацию с минимальной задержкой для быстрого старта
+                QTimer.singleShot(100, lambda: self._sync_timer.start())
+                # Запускаем чтение регистра 1021 (реле) с минимальными задержками для быстрого обновления
                 # При первом чтении автоматически обновятся состояния кнопок на основе реального состояния устройства
-                QTimer.singleShot(2000, lambda: self._relay_1021_timer.start())
-                # Запускаем чтение регистра 1111 (клапаны X6-X12) с небольшой задержкой
-                QTimer.singleShot(2300, lambda: self._valve_1111_timer.start())
-                # Запускаем чтение температуры Water Chiller с задержкой
-                QTimer.singleShot(2600, lambda: self._water_chiller_temp_timer.start())
+                QTimer.singleShot(50, lambda: self._relay_1021_timer.start())
+                # Запускаем чтение регистра 1111 (клапаны X6-X12) с минимальной задержкой
+                QTimer.singleShot(80, lambda: self._valve_1111_timer.start())
+                # Запускаем чтение температуры Water Chiller с минимальной задержкой
+                QTimer.singleShot(110, lambda: self._water_chiller_temp_timer.start())
                 # Запускаем таймер автообновления setpoint
                 self._water_chiller_setpoint_auto_update_timer.start()
                 # Запускаем таймер автообновления setpoint Magnet PSU
                 self._magnet_psu_setpoint_auto_update_timer.start()
                 # Запускаем таймер автообновления setpoint Laser PSU
                 self._laser_psu_setpoint_auto_update_timer.start()
-                # Запускаем чтение температуры SEOP Cell с задержкой
-                QTimer.singleShot(2900, lambda: self._seop_cell_temp_timer.start())
+                # Запускаем чтение температуры SEOP Cell с минимальной задержкой
+                QTimer.singleShot(140, lambda: self._seop_cell_temp_timer.start())
                 # Запускаем таймер автообновления setpoint SEOP Cell
                 self._seop_cell_setpoint_auto_update_timer.start()
-                # Запускаем чтение тока Magnet PSU с задержкой
-                QTimer.singleShot(3200, lambda: self._magnet_psu_current_timer.start())
-                # Запускаем чтение тока Laser PSU с задержкой
-                QTimer.singleShot(3500, lambda: self._laser_psu_current_timer.start())
-                # Запускаем чтение давления Xenon с задержкой
-                QTimer.singleShot(3800, lambda: self._xenon_pressure_timer.start())
+                # Запускаем чтение тока Magnet PSU с минимальной задержкой
+                QTimer.singleShot(170, lambda: self._magnet_psu_current_timer.start())
+                # Запускаем чтение тока Laser PSU с минимальной задержкой
+                QTimer.singleShot(200, lambda: self._laser_psu_current_timer.start())
+                # Запускаем чтение давления Xenon с минимальной задержкой
+                QTimer.singleShot(230, lambda: self._xenon_pressure_timer.start())
                 # Запускаем таймер автообновления setpoint Xenon
                 self._xenon_setpoint_auto_update_timer.start()
                 # Запускаем таймер автообновления setpoint N2
                 self._n2_setpoint_auto_update_timer.start()
-                # Запускаем чтение давления N2 с задержкой
-                QTimer.singleShot(4100, lambda: self._n2_pressure_timer.start())
-                # Запускаем чтение давления Vacuum с задержкой
-                QTimer.singleShot(4400, lambda: self._vacuum_pressure_timer.start())
-                # Запускаем чтение регистра 1131 (fans) с задержкой
-                QTimer.singleShot(4700, lambda: self._fan_1131_timer.start())
+                # Запускаем чтение давления N2 с минимальной задержкой
+                QTimer.singleShot(260, lambda: self._n2_pressure_timer.start())
+                # Запускаем чтение давления Vacuum с минимальной задержкой
+                QTimer.singleShot(290, lambda: self._vacuum_pressure_timer.start())
+                # Запускаем чтение регистра 1131 (fans) с минимальной задержкой
+                QTimer.singleShot(320, lambda: self._fan_1131_timer.start())
                 logger.info("Успешное подключение к Modbus устройству")
             else:
                 self._is_connected = False
                 self._status_text = "Connection Failed"
+                self._connection_button_text = "Connect"
                 self.connectionStatusChanged.emit(self._is_connected)
                 self.statusTextChanged.emit(self._status_text)
+                self.connectionButtonTextChanged.emit(self._connection_button_text)
                 error_msg = f"Не удалось подключиться к {self._host}:{self._port}. Проверьте:\n1. Устройство включено и доступно\n2. IP адрес и порт правильные\n3. Сеть настроена корректно"
                 self.errorOccurred.emit(error_msg)
                 logger.error(error_msg)
@@ -394,8 +516,10 @@ class ModbusManager(QObject):
         except Exception as e:
             self._is_connected = False
             self._status_text = "Error"
+            self._connection_button_text = "Connect"
             self.connectionStatusChanged.emit(self._is_connected)
             self.statusTextChanged.emit(self._status_text)
+            self.connectionButtonTextChanged.emit(self._connection_button_text)
             error_msg = f"Ошибка подключения: {str(e)}"
             self.errorOccurred.emit(error_msg)
             logger.error(error_msg, exc_info=True)
@@ -433,8 +557,10 @@ class ModbusManager(QObject):
             
             self._is_connected = False
             self._status_text = "Disconnected"
+            self._connection_button_text = "Connect"
             self.connectionStatusChanged.emit(self._is_connected)
             self.statusTextChanged.emit(self._status_text)
+            self.connectionButtonTextChanged.emit(self._connection_button_text)
             
             # Сбрасываем состояния всех кнопок в GUI при отключении (только визуально, на устройство команды не отправляются)
             self.waterChillerStateChanged.emit(False)
@@ -502,8 +628,10 @@ class ModbusManager(QObject):
             # Все равно устанавливаем состояние отключено
             self._is_connected = False
             self._status_text = "Disconnected"
+            self._connection_button_text = "Connect"
             self.connectionStatusChanged.emit(self._is_connected)
             self.statusTextChanged.emit(self._status_text)
+            self.connectionButtonTextChanged.emit(self._connection_button_text)
     
     def _check_connection(self):
         """Периодическая проверка состояния подключения и keep-alive"""
@@ -540,7 +668,9 @@ class ModbusManager(QObject):
                     # Не перезаписываем последнее действие пользователя
                     if self._status_text in ["Disconnected", "Connection Failed", "Error"]:
                         self._status_text = "Connected"
+                        self._connection_button_text = "Disconnect"
                         self.statusTextChanged.emit(self._status_text)
+                        self.connectionButtonTextChanged.emit(self._connection_button_text)
                     self._sync_timer.start()
                     self.connectionStatusChanged.emit(self._is_connected)
                     self._connection_fail_count = 0
@@ -553,7 +683,9 @@ class ModbusManager(QObject):
                     # Обновляем статус только если он не был "Disconnected"
                     if self._status_text not in ["Disconnected", "Connection Failed", "Error"]:
                         self._status_text = "Disconnected"
+                        self._connection_button_text = "Connect"
                         self.statusTextChanged.emit(self._status_text)
+                        self.connectionButtonTextChanged.emit(self._connection_button_text)
                     self._sync_timer.stop()
                     self.connectionStatusChanged.emit(self._is_connected)
                     self._connection_fail_count = 0
@@ -564,7 +696,9 @@ class ModbusManager(QObject):
                     # Обновляем статус только если он не был "Disconnected"
                     if self._status_text not in ["Disconnected", "Connection Failed", "Error"]:
                         self._status_text = "Disconnected"
+                        self._connection_button_text = "Connect"
                         self.statusTextChanged.emit(self._status_text)
+                        self.connectionButtonTextChanged.emit(self._connection_button_text)
                     self._sync_timer.stop()
                     self.connectionStatusChanged.emit(self._is_connected)
                     self._connection_fail_count = 0
@@ -577,7 +711,9 @@ class ModbusManager(QObject):
                 # Не перезаписываем последнее действие пользователя
                 if self._status_text in ["Disconnected", "Connection Failed", "Error"]:
                     self._status_text = "Connected"
+                    self._connection_button_text = "Disconnect"
                     self.statusTextChanged.emit(self._status_text)
+                    self.connectionButtonTextChanged.emit(self._connection_button_text)
                 self._sync_timer.start()
                 self.connectionStatusChanged.emit(self._is_connected)
             self._connection_fail_count = 0
@@ -597,7 +733,14 @@ class ModbusManager(QObject):
             # В документации указано, что это setpoint (=), значит нужно использовать функцию 03 (Read Holding Registers)
             # а не функцию 04 (Read Input Registers)
             logger.info("Чтение регистра 1020 через функцию 03 (Read Holding Registers)")
-            value = self.readRegister(1020)  # Используем readRegister, который использует функцию 03
+            # Читаем напрямую через клиент, чтобы обновить кэш
+            if self._modbus_client:
+                value = self._modbus_client.read_holding_register(1020)
+                if value is not None:
+                    # Обновляем кэш регистров
+                    self._register_cache[1020] = value
+            else:
+                value = None
             
             if value is not None:
                 # Преобразуем в бинарное представление (8 бит)
@@ -618,6 +761,8 @@ class ModbusManager(QObject):
                 logger.info("Пробуем через функцию 04 (Read Input Registers)")
                 value = self._modbus_client.read_input_register(1020)
                 if value is not None:
+                    # Обновляем кэш регистров
+                    self._register_cache[1020] = value
                     low_byte = value & 0xFF
                     binary_str = format(low_byte, '08b')
                     logger.info(f"Регистр 1020 через функцию 04: значение = {low_byte} (0x{low_byte:02X}), бинарно = {binary_str}")
@@ -637,21 +782,30 @@ class ModbusManager(QObject):
                 low_byte = value & 0xFF
                 logger.debug(f"Регистр 1021: значение = {value} (0x{value:04X}), младший байт = {low_byte} (0x{low_byte:02X}) = {format(low_byte, '08b')}")
                 
+                # Обновляем буфер состояний реле
+                self._relay_states['water_chiller'] = bool(low_byte & 0x01)
+                self._relay_states['magnet_psu'] = bool(low_byte & 0x02)
+                self._relay_states['laser_psu'] = bool(low_byte & 0x04)
+                self._relay_states['vacuum_pump'] = bool(low_byte & 0x08)
+                self._relay_states['vacuum_gauge'] = bool(low_byte & 0x10)
+                self._relay_states['pid_controller'] = bool(low_byte & 0x20)
+                self._relay_states['op_cell_heating'] = bool(low_byte & 0x40)
+                
                 # Обновляем состояния всех реле на основе реального состояния устройства
                 # Реле 1 (бит 0) - Water Chiller
-                self.waterChillerStateChanged.emit(bool(low_byte & 0x01))
+                self.waterChillerStateChanged.emit(self._relay_states['water_chiller'])
                 # Реле 2 (бит 1) - Magnet PSU
-                self.magnetPSUStateChanged.emit(bool(low_byte & 0x02))
+                self.magnetPSUStateChanged.emit(self._relay_states['magnet_psu'])
                 # Реле 3 (бит 2) - Laser PSU
-                self.laserPSUStateChanged.emit(bool(low_byte & 0x04))
+                self.laserPSUStateChanged.emit(self._relay_states['laser_psu'])
                 # Реле 4 (бит 3) - Vacuum Pump
-                self.vacuumPumpStateChanged.emit(bool(low_byte & 0x08))
+                self.vacuumPumpStateChanged.emit(self._relay_states['vacuum_pump'])
                 # Реле 5 (бит 4) - Vacuum Gauge
-                self.vacuumGaugeStateChanged.emit(bool(low_byte & 0x10))
+                self.vacuumGaugeStateChanged.emit(self._relay_states['vacuum_gauge'])
                 # Реле 6 (бит 5) - PID Controller
-                self.pidControllerStateChanged.emit(bool(low_byte & 0x20))
+                self.pidControllerStateChanged.emit(self._relay_states['pid_controller'])
                 # Реле 7 (бит 6) - OP Cell Heating
-                self.opCellHeatingStateChanged.emit(bool(low_byte & 0x40))
+                self.opCellHeatingStateChanged.emit(self._relay_states['op_cell_heating'])
             else:
                 logger.debug("Не удалось прочитать регистр 1021")
         except Exception as e:
@@ -670,21 +824,12 @@ class ModbusManager(QObject):
             if value is not None:
                 logger.debug(f"Регистр 1111: значение = {value} (0x{value:04X}) = {format(value, '016b')}")
                 
-                # Обновляем состояния клапанов X6-X12 на основе битов 5-11 (нумерация с 0)
-                # X6 (button22, valveIndex 5) - бит 5
-                self.valveStateChanged.emit(5, bool(value & (1 << 5)))
-                # X7 (button25, valveIndex 6) - бит 6
-                self.valveStateChanged.emit(6, bool(value & (1 << 6)))
-                # X8 (button21, valveIndex 7) - бит 7
-                self.valveStateChanged.emit(7, bool(value & (1 << 7)))
-                # X9 (button26, valveIndex 8) - бит 8
-                self.valveStateChanged.emit(8, bool(value & (1 << 8)))
-                # X10 (button20, valveIndex 9) - бит 9
-                self.valveStateChanged.emit(9, bool(value & (1 << 9)))
-                # X11 (button23, valveIndex 10) - бит 10
-                self.valveStateChanged.emit(10, bool(value & (1 << 10)))
-                # X12 (button24, valveIndex 11) - бит 11
-                self.valveStateChanged.emit(11, bool(value & (1 << 11)))
+                # Обновляем буфер состояний клапанов X6-X12 на основе битов 5-11 (нумерация с 0)
+                for valve_index in range(5, 12):
+                    bit_pos = valve_index
+                    state = bool(value & (1 << bit_pos))
+                    self._valve_states[valve_index] = state
+                    self.valveStateChanged.emit(valve_index, state)
             else:
                 logger.debug("Не удалось прочитать регистр 1111")
         except Exception as e:
@@ -725,7 +870,8 @@ class ModbusManager(QObject):
         
         # Если пользователь не взаимодействовал с полем, обновляем setpoint из текущей температуры
         if not self._water_chiller_setpoint_user_interaction:
-            if abs(self._water_chiller_temperature - self._water_chiller_setpoint) > 0.1:  # Обновляем только если разница > 0.1°C
+            # Не обновляем если текущая температура равна 0.0 или невалидная (устройство только подключено)
+            if self._water_chiller_temperature > 0.1 and abs(self._water_chiller_temperature - self._water_chiller_setpoint) > 0.1:  # Обновляем только если разница > 0.1°C и температура валидная
                 logger.info(f"Автообновление setpoint: {self._water_chiller_setpoint}°C -> {self._water_chiller_temperature}°C")
                 self._water_chiller_setpoint = self._water_chiller_temperature
                 self.waterChillerSetpointChanged.emit(self._water_chiller_temperature)
@@ -820,7 +966,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданную температуру SEOP Cell: {temperature}°C")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     @Slot(result=bool)
@@ -863,7 +1009,8 @@ class ModbusManager(QObject):
         
         # Если пользователь не взаимодействовал с полем, обновляем setpoint из текущей температуры
         if not self._seop_cell_setpoint_user_interaction:
-            if abs(self._seop_cell_temperature - self._seop_cell_setpoint) > 0.1:  # Обновляем только если разница > 0.1°C
+            # Не обновляем если текущая температура равна 0.0 или невалидная (устройство только подключено)
+            if self._seop_cell_temperature > 0.1 and abs(self._seop_cell_temperature - self._seop_cell_setpoint) > 0.1:  # Обновляем только если разница > 0.1°C и температура валидная
                 logger.info(f"Автообновление setpoint SEOP Cell: {self._seop_cell_setpoint}°C -> {self._seop_cell_temperature}°C")
                 self._seop_cell_setpoint = self._seop_cell_temperature
                 self.seopCellSetpointChanged.emit(self._seop_cell_temperature)
@@ -934,7 +1081,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданное давление Xenon: {pressure} Torr")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     def _autoUpdateXenonSetpoint(self):
@@ -947,7 +1094,8 @@ class ModbusManager(QObject):
         
         # Если пользователь не взаимодействовал с полем, обновляем setpoint из текущего давления
         if not self._xenon_setpoint_user_interaction:
-            if abs(self._xenon_pressure - self._xenon_setpoint) > 0.01:  # Обновляем только если разница > 0.01 Torr
+            # Не обновляем если текущее давление равно 0.0 или невалидное (устройство только подключено)
+            if self._xenon_pressure > 0.01 and abs(self._xenon_pressure - self._xenon_setpoint) > 0.01:  # Обновляем только если разница > 0.01 Torr и давление валидное
                 logger.info(f"Автообновление setpoint Xenon: {self._xenon_setpoint} Torr -> {self._xenon_pressure} Torr")
                 self._xenon_setpoint = self._xenon_pressure
                 self.xenonSetpointChanged.emit(self._xenon_pressure)
@@ -965,7 +1113,8 @@ class ModbusManager(QObject):
         
         # Если пользователь не взаимодействовал с полем, обновляем setpoint из текущего давления
         if not self._n2_setpoint_user_interaction:
-            if abs(self._n2_pressure - self._n2_setpoint) > 0.01:  # Обновляем только если разница > 0.01 Torr
+            # Не обновляем если текущее давление равно 0.0 или невалидное (устройство только подключено)
+            if self._n2_pressure > 0.01 and abs(self._n2_pressure - self._n2_setpoint) > 0.01:  # Обновляем только если разница > 0.01 Torr и давление валидное
                 logger.info(f"Автообновление setpoint N2: {self._n2_setpoint} Torr -> {self._n2_pressure} Torr")
                 self._n2_setpoint = self._n2_pressure
                 self.n2SetpointChanged.emit(self._n2_pressure)
@@ -1030,7 +1179,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданное давление N2: {pressure} Torr")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     @Slot(result=bool)
@@ -1240,13 +1389,39 @@ class ModbusManager(QObject):
                     5: 9,   # outlet fan 2 (button5) -> бит 9 (бит 10 считая с 1)
                 }
                 
+                # Обновляем буфер состояний вентиляторов
+                # Игнорируем обновления для вентиляторов, которые были оптимистично обновлены недавно (в течение 500мс)
+                import time
+                current_time = time.time()
                 for fan_index, bit_pos in fan_mapping.items():
+                    # Проверяем, было ли недавно оптимистичное обновление для этого вентилятора
+                    if fan_index in self._fan_optimistic_updates:
+                        time_since_update = current_time - self._fan_optimistic_updates[fan_index]
+                        if time_since_update < 0.5:  # Игнорируем чтение в течение 500мс после оптимистичного обновления
+                            continue
+                        else:
+                            # Удаляем флаг, если прошло достаточно времени
+                            del self._fan_optimistic_updates[fan_index]
+                    
                     state = bool(value & (1 << bit_pos))
+                    self._fan_states[fan_index] = state
                     self.fanStateChanged.emit(fan_index, state)
                 
                 # Laser fan использует бит 15 (считая с 0), что соответствует биту 16 (считая с 1)
-                laser_fan_state = bool(value & (1 << 15))
-                self.fanStateChanged.emit(10, laser_fan_state)
+                if 10 in self._fan_optimistic_updates:
+                    time_since_update = current_time - self._fan_optimistic_updates[10]
+                    if time_since_update < 0.5:  # Игнорируем чтение в течение 500мс после оптимистичного обновления
+                        pass  # Не обновляем состояние laser fan
+                    else:
+                        # Удаляем флаг, если прошло достаточно времени
+                        del self._fan_optimistic_updates[10]
+                        laser_fan_state = bool(value & (1 << 15))
+                        self._fan_states[10] = laser_fan_state
+                        self.fanStateChanged.emit(10, laser_fan_state)
+                else:
+                    laser_fan_state = bool(value & (1 << 15))
+                    self._fan_states[10] = laser_fan_state
+                    self.fanStateChanged.emit(10, laser_fan_state)
             else:
                 logger.debug("Не удалось прочитать регистр 1131")
         except Exception as e:
@@ -1266,6 +1441,7 @@ class ModbusManager(QObject):
         Returns:
             True если успешно, False в противном случае
         """
+        logger.info(f"⚡ setFan вызван: fanIndex={fanIndex}, state={state} - МГНОВЕННОЕ обновление UI")
         # Маппинг fanIndex (из QML) -> бит в регистре 1131
         fan_bit_mapping = {
             0: 0,   # inlet fan 1 (button4) -> бит 0 (бит 1 считая с 1)
@@ -1295,26 +1471,22 @@ class ModbusManager(QObject):
             10: "laser fan"
         }
         
-        if not self._is_connected or self._modbus_client is None:
-            logger.warning(f"Попытка установки состояния вентилятора {fanIndex} без подключения")
-            # Обновляем статус даже без подключения
-            if fanIndex == 10:
-                self._updateActionStatus(f"set {fan_name_mapping[10]}")
-            elif fanIndex in fan_name_mapping:
-                self._updateActionStatus(f"set {fan_name_mapping[fanIndex]}")
-            else:
-                self._updateActionStatus(f"set fan {fanIndex + 1}")
-            return False
-        
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        # Это обеспечивает мгновенную реакцию кнопок даже при подключенном устройстве
         if fanIndex == 10:
             # Laser fan использует бит 15 (считая с 0), что соответствует биту 16 (считая с 1)
             logger.info(f"Установка Laser Fan (бит 15): {state}")
             # Обновляем статус
             self._updateActionStatus(f"set {fan_name_mapping[10]}")
-            # Сразу обновляем UI для мгновенной реакции
+            # Сразу обновляем буфер и UI для мгновенной реакции (оптимистичное обновление)
+            self._fan_states[10] = state
             self.fanStateChanged.emit(10, state)
-            # Затем отправляем команду на устройство асинхронно через очередь задач
-            self._setLaserFanAsync(state)
+            # Устанавливаем флаг оптимистичного обновления (игнорируем чтение регистра в течение 500мс)
+            import time
+            self._fan_optimistic_updates[10] = time.time()
+            # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+            if self._is_connected and self._modbus_client is not None:
+                self._setLaserFanAsync(state)
             return True  # Возвращаем True сразу, так как UI уже обновлен
         elif fanIndex in fan_bit_mapping:
             fan_bit = fan_bit_mapping[fanIndex]
@@ -1324,35 +1496,64 @@ class ModbusManager(QObject):
                 self._updateActionStatus(f"set {fan_name_mapping[fanIndex]}")
             else:
                 self._updateActionStatus(f"set fan {fanIndex + 1}")
-            # Сразу обновляем UI для мгновенной реакции
+            # Сразу обновляем буфер и UI для мгновенной реакции (оптимистичное обновление)
+            self._fan_states[fanIndex] = state
             self.fanStateChanged.emit(fanIndex, state)
-            # Затем отправляем команду на устройство асинхронно через очередь задач
-            self._setFanAsync(fanIndex, fan_bit, state)
+            # Устанавливаем флаг оптимистичного обновления (игнорируем чтение регистра в течение 500мс)
+            import time
+            self._fan_optimistic_updates[fanIndex] = time.time()
+            # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+            if self._is_connected and self._modbus_client is not None:
+                self._setFanAsync(fanIndex, fan_bit, state)
             return True  # Возвращаем True сразу, так как UI уже обновлен
         else:
             logger.error(f"Неизвестный индекс вентилятора: {fanIndex}")
             return False
     
-    def _addModbusTask(self, task: Callable):
-        """Добавление задачи в очередь для асинхронного выполнения"""
-        self._modbus_task_queue.append(task)
-        # Запускаем обработчик очереди, если он еще не запущен
-        if not self._modbus_task_timer.isActive():
-            self._modbus_task_timer.start(10)  # Начинаем обработку через 10ms
+    def _addModbusTask(self, task: Callable, priority: bool = False):
+        """
+        Добавление задачи в очередь для асинхронного выполнения
+        
+        Args:
+            task: Задача для выполнения
+            priority: Если True, задача добавляется в приоритетную очередь (для команд записи)
+        """
+        if priority:
+            # Приоритетные задачи (записи) добавляются в начало очереди
+            self._modbus_priority_queue.append(task)
+            # Для приоритетных задач запускаем обработчик немедленно, даже если он уже активен
+            # Это гарантирует, что команды записи выполнятся как можно быстрее
+            if not self._modbus_task_timer.isActive():
+                self._modbus_task_timer.start(0)  # Немедленный старт для приоритетных задач
+            elif not self._modbus_task_processing:
+                # Если обработчик активен, но не обрабатывает задачу, запускаем немедленно
+                self._modbus_task_timer.stop()
+                self._modbus_task_timer.start(0)
+        else:
+            # Обычные задачи (чтения) добавляются в конец очереди
+            self._modbus_task_queue.append(task)
+            # Запускаем обработчик очереди только если он не активен
+            if not self._modbus_task_timer.isActive():
+                self._modbus_task_timer.start(5)
     
     def _processModbusTaskQueue(self):
         """Обработка очереди задач Modbus (выполняется по одной, не блокируя UI)"""
-        if not self._modbus_task_queue:
+        # Сначала обрабатываем приоритетные задачи (записи)
+        if not self._modbus_priority_queue and not self._modbus_task_queue:
             self._modbus_task_processing = False
             return
         
         if self._modbus_task_processing:
             # Если уже обрабатываем задачу, планируем следующую попытку
-            self._modbus_task_timer.start(50)
+            self._modbus_task_timer.start(5)  # Минимальная задержка для быстрой обработки
             return
         
         self._modbus_task_processing = True
-        task = self._modbus_task_queue.popleft()
+        # Берем задачу из приоритетной очереди, если она есть, иначе из обычной
+        if self._modbus_priority_queue:
+            task = self._modbus_priority_queue.popleft()
+        else:
+            task = self._modbus_task_queue.popleft()
         
         try:
             task()
@@ -1360,9 +1561,9 @@ class ModbusManager(QObject):
             logger.error(f"Ошибка при выполнении задачи Modbus: {e}", exc_info=True)
         finally:
             self._modbus_task_processing = False
-            # Планируем обработку следующей задачи
-            if self._modbus_task_queue:
-                self._modbus_task_timer.start(50)  # Небольшая задержка между задачами
+            # Планируем обработку следующей задачи немедленно
+            if self._modbus_priority_queue or self._modbus_task_queue:
+                self._modbus_task_timer.start(5)  # Минимальная задержка между задачами для быстрой обработки
     
     def _setFanAsync(self, fanIndex: int, fan_bit: int, state: bool):
         """Асинхронная установка состояния вентилятора (не блокирует UI)"""
@@ -1377,7 +1578,7 @@ class ModbusManager(QObject):
                     # (при следующем чтении регистра 1131 состояние обновится)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке вентилятора {fanIndex}: {e}", exc_info=True)
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
     
     def _setLaserFanAsync(self, state: bool):
         """Асинхронная установка состояния Laser Fan (не блокирует UI)"""
@@ -1405,7 +1606,7 @@ class ModbusManager(QObject):
                     # (при следующем чтении регистра 1131 состояние обновится)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке Laser Fan: {e}", exc_info=True)
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
     
     def _setRelayAsync(self, relay_num: int, state: bool, name: str):
         """Асинхронная установка состояния реле (не блокирует UI)"""
@@ -1420,7 +1621,7 @@ class ModbusManager(QObject):
                     # (при следующем чтении регистра 1021 состояние обновится)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке {name}: {e}", exc_info=True)
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
     
     def _setValveAsync(self, valveIndex: int, valve_bit: int, state: bool):
         """Асинхронная установка состояния клапана (не блокирует UI)"""
@@ -1435,7 +1636,7 @@ class ModbusManager(QObject):
                     # (при следующем чтении регистра 1111 состояние обновится)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке клапана {valveIndex}: {e}", exc_info=True)
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
     
     @Slot(float, result=bool)
     def setWaterChillerSetpointValue(self, temperature: float) -> bool:
@@ -1500,7 +1701,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданную температуру Water Chiller: {temperature}°C")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     @Slot(result=bool)
@@ -1590,7 +1791,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданную температуру Magnet PSU: {temperature}°C")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     @Slot(result=bool)
@@ -1680,7 +1881,7 @@ class ModbusManager(QObject):
                 logger.error(f"❌ Не удалось установить заданную температуру Laser PSU: {temperature}°C")
         
         logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task)
+        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
         return True
     
     @Slot(result=bool)
@@ -1715,13 +1916,12 @@ class ModbusManager(QObject):
     
     @Slot(result=int)
     def getExternalRelays(self) -> int:
-        """Получение значения регистра 1020 (External Relays)"""
-        if not self._is_connected or self._modbus_client is None:
-            return 0
-        # Используем функцию 03 (Read Holding Registers), так как это setpoint
-        value = self.readRegister(1020)
-        if value is not None:
-            return value & 0xFF  # Возвращаем только младший байт
+        """Получение значения регистра 1020 (External Relays) - НЕ БЛОКИРУЕТ UI"""
+        # Возвращаем кэшированное значение из буфера, чтобы не блокировать UI
+        if 1020 in self._register_cache:
+            return self._register_cache[1020] & 0xFF  # Возвращаем только младший байт
+        # Если значения нет в кэше, возвращаем 0 немедленно
+        # Реальные значения будут обновляться через таймеры чтения
         return 0
     
     @Slot(result=str)
@@ -1732,11 +1932,13 @@ class ModbusManager(QObject):
     
     @Slot(int, result=int)
     def readRegister(self, address: int):
-        """Чтение регистра (для использования из QML)"""
-        if not self._is_connected or self._modbus_client is None:
-            return 0
-        result = self._modbus_client.read_holding_register(address)
-        return result if result is not None else 0
+        """Чтение регистра (для использования из QML) - НЕ БЛОКИРУЕТ UI"""
+        # Возвращаем кэшированное значение из буфера, чтобы не блокировать UI
+        if address in self._register_cache:
+            return self._register_cache[address]
+        # Если значения нет в кэше, возвращаем 0 немедленно
+        # Реальные значения будут обновляться через таймеры чтения
+        return 0
     
     @Slot(int, int, result=bool)
     def writeRegister(self, address: int, value: int) -> bool:
@@ -1751,13 +1953,17 @@ class ModbusManager(QObject):
             if self._modbus_client.connect():
                 self._is_connected = True
                 self._status_text = "Connected"
+                self._connection_button_text = "Disconnect"
                 self.statusTextChanged.emit(self._status_text)
+                self.connectionButtonTextChanged.emit(self._connection_button_text)
                 self.connectionStatusChanged.emit(self._is_connected)
             else:
                 logger.error(f"Не удалось переподключиться для записи в регистр {address}")
                 self._is_connected = False
                 self._status_text = "Disconnected"
+                self._connection_button_text = "Connect"
                 self.statusTextChanged.emit(self._status_text)
+                self.connectionButtonTextChanged.emit(self._connection_button_text)
                 self.connectionStatusChanged.emit(self._is_connected)
             return False
         
@@ -1778,7 +1984,9 @@ class ModbusManager(QObject):
             if self._modbus_client.connect():
                 self._is_connected = True
                 self._status_text = "Connected"
+                self._connection_button_text = "Disconnect"
                 self.statusTextChanged.emit(self._status_text)
+                self.connectionButtonTextChanged.emit(self._connection_button_text)
                 self.connectionStatusChanged.emit(self._is_connected)
         
         return result
@@ -1790,12 +1998,12 @@ class ModbusManager(QObject):
         """Управление Laser PSU через регистр 1021 (реле 3, бит 2)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 3")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['laser_psu'] = state
         self.laserPSUStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(3, state, "Laser PSU")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(3, state, "Laser PSU")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     @Slot(bool, result=bool)
@@ -1803,12 +2011,12 @@ class ModbusManager(QObject):
         """Управление Magnet PSU через регистр 1021 (реле 2, бит 1)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 2")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['magnet_psu'] = state
         self.magnetPSUStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(2, state, "Magnet PSU")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(2, state, "Magnet PSU")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     @Slot(bool, result=bool)
@@ -1816,12 +2024,12 @@ class ModbusManager(QObject):
         """Управление PID Controller через регистр 1021 (реле 6, бит 5)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 6")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['pid_controller'] = state
         self.pidControllerStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(6, state, "PID Controller")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(6, state, "PID Controller")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     @Slot(bool, result=bool)
@@ -1829,12 +2037,12 @@ class ModbusManager(QObject):
         """Управление Water Chiller через регистр 1021 (реле 1, бит 0)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 1")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['water_chiller'] = state
         self.waterChillerStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(1, state, "Water Chiller")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(1, state, "Water Chiller")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     # Методы для управления Laser
@@ -1857,12 +2065,12 @@ class ModbusManager(QObject):
         """Управление Vacuum Pump через регистр 1021 (реле 4, бит 3)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 4")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['vacuum_pump'] = state
         self.vacuumPumpStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(4, state, "Vacuum Pump")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(4, state, "Vacuum Pump")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     @Slot(bool, result=bool)
@@ -1870,12 +2078,12 @@ class ModbusManager(QObject):
         """Управление Vacuum Gauge через регистр 1021 (реле 5, бит 4)"""
         # Обновляем статус (даже без подключения)
         self._updateActionStatus(f"set 5")
-        if not self._is_connected or self._modbus_client is None:
-            return False
-        # Сразу обновляем UI для мгновенной реакции
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        self._relay_states['vacuum_gauge'] = state
         self.vacuumGaugeStateChanged.emit(state)
-        # Затем отправляем команду на устройство асинхронно через очередь задач
-        self._setRelayAsync(5, state, "Vacuum Gauge")
+        # Затем отправляем команду на устройство асинхронно через очередь задач (только если подключено)
+        if self._is_connected and self._modbus_client is not None:
+            self._setRelayAsync(5, state, "Vacuum Gauge")
         return True  # Возвращаем True сразу, так как UI уже обновлен
     
     # Методы для управления клапанами через регистр 1111 (биты 6-12 для X6-X12)
@@ -1896,8 +2104,14 @@ class ModbusManager(QObject):
         valve_number = valveIndex - 4  # valveIndex 5 -> X6, valveIndex 6 -> X7, и т.д.
         self._updateActionStatus(f"set X{valve_number}")
         
+        # ВСЕГДА обновляем UI мгновенно (оптимистичное обновление) ДО проверки подключения
+        # Это обеспечивает мгновенную реакцию кнопок даже при подключенном устройстве
+        self._valve_states[valveIndex] = state
+        self.valveStateChanged.emit(valveIndex, state)
+        
+        # Отправляем команду на устройство асинхронно через очередь задач (только если подключено)
         if not self._is_connected or self._modbus_client is None:
-            return False
+            return True  # Возвращаем True сразу, так как UI уже обновлен
         
         # Маппинг: valveIndex -> бит в регистре 1111
         # X6 (valveIndex 5) -> бит 6
@@ -1929,7 +2143,8 @@ class ModbusManager(QObject):
         # Попробуем: valve_bit = valveIndex (биты нумеруются с 0)
         valve_bit = valveIndex
         
-        # Сразу обновляем UI для мгновенной реакции
+        # Сразу обновляем буфер и UI для мгновенной реакции (оптимистичное обновление)
+        self._valve_states[valveIndex] = state
         self.valveStateChanged.emit(valveIndex, state)
         # Затем отправляем команду на устройство асинхронно через очередь задач
         self._setValveAsync(valveIndex, valve_bit, state)
