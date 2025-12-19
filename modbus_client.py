@@ -2168,3 +2168,193 @@ class ModbusClient:
         # Записываем новое значение
         return self.write_register_1131_direct(new_value)
 
+    # ===== Generic direct multi-read (IR/NMR) =====
+    def _get_underlying_socket(self):
+        """
+        Возвращает реальный socket из pymodbus клиента (если возможно).
+        """
+        if self.client is None:
+            return None
+        if hasattr(self.client, 'socket') and self.client.socket:
+            return self.client.socket
+        if hasattr(self.client, 'transport'):
+            transport = self.client.transport
+            for attr in ('socket', '_socket', 'sock', '_sock'):
+                if hasattr(transport, attr):
+                    s = getattr(transport, attr)
+                    if s:
+                        return s
+            if hasattr(transport, 'get_socket'):
+                try:
+                    return transport.get_socket()
+                except Exception:
+                    return None
+        return None
+
+    def _build_read_frame_generic(self, function: int, address: int, quantity: int) -> bytes:
+        """Формирование Modbus RTU фрейма для чтения (обычно функция 04)"""
+        addr_high = (address >> 8) & 0xFF
+        addr_low = address & 0xFF
+        qty_high = (quantity >> 8) & 0xFF
+        qty_low = quantity & 0xFF
+        frame = bytes([self.unit_id, function, addr_high, addr_low, qty_high, qty_low])
+        crc = self._crc16_modbus(frame)
+        crc_low = crc & 0xFF
+        crc_high = (crc >> 8) & 0xFF
+        return frame + bytes([crc_low, crc_high])
+
+    def _find_frame_start(self, data: bytes, function: int) -> int:
+        """
+        В ответах иногда может быть мусор в начале; ищем unit_id + function.
+        """
+        if not data:
+            return 0
+        for i in range(max(0, len(data) - 4)):
+            if data[i] == self.unit_id and (data[i + 1] == function or data[i + 1] == (function | 0x80)):
+                return i
+        return 0
+
+    def _parse_read_multiple_response(self, resp: bytes, function: int) -> Optional[list]:
+        """
+        Парсинг ответа Modbus RTU (function 04) на чтение нескольких регистров.
+        Возвращает список uint16 значений или None при ошибке.
+        """
+        if not resp or len(resp) < 5:
+            return None
+
+        start_idx = self._find_frame_start(resp, function)
+        if start_idx > 0:
+            resp = resp[start_idx:]
+
+        if len(resp) < 5:
+            return None
+
+        unit_id = resp[0]
+        fn = resp[1]
+        if unit_id != self.unit_id:
+            return None
+
+        # Modbus exception response
+        if fn & 0x80:
+            exc_code = resp[2] if len(resp) > 2 else None
+            logger.warning(f"Modbus exception response: function={fn & 0x7F} code={exc_code}")
+            return None
+
+        if fn != function:
+            return None
+
+        byte_count = resp[2]
+        expected_len = 3 + byte_count + 2
+        if len(resp) < expected_len:
+            # Обрезанный ответ — лучше считать ошибкой
+            return None
+
+        received_crc = (resp[expected_len - 1] << 8) | resp[expected_len - 2]
+        calculated_crc = self._crc16_modbus(resp[: expected_len - 2])
+        if received_crc != calculated_crc:
+            logger.warning(
+                f"CRC mismatch: got=0x{received_crc:04X} expected=0x{calculated_crc:04X} (addr multi-read)"
+            )
+            return None
+
+        registers = []
+        data = resp[3 : 3 + byte_count]
+        for i in range(0, len(data), 2):
+            if i + 1 >= len(data):
+                break
+            registers.append((data[i] << 8) | data[i + 1])
+        return registers
+
+    def read_input_registers_direct(self, address: int, quantity: int, *, max_chunk: int = 10) -> Optional[list]:
+        """
+        Чтение input registers (function 04) через прямой сокет.
+
+        Важно: устройство может "ронять" сокет при больших запросах, поэтому по умолчанию
+        читаем чанками по 10 регистров.
+        """
+        if quantity <= 0:
+            return []
+        if self.client is None or not self.client.is_socket_open():
+            self._connected = False
+            return None
+
+        sock = self._get_underlying_socket()
+        if sock is None:
+            logger.warning("Не удалось получить сокет для direct multi-read")
+            return None
+
+        # Читаем чанками по max_chunk
+        out: list[int] = []
+        remaining = quantity
+        current_addr = address
+
+        # Используем чуть более длинный timeout на время пакетного чтения
+        prev_timeout = None
+        try:
+            try:
+                prev_timeout = sock.gettimeout()
+            except Exception:
+                prev_timeout = None
+            try:
+                sock.settimeout(0.5)
+            except Exception:
+                pass
+
+            while remaining > 0:
+                chunk = min(max_chunk, remaining)
+                frame = self._build_read_frame_generic(4, current_addr, chunk)
+
+                parsed = None
+                for attempt in range(2):
+                    try:
+                        sock.sendall(frame)
+                        time.sleep(0.01)  # аккуратная подача команд
+
+                        resp = b""
+                        # Собираем ответ до полного фрейма
+                        deadline = time.time() + 0.5
+                        while time.time() < deadline:
+                            try:
+                                part = sock.recv(512)
+                            except socket.timeout:
+                                break
+                            if not part:
+                                break
+                            resp += part
+                            # Если есть заголовок — можно понять ожидаемую длину
+                            start_idx = self._find_frame_start(resp, 4)
+                            frame_start = resp[start_idx:]
+                            if len(frame_start) >= 3:
+                                bc = frame_start[2]
+                                need = 3 + bc + 2
+                                if len(frame_start) >= need:
+                                    break
+
+                        parsed = self._parse_read_multiple_response(resp, 4)
+                        if parsed is not None and len(parsed) >= chunk:
+                            parsed = parsed[:chunk]
+                            break
+                    except (ConnectionError, OSError, socket.timeout) as e:
+                        # первая попытка может не удаться — повторяем один раз
+                        if attempt == 1:
+                            logger.warning(f"Direct multi-read failed at addr={current_addr} qty={chunk}: {e}")
+                        time.sleep(0.02)
+
+                if parsed is None:
+                    # Если не удалось прочитать — считаем, что соединение нестабильно
+                    self._connected = False
+                    return None
+
+                out.extend(parsed)
+                current_addr += chunk
+                remaining -= chunk
+                time.sleep(0.01)
+
+            return out
+        finally:
+            if prev_timeout is not None:
+                try:
+                    sock.settimeout(prev_timeout)
+                except Exception:
+                    pass
+

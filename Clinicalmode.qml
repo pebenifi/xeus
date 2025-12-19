@@ -18,6 +18,58 @@ Item {
             cachedIsConnected = connected
         }
     }
+
+    // IR spectrum auto-refresh (аккуратно: чтение идет батчами по 10 регистров в фоне)
+    Timer {
+        id: irRefreshTimer
+        interval: 1500
+        repeat: true
+        running: root.cachedIsConnected && root.visible
+        triggeredOnStart: true
+        onTriggered: {
+            if (modbusManager) {
+                modbusManager.requestIrSpectrum()
+            }
+        }
+    }
+
+    function clearSeries(series) {
+        if (!series) return
+        while (series.count > 0) {
+            series.remove(0)
+        }
+    }
+
+    function updateIrGraph(payload) {
+        if (!payload || !payload.points) return
+
+        // axes
+        if (payload.x_min !== undefined && payload.x_max !== undefined) {
+            irAxisX.min = payload.x_min
+            irAxisX.max = payload.x_max
+        }
+        if (payload.y_min !== undefined && payload.y_max !== undefined) {
+            irAxisY.min = payload.y_min
+            irAxisY.max = payload.y_max
+        }
+
+        clearSeries(splineSeries)
+        for (var i = 0; i < payload.points.length; i++) {
+            var p = payload.points[i]
+            var obj = Qt.createQmlObject(
+                'import QtGraphs; XYPoint { x: ' + p.x + '; y: ' + p.y + ' }',
+                splineSeries
+            )
+            splineSeries.append(obj)
+        }
+    }
+
+    Connections {
+        target: modbusManager
+        function onIrSpectrumChanged(payload) {
+            updateIrGraph(payload)
+        }
+    }
     
     // Инициализируем кэш после загрузки компонента асинхронно
     Component.onCompleted: {
@@ -848,6 +900,11 @@ Item {
         anchors.topMargin: 16
         width: 480
         height: 280
+        axisX: irAxisX
+        axisY: irAxisY
+
+        ValueAxis { id: irAxisX; min: 0; max: 1 }
+        ValueAxis { id: irAxisY; min: 0; max: 1 }
         SplineSeries {
             id: splineSeries
             XYPoint {

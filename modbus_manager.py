@@ -149,6 +149,8 @@ class ModbusManager(QObject):
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
     pollingPausedChanged = Signal(bool)
+    # IR spectrum (Clinicalmode IR graph)
+    irSpectrumChanged = Signal(object)  # payload dict: {x_min,x_max,y_min,y_max,points,data,...}
 
     # Внутренние сигналы (НЕ для QML): отправка задач в worker-поток
     _workerSetClient = Signal(object)
@@ -207,6 +209,9 @@ class ModbusManager(QObject):
         self._n2_setpoint_auto_update_timer.timeout.connect(self._autoUpdateN2Setpoint)
         self._n2_setpoint_auto_update_timer.setInterval(20000)  # 20 секунд
         self._vacuum_pressure = 0.0  # Давление Vacuum в Torr (регистр 1701)
+
+        # IR spectrum cache
+        self._ir_last = None
         
         # Буфер состояний устройств для мгновенного отображения при переключении страниц
         # Реле (регистр 1021)
@@ -798,6 +803,8 @@ class ModbusManager(QObject):
             self._applyFan1131Value(value)
         elif key == "1020":
             self._applyExternalRelays1020Value(value)
+        elif key == "ir":
+            self._applyIrSpectrum(value)
         else:
             # Это могут быть "fire-and-forget" задачи; игнорируем.
             return
@@ -1019,6 +1026,101 @@ class ModbusManager(QObject):
         low_byte = value_int & 0xFF
         binary_str = format(low_byte, '08b')
         self.externalRelaysChanged.emit(low_byte, binary_str)
+
+    def _registers_to_float_ir(self, reg1: int, reg2: int) -> float:
+        """
+        IR float decode как в test_modbus.registers_to_float_ir:
+        swap byte1<->byte2 и byte3<->byte4.
+        """
+        import struct
+        byte1 = (reg1 >> 8) & 0xFF
+        byte2 = reg1 & 0xFF
+        byte3 = (reg2 >> 8) & 0xFF
+        byte4 = reg2 & 0xFF
+        swapped = bytes([byte2, byte1, byte4, byte3])
+        try:
+            return float(struct.unpack(">f", swapped)[0])
+        except Exception:
+            return 0.0
+
+    def _applyIrSpectrum(self, value: object):
+        """
+        Применяет результат чтения IR спектра (GUI поток) и дергает сигнал для QML графика.
+        """
+        if not value or not isinstance(value, dict):
+            return
+        self._ir_last = value
+        self.irSpectrumChanged.emit(value)
+
+    @Slot(result=bool)
+    def requestIrSpectrum(self) -> bool:
+        """
+        Чтение IR данных как команда `ir` из test_modbus, но безопасно:
+        отправляем запросы чанками по 10 регистров, иначе устройство может "уронить" сокет.
+
+        Регистры:
+        - 400..414 (15) метаданные
+        - 420..477 (58) данные
+        """
+        if not self._is_connected or self._modbus_client is None:
+            return False
+
+        client = self._modbus_client
+
+        def task():
+            # читаем 400..414 и 420..477, каждый range chunked внутри modbus_client (max_chunk=10)
+            meta = client.read_input_registers_direct(400, 15, max_chunk=10)
+            if meta is None or len(meta) < 15:
+                return None
+
+            data_regs = client.read_input_registers_direct(420, 58, max_chunk=10)
+            if data_regs is None or len(data_regs) < 58:
+                return None
+
+            status = int(meta[0])
+            x_min = self._registers_to_float_ir(int(meta[1]), int(meta[2]))
+            x_max = self._registers_to_float_ir(int(meta[3]), int(meta[4]))
+            y_min = self._registers_to_float_ir(int(meta[5]), int(meta[6]))
+            y_max = self._registers_to_float_ir(int(meta[7]), int(meta[8]))
+            res_freq = self._registers_to_float_ir(int(meta[9]), int(meta[10]))
+            freq = self._registers_to_float_ir(int(meta[11]), int(meta[12]))
+            integral = self._registers_to_float_ir(int(meta[13]), int(meta[14]))
+
+            # y values (raw ushort)
+            y_values = [int(v) for v in data_regs[:58]]
+
+            # Собираем точки для графика (x равномерно от x_min до x_max)
+            points = []
+            if len(y_values) >= 2 and x_max != x_min:
+                step = (x_max - x_min) / float(len(y_values) - 1)
+                for i, y in enumerate(y_values):
+                    points.append({"x": x_min + step * i, "y": float(y)})
+            else:
+                for i, y in enumerate(y_values):
+                    points.append({"x": float(i), "y": float(y)})
+
+            # Если y_min/y_max выглядят невалидно — рассчитаем по данным
+            if y_min == y_max:
+                y_min_calc = float(min(y_values)) if y_values else 0.0
+                y_max_calc = float(max(y_values)) if y_values else 1.0
+                y_min = y_min_calc
+                y_max = y_max_calc
+
+            return {
+                "status": status,
+                "x_min": float(x_min),
+                "x_max": float(x_max),
+                "y_min": float(y_min),
+                "y_max": float(y_max),
+                "res_freq": float(res_freq),
+                "freq": float(freq),
+                "integral": float(integral),
+                "data": y_values,
+                "points": points,
+            }
+
+        self._enqueue_read("ir", task)
+        return True
 
     def _check_connection(self):
         """
