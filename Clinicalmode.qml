@@ -20,8 +20,18 @@ Item {
             return
         }
 
-        // Предпочитаем payload.data (масштабированное 0..100).
-        var ys = payload.data
+        // Предпочитаем payload.data_json (самый надежный способ получить массив чисел в QML)
+        var ys = null
+        if (payload.data_json !== undefined && payload.data_json !== null && payload.data_json !== "") {
+            try {
+                ys = JSON.parse(payload.data_json)
+            } catch (ejson) {
+                console.log("[IR] Clinicalmode: JSON.parse(data_json) failed:", ejson, payload.data_json)
+                ys = payload.data
+            }
+        } else {
+            ys = payload.data
+        }
         if (!ys || ys.length === 0) {
             console.log("[IR] Clinicalmode: no data to draw", payload.data, payload.points)
             return

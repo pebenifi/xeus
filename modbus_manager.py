@@ -1166,6 +1166,7 @@ class ModbusManager(QObject):
             )
 
             # Возвращаем только простые типы (int/float/str/list/dict), чтобы конвертировалось в QVariantMap
+            import json
             return {
                 "status": status,
                 "x_min": float(x_min),
@@ -1178,6 +1179,8 @@ class ModbusManager(QObject):
                 "data_raw_u16": y_values_raw_u16,
                 "data_raw_i16": y_values_raw_i16,
                 "data": y_values,
+                # JSON-версии для надежного парсинга в QML (иногда QVariantList ведет себя странно)
+                "data_json": json.dumps(y_values),
                 "points": points,
             }
 
