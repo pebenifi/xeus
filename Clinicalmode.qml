@@ -80,6 +80,31 @@ Item {
                 console.log("[IR] Clinicalmode: append failed at", i, x, y, e2)
             }
         }
+
+        // Две "палки" (вертикальные маркеры) из метаданных:
+        // - res_freq = регистры 409-410
+        // - freq     = регистры 411-412
+        var resX = Number(payload.res_freq)
+        var freqX = Number(payload.freq)
+        var yLo = irAxisY.min
+        var yHi = irAxisY.max
+        try { if (irMarkerResFreq.clear) irMarkerResFreq.clear() } catch (e3) { console.log("[IR] Clinicalmode: marker clear(res) failed:", e3) }
+        try { if (irMarkerFreq.clear) irMarkerFreq.clear() } catch (e4) { console.log("[IR] Clinicalmode: marker clear(freq) failed:", e4) }
+        if (isFinite(resX) && !isNaN(resX) && isFinite(yLo) && isFinite(yHi)) {
+            try {
+                if (irMarkerResFreq.append) { irMarkerResFreq.append(resX, yLo); irMarkerResFreq.append(resX, yHi) }
+            } catch (e5) {
+                console.log("[IR] Clinicalmode: marker append(res) failed:", resX, yLo, yHi, e5)
+            }
+        }
+        if (isFinite(freqX) && !isNaN(freqX) && isFinite(yLo) && isFinite(yHi)) {
+            try {
+                if (irMarkerFreq.append) { irMarkerFreq.append(freqX, yLo); irMarkerFreq.append(freqX, yHi) }
+            } catch (e6) {
+                console.log("[IR] Clinicalmode: marker append(freq) failed:", freqX, yLo, yHi, e6)
+            }
+        }
+
         var lastNonZero = -1
         for (var k = n - 1; k >= 0; k--) {
             if (Number(ys[k]) !== 0) { lastNonZero = k; break }
@@ -87,6 +112,7 @@ Item {
         var xLastNonZero = (lastNonZero >= 0) ? (x0 + dx * lastNonZero) : null
         console.log("[IR] Clinicalmode: n=", n, "dx=", dx, "points added =", added, "x0=", x0, "x_last=", (x0 + dx * (n - 1)),
                     "axisY=", (minY - padY), (maxY + padY),
+                    "res_freq=", resX, "freq=", freqX,
                     "lastNonZeroIdx=", lastNonZero, "xLastNonZero=", xLastNonZero,
                     "tail=", ys.slice(Math.max(0, n - 6)))
     }
@@ -982,6 +1008,10 @@ Item {
                 y: 5
             }
         }
+
+        // Вертикальные маркеры (две "палки") по res_freq/freq
+        SplineSeries { id: irMarkerResFreq; color: "#ff2d2d" }
+        SplineSeries { id: irMarkerFreq; color: "#2dff2d" }
     }
 
     GraphsView {
