@@ -1172,13 +1172,15 @@ class ModbusManager(QObject):
                 logger.warning("IR spectrum: y_values empty (no points)")
 
             # Преобразование для отображения:
-            # Значения могут быть отрицательными -> интерпретируем как int16 (two's complement),
-            # затем масштабируем примерно в диапазон -100..+100 (%).
+            # Значения могут быть отрицательными -> интерпретируем как int16 (two's complement).
+            # По данным устройства сырые значения ~4200 соответствуют пикам ~85, т.е. шаг ~0.02.
+            # => отображаем как int16 / 50.0 (получим примерно диапазон -10..85).
             def _to_int16(u16: int) -> int:
                 return u16 - 65536 if u16 >= 32768 else u16
 
             y_values_raw_i16 = [_to_int16(v) for v in y_values_raw_u16]
-            y_values = [(v / 32768.0) * 100.0 for v in y_values_raw_i16]
+            scale = 50.0
+            y_values = [float(v) / scale for v in y_values_raw_i16]
 
             # Собираем точки для графика (x равномерно от x_min до x_max)
             points = []
