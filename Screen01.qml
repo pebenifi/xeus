@@ -30,23 +30,32 @@ Rectangle {
 
     function updateIrGraphMain(payload) {
         console.log("[IR] Screen01 updateIrGraphMain payload=", payload)
-        if (!payload || !payload.points || payload.points.length === 0) {
-            console.log("[IR] Screen01: no points to draw", payload ? payload.points : payload)
+        if (!payload) {
+            console.log("[IR] Screen01: payload is null/undefined")
             return
         }
 
-        var minX = payload.points[0].x
-        var maxX = payload.points[0].x
-        var minY = payload.points[0].y
-        var maxY = payload.points[0].y
-        for (var j = 1; j < payload.points.length; j++) {
-            var pj = payload.points[j]
-            if (pj.x < minX) minX = pj.x
-            if (pj.x > maxX) maxX = pj.x
-            if (pj.y < minY) minY = pj.y
-            if (pj.y > maxY) maxY = pj.y
+        // Предпочитаем payload.data (масштабированное 0..100), т.к. points может быть QVariant и ломаться в QML
+        var ys = payload.data
+        if (!ys || ys.length === 0) {
+            console.log("[IR] Screen01: no data to draw", payload.data, payload.points)
+            return
         }
-        // X фиксирована 792..798
+
+        // X всегда 792..798, 58 точек равномерно на весь диапазон
+        var x0 = 792.0
+        var x1 = 798.0
+        var n = ys.length
+        var dx = (n > 1) ? ((x1 - x0) / (n - 1)) : 0.0
+
+        // Ось Y по данным
+        var minY = ys[0]
+        var maxY = ys[0]
+        for (var j = 1; j < n; j++) {
+            var yv = ys[j]
+            if (yv < minY) minY = yv
+            if (yv > maxY) maxY = yv
+        }
         if (minY === maxY) { maxY = minY + 1 }
         irAxisYMain.min = minY
         irAxisYMain.max = maxY
@@ -58,21 +67,21 @@ Rectangle {
         }
 
         var added = 0
-        for (var i = 0; i < payload.points.length; i++) {
-            var p = payload.points[i]
-            if (p === undefined || p.x === undefined || p.y === undefined) continue
-            if (isNaN(p.x) || isNaN(p.y)) continue
+        for (var i = 0; i < n; i++) {
+            var x = x0 + dx * i
+            var y = ys[i]
+            if (isNaN(x) || isNaN(y)) continue
             try {
                 if (splineSeries1.append) {
-                    splineSeries1.append(p.x, p.y)
+                    splineSeries1.append(x, y)
                     added++
                 }
             } catch (e2) {
-                console.log("[IR] Screen01: append failed at", i, p, e2)
-                break
+                console.log("[IR] Screen01: append failed at", i, x, y, e2)
+                // не прерываем: попробуем добавить остальные точки
             }
         }
-        console.log("[IR] Screen01: points added =", added, "axisX=", minX, maxX, "axisY=", minY, maxY)
+        console.log("[IR] Screen01: points added =", added, "x0=", x0, "x_last=", (x0 + dx * (n - 1)), "axisY=", minY, maxY)
     }
 
     Connections {
