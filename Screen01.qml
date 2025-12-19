@@ -48,11 +48,12 @@ Rectangle {
         var n = ys.length
         var dx = (n > 1) ? ((x1 - x0) / (n - 1)) : 0.0
 
-        // Ось Y по данным
-        var minY = ys[0]
-        var maxY = ys[0]
+        // Ось Y по данным (принудительно приводим к Number, т.к. элементы могут быть QVariant)
+        var minY = Number(ys[0])
+        var maxY = Number(ys[0])
         for (var j = 1; j < n; j++) {
-            var yv = ys[j]
+            var yv = Number(ys[j])
+            if (isNaN(yv)) continue
             if (yv < minY) minY = yv
             if (yv > maxY) maxY = yv
         }
@@ -69,7 +70,7 @@ Rectangle {
         var added = 0
         for (var i = 0; i < n; i++) {
             var x = x0 + dx * i
-            var y = ys[i]
+            var y = Number(ys[i])
             if (isNaN(x) || isNaN(y)) continue
             try {
                 if (splineSeries1.append) {
@@ -81,7 +82,7 @@ Rectangle {
                 // не прерываем: попробуем добавить остальные точки
             }
         }
-        console.log("[IR] Screen01: points added =", added, "x0=", x0, "x_last=", (x0 + dx * (n - 1)), "axisY=", minY, maxY)
+        console.log("[IR] Screen01: n=", n, "dx=", dx, "points added =", added, "x0=", x0, "x_last=", (x0 + dx * (n - 1)), "axisY=", minY, maxY)
     }
 
     Connections {
