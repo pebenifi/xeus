@@ -1105,8 +1105,11 @@ class ModbusManager(QObject):
             )
 
             status = int(meta[0])
-            x_min = self._registers_to_float_ir(int(meta[1]), int(meta[2]))
-            x_max = self._registers_to_float_ir(int(meta[3]), int(meta[4]))
+            # Для отображения IR спектра ось X фиксированная: 792..798 (шаг сетки задается в QML)
+            # Декодированные x_min/x_max из регистра могут быть "мусором" (как видно по логам),
+            # поэтому используем фиксированный диапазон.
+            x_min = 792.0
+            x_max = 798.0
             y_min = self._registers_to_float_ir(int(meta[5]), int(meta[6]))
             y_max = self._registers_to_float_ir(int(meta[7]), int(meta[8]))
             res_freq = self._registers_to_float_ir(int(meta[9]), int(meta[10]))

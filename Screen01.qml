@@ -46,10 +46,8 @@ Rectangle {
             if (pj.y < minY) minY = pj.y
             if (pj.y > maxY) maxY = pj.y
         }
-        if (minX === maxX) { maxX = minX + 1 }
+        // X фиксирована 792..798
         if (minY === maxY) { maxY = minY + 1 }
-        irAxisXMain.min = minX
-        irAxisXMain.max = maxX
         irAxisYMain.min = minY
         irAxisYMain.max = maxY
 
@@ -1059,7 +1057,14 @@ Rectangle {
         axisX: irAxisXMain
         axisY: irAxisYMain
 
-        ValueAxis { id: irAxisXMain; min: 0; max: 1 }
+        ValueAxis {
+            id: irAxisXMain
+            min: 792
+            max: 798
+            tickType: ValueAxis.TicksDynamic
+            tickAnchor: 792
+            tickInterval: 0.5
+        }
         ValueAxis { id: irAxisYMain; min: 0; max: 1 }
         SplineSeries {
             id: splineSeries1

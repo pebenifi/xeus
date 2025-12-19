@@ -20,7 +20,7 @@ Item {
             return
         }
 
-        // Пересчитываем оси по точкам, чтобы график точно был виден
+        // Пересчитываем ось Y по точкам, X фиксирована 792..798
         var minX = payload.points[0].x
         var maxX = payload.points[0].x
         var minY = payload.points[0].y
@@ -33,10 +33,7 @@ Item {
             if (pj.y > maxY) maxY = pj.y
         }
         // если диапазон нулевой — расширяем, иначе QtGraphs может не отрисовать
-        if (minX === maxX) { maxX = minX + 1 }
         if (minY === maxY) { maxY = minY + 1 }
-        irAxisX.min = minX
-        irAxisX.max = maxX
         irAxisY.min = minY
         irAxisY.max = maxY
 
@@ -926,7 +923,16 @@ Item {
         axisX: irAxisX
         axisY: irAxisY
 
-        ValueAxis { id: irAxisX; min: 0; max: 1 }
+        ValueAxis {
+            id: irAxisX
+            min: 792
+            max: 798
+            // хотим деления/подписи каждые 0.5
+            // (если tickType/tickInterval не поддерживаются в QtGraphs версии — будет warning в QML, но не критично)
+            tickType: ValueAxis.TicksDynamic
+            tickAnchor: 792
+            tickInterval: 0.5
+        }
         ValueAxis { id: irAxisY; min: 0; max: 1 }
         SplineSeries {
             id: splineSeries
