@@ -1128,14 +1128,19 @@ class ModbusManager(QObject):
                 if not math.isfinite(val):
                     logger.warning(f"IR spectrum: {name} is not finite: {val}")
 
-            # y values (raw ushort)
-            y_values_raw = [int(v) for v in data_regs[:58]]
-            if not y_values_raw:
+            # y values (raw uint16 from device)
+            y_values_raw_u16 = [int(v) for v in data_regs[:58]]
+            if not y_values_raw_u16:
                 logger.warning("IR spectrum: y_values empty (no points)")
 
             # Преобразование для отображения:
-            # каждое значение / 65535 * 100 (0..100%)
-            y_values = [(v / 65535.0) * 100.0 for v in y_values_raw]
+            # Значения могут быть отрицательными -> интерпретируем как int16 (two's complement),
+            # затем масштабируем примерно в диапазон -100..+100 (%).
+            def _to_int16(u16: int) -> int:
+                return u16 - 65536 if u16 >= 32768 else u16
+
+            y_values_raw_i16 = [_to_int16(v) for v in y_values_raw_u16]
+            y_values = [(v / 32768.0) * 100.0 for v in y_values_raw_i16]
 
             # Собираем точки для графика (x равномерно от x_min до x_max)
             points = []
@@ -1155,7 +1160,8 @@ class ModbusManager(QObject):
 
             logger.info(
                 f"IR spectrum decoded: status={status} x=[{x_min},{x_max}] y=[{y_min},{y_max}] "
-                f"points={len(points)} raw_y_range=[{min(y_values_raw) if y_values_raw else 'n/a'},{max(y_values_raw) if y_values_raw else 'n/a'}] "
+                f"points={len(points)} raw_u16_range=[{min(y_values_raw_u16) if y_values_raw_u16 else 'n/a'},{max(y_values_raw_u16) if y_values_raw_u16 else 'n/a'}] "
+                f"raw_i16_range=[{min(y_values_raw_i16) if y_values_raw_i16 else 'n/a'},{max(y_values_raw_i16) if y_values_raw_i16 else 'n/a'}] "
                 f"scaled_y_range=[{y_min},{y_max}]"
             )
 
@@ -1169,7 +1175,8 @@ class ModbusManager(QObject):
                 "res_freq": float(res_freq),
                 "freq": float(freq),
                 "integral": float(integral),
-                "data_raw": y_values_raw,
+                "data_raw_u16": y_values_raw_u16,
+                "data_raw_i16": y_values_raw_i16,
                 "data": y_values,
                 "points": points,
             }
