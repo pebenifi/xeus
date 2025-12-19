@@ -1094,10 +1094,48 @@ class ModbusManager(QObject):
                 logger.warning(f"IR spectrum: meta read failed or short: {None if meta is None else len(meta)}")
                 return None
 
+            # Основной режим: безопасно по 10 регистров.
             data_regs = client.read_input_registers_direct(420, 58, max_chunk=10)
             if data_regs is None or len(data_regs) < 58:
                 logger.warning(f"IR spectrum: data read failed or short: {None if data_regs is None else len(data_regs)}")
                 return None
+
+            # Диагностика качества: если почти все значения нулевые (часто это признак, что устройство
+            # не поддерживает чтение под-диапазонов 430.. и т.п.), пробуем один раз читать весь блок 58.
+            try:
+                nz_indices = [i for i, v in enumerate(data_regs) if int(v) != 0]
+                last_nz_idx = nz_indices[-1] if nz_indices else -1
+                nz_count = len(nz_indices)
+            except Exception:
+                last_nz_idx = -1
+                nz_count = 0
+
+            if last_nz_idx >= 0 and last_nz_idx <= 9:
+                logger.warning(
+                    f"IR spectrum: suspicious tail zeros (last_nonzero_idx={last_nz_idx}, nonzero_count={nz_count}). "
+                    f"Trying single-block read (58 regs) once."
+                )
+                data_full = client.read_input_registers_direct(420, 58, max_chunk=58)
+                if data_full is not None and len(data_full) >= 58:
+                    try:
+                        nz_full = [i for i, v in enumerate(data_full) if int(v) != 0]
+                        last_nz_full = nz_full[-1] if nz_full else -1
+                        nz_count_full = len(nz_full)
+                    except Exception:
+                        last_nz_full = -1
+                        nz_count_full = 0
+
+                    if last_nz_full > last_nz_idx or nz_count_full > nz_count:
+                        logger.info(
+                            f"IR spectrum: single-block read looks better "
+                            f"(last_nonzero_idx {last_nz_idx}->{last_nz_full}, nonzero_count {nz_count}->{nz_count_full})"
+                        )
+                        data_regs = data_full
+                    else:
+                        logger.info(
+                            f"IR spectrum: single-block read did not improve "
+                            f"(last_nonzero_idx={last_nz_full}, nonzero_count={nz_count_full}). Keeping chunked."
+                        )
 
             logger.info(
                 f"IR spectrum: raw meta[0..4]={meta[0:5]} meta_hex={[hex(int(x)) for x in meta[0:5]]} "
