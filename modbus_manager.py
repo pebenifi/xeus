@@ -1,13 +1,117 @@
 """
 QML-модель для управления Modbus подключением
 """
-from PySide6.QtCore import QObject, Signal, Property, QTimer, Slot
+from PySide6.QtCore import QObject, Signal, Property, QTimer, Slot, QThread
 from modbus_client import ModbusClient
 import logging
 from collections import deque
-from typing import Callable
+from typing import Callable, Optional, Any
+import time
 
 logger = logging.getLogger(__name__)
+
+
+class _ModbusIoWorker(QObject):
+    """
+    Выполняет блокирующие Modbus операции в отдельном потоке.
+
+    Важно: никаких обращений к QML/GUI здесь быть не должно.
+    """
+
+    connectFinished = Signal(bool, str)  # success, error_message
+    disconnected = Signal()
+    readFinished = Signal(str, object)  # key, value
+    writeFinished = Signal(str, bool, object)  # key, success, meta
+
+    def __init__(self, parent: Optional[QObject] = None):
+        super().__init__(parent)
+        self._client: Optional[ModbusClient] = None
+
+        self._read_queue: deque = deque()
+        self._write_queue: deque = deque()  # приоритетные задачи (записи)
+        self._processing = False
+
+        self._task_timer = QTimer(self)
+        self._task_timer.setSingleShot(True)
+        self._task_timer.timeout.connect(self._process_one)
+
+    @Slot(object)
+    def setClient(self, client: Optional[ModbusClient]):
+        self._client = client
+
+    @Slot()
+    def connectClient(self):
+        """Подключение в worker-потоке (может блокировать)."""
+        if self._client is None:
+            self.connectFinished.emit(False, "Modbus client is not initialized")
+            return
+        try:
+            ok = bool(self._client.connect())
+            if ok:
+                self.connectFinished.emit(True, "")
+            else:
+                self.connectFinished.emit(False, "Connection Failed")
+        except Exception as e:
+            self.connectFinished.emit(False, str(e))
+
+    @Slot()
+    def disconnectClient(self):
+        """Отключение в worker-потоке."""
+        try:
+            # На отключение очищаем очереди, чтобы не выполнять старые задачи.
+            self._read_queue.clear()
+            self._write_queue.clear()
+            if self._client is not None:
+                self._client.disconnect()
+        finally:
+            self.disconnected.emit()
+
+    @Slot(str, object)
+    def enqueueRead(self, key: str, func: Callable[[], Any]):
+        self._read_queue.append((key, func))
+        if not self._task_timer.isActive() and not self._processing:
+            self._task_timer.start(0)
+
+    @Slot(str, object, object)
+    def enqueueWrite(self, key: str, func: Callable[[], bool], meta: object = None):
+        # Записи имеют приоритет
+        self._write_queue.append((key, func, meta))
+        if not self._task_timer.isActive() and not self._processing:
+            self._task_timer.start(0)
+
+    @Slot()
+    def _process_one(self):
+        if self._processing:
+            # на всякий случай
+            self._task_timer.start(1)
+            return
+
+        if not self._write_queue and not self._read_queue:
+            return
+
+        self._processing = True
+        try:
+            if self._write_queue:
+                key, func, meta = self._write_queue.popleft()
+                try:
+                    ok = bool(func())
+                except Exception:
+                    logger.exception("Modbus write task failed")
+                    ok = False
+                self.writeFinished.emit(key, ok, meta)
+            else:
+                key, func = self._read_queue.popleft()
+                try:
+                    value = func()
+                except Exception:
+                    logger.exception("Modbus read task failed")
+                    value = None
+                self.readFinished.emit(key, value)
+        finally:
+            self._processing = False
+            # Быстро вычерпываем очередь, но даем event loop шанс обработать события.
+            if self._write_queue or self._read_queue:
+                self._task_timer.start(0)
 
 
 class ModbusManager(QObject):
@@ -45,11 +149,21 @@ class ModbusManager(QObject):
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
     pollingPausedChanged = Signal(bool)
+
+    # Внутренние сигналы (НЕ для QML): отправка задач в worker-поток
+    _workerSetClient = Signal(object)
+    _workerConnect = Signal()
+    _workerDisconnect = Signal()
+    _workerEnqueueRead = Signal(str, object)
+    _workerEnqueueWrite = Signal(str, object, object)
     
     def __init__(self, parent=None):
         super().__init__(parent)
         self._modbus_client: ModbusClient = None
         self._is_connected = False
+        self._connection_in_progress = False
+        self._last_modbus_ok_time = 0.0
+        self._last_reconnect_attempt_time = 0.0
         self._status_text = "Disconnected"
         self._connection_button_text = "Connect"  # Текст кнопки подключения: "Connect" или "Disconnect"
         self._water_chiller_temperature = 0.0  # Текущая температура Water Chiller (регистр 1511)
@@ -216,13 +330,26 @@ class ModbusManager(QObject):
             self._fan_1131_timer,
         ]
         
-        # Очередь задач для асинхронного выполнения операций Modbus
-        self._modbus_task_queue = deque()  # Обычные задачи (чтения)
-        self._modbus_priority_queue = deque()  # Приоритетные задачи (записи)
-        self._modbus_task_processing = False
-        self._modbus_task_timer = QTimer(self)
-        self._modbus_task_timer.timeout.connect(self._processModbusTaskQueue)
-        self._modbus_task_timer.setSingleShot(True)  # Одноразовый таймер
+        # Worker-поток для Modbus I/O (чтобы UI не подвисал)
+        self._io_thread = QThread(self)
+        self._io_worker = _ModbusIoWorker()
+        self._io_worker.moveToThread(self._io_thread)
+
+        # Подключаем внутренние сигналы к worker слотам (queued connection автоматически, т.к. другой поток)
+        self._workerSetClient.connect(self._io_worker.setClient)
+        self._workerConnect.connect(self._io_worker.connectClient)
+        self._workerDisconnect.connect(self._io_worker.disconnectClient)
+        self._workerEnqueueRead.connect(self._io_worker.enqueueRead)
+        self._workerEnqueueWrite.connect(self._io_worker.enqueueWrite)
+
+        # Результаты от worker обратно в GUI-поток
+        self._io_worker.connectFinished.connect(self._onWorkerConnectFinished)
+        self._io_worker.disconnected.connect(self._onWorkerDisconnected)
+        self._io_worker.readFinished.connect(self._onWorkerReadFinished)
+        self._io_worker.writeFinished.connect(self._onWorkerWriteFinished)
+
+        self._io_thread.start()
+        self.destroyed.connect(self._shutdownIoThread)
     
     @Property(str, notify=statusTextChanged)
     def statusText(self):
@@ -284,7 +411,6 @@ class ModbusManager(QObject):
         self._polling_paused = True
         for t in self._polling_timers:
             t.stop()
-        self._modbus_task_timer.stop()
         self.pollingPausedChanged.emit(True)
         logger.info("⏸ Опрос Modbus приостановлен для переключения экрана")
 
@@ -296,8 +422,6 @@ class ModbusManager(QObject):
         self._polling_paused = False
         for t in self._polling_timers:
             t.start()
-        if self._modbus_priority_queue or self._modbus_task_queue:
-            self._modbus_task_timer.start(5)
         self.pollingPausedChanged.emit(False)
         logger.info("▶️ Опрос Modbus возобновлен после переключения экрана")
     
@@ -427,6 +551,9 @@ class ModbusManager(QObject):
     @Slot()
     def toggleConnection(self):
         """Переключение состояния подключения"""
+        if self._connection_in_progress:
+            logger.info("Подключение уже выполняется, игнорируем toggleConnection")
+            return
         if self._is_connected:
             self.disconnect()
         else:
@@ -435,103 +562,41 @@ class ModbusManager(QObject):
     @Slot()
     def connect(self):
         """Подключение к Modbus устройству"""
-        try:
-            logger.info(f"Попытка подключения к {self._host}:{self._port}")
-            
-            # Если клиент уже существует, сначала отключаемся
-            if self._modbus_client is not None:
-                try:
-                    self._modbus_client.disconnect()
-                except:
-                    pass
-                self._modbus_client = None
-            
-            # Создаем новый клиент
-            self._modbus_client = ModbusClient(
-                host=self._host,
-                port=self._port,
-                unit_id=self._unit_id,
-                framer="rtu"  # Явно указываем RTU фрейминг
-            )
-            
-            if self._modbus_client.connect():
-                self._is_connected = True
-                self._status_text = "Connected"
-                self._connection_button_text = "Disconnect"
-                self.connectionStatusChanged.emit(self._is_connected)
-                self.statusTextChanged.emit(self._status_text)
-                self.connectionButtonTextChanged.emit(self._connection_button_text)
-                self._connection_check_timer.start()
-                self._connection_fail_count = 0  # Сбрасываем счетчик при успешном подключении
-                self._sync_fail_count = 0  # Сбрасываем счетчик неудачных синхронизаций
-                # Немедленно отправляем текущие состояния из буфера в UI для мгновенного отображения
-                self._emitCachedStates()
-                # Запускаем синхронизацию с минимальной задержкой для быстрого старта
-                QTimer.singleShot(100, lambda: self._sync_timer.start())
-                # Запускаем чтение регистра 1021 (реле) с минимальными задержками для быстрого обновления
-                # При первом чтении автоматически обновятся состояния кнопок на основе реального состояния устройства
-                QTimer.singleShot(50, lambda: self._relay_1021_timer.start())
-                # Запускаем чтение регистра 1111 (клапаны X6-X12) с минимальной задержкой
-                QTimer.singleShot(80, lambda: self._valve_1111_timer.start())
-                # Запускаем чтение температуры Water Chiller с минимальной задержкой
-                QTimer.singleShot(110, lambda: self._water_chiller_temp_timer.start())
-                # Запускаем таймер автообновления setpoint
-                self._water_chiller_setpoint_auto_update_timer.start()
-                # Запускаем таймер автообновления setpoint Magnet PSU
-                self._magnet_psu_setpoint_auto_update_timer.start()
-                # Запускаем таймер автообновления setpoint Laser PSU
-                self._laser_psu_setpoint_auto_update_timer.start()
-                # Запускаем чтение температуры SEOP Cell с минимальной задержкой
-                QTimer.singleShot(140, lambda: self._seop_cell_temp_timer.start())
-                # Запускаем таймер автообновления setpoint SEOP Cell
-                self._seop_cell_setpoint_auto_update_timer.start()
-                # Запускаем чтение тока Magnet PSU с минимальной задержкой
-                QTimer.singleShot(170, lambda: self._magnet_psu_current_timer.start())
-                # Запускаем чтение тока Laser PSU с минимальной задержкой
-                QTimer.singleShot(200, lambda: self._laser_psu_current_timer.start())
-                # Запускаем чтение давления Xenon с минимальной задержкой
-                QTimer.singleShot(230, lambda: self._xenon_pressure_timer.start())
-                # Запускаем таймер автообновления setpoint Xenon
-                self._xenon_setpoint_auto_update_timer.start()
-                # Запускаем таймер автообновления setpoint N2
-                self._n2_setpoint_auto_update_timer.start()
-                # Запускаем чтение давления N2 с минимальной задержкой
-                QTimer.singleShot(260, lambda: self._n2_pressure_timer.start())
-                # Запускаем чтение давления Vacuum с минимальной задержкой
-                QTimer.singleShot(290, lambda: self._vacuum_pressure_timer.start())
-                # Запускаем чтение регистра 1131 (fans) с минимальной задержкой
-                QTimer.singleShot(320, lambda: self._fan_1131_timer.start())
-                logger.info("Успешное подключение к Modbus устройству")
-            else:
-                self._is_connected = False
-                self._status_text = "Connection Failed"
-                self._connection_button_text = "Connect"
-                self.connectionStatusChanged.emit(self._is_connected)
-                self.statusTextChanged.emit(self._status_text)
-                self.connectionButtonTextChanged.emit(self._connection_button_text)
-                error_msg = f"Не удалось подключиться к {self._host}:{self._port}. Проверьте:\n1. Устройство включено и доступно\n2. IP адрес и порт правильные\n3. Сеть настроена корректно"
-                self.errorOccurred.emit(error_msg)
-                logger.error(error_msg)
-                print(f"ОШИБКА ПОДКЛЮЧЕНИЯ: {error_msg}")  # Вывод в консоль для отладки
-        except Exception as e:
-            self._is_connected = False
-            self._status_text = "Error"
-            self._connection_button_text = "Connect"
-            self.connectionStatusChanged.emit(self._is_connected)
-            self.statusTextChanged.emit(self._status_text)
-            self.connectionButtonTextChanged.emit(self._connection_button_text)
-            error_msg = f"Ошибка подключения: {str(e)}"
-            self.errorOccurred.emit(error_msg)
-            logger.error(error_msg, exc_info=True)
-            print(f"ИСКЛЮЧЕНИЕ ПРИ ПОДКЛЮЧЕНИИ: {error_msg}")  # Вывод в консоль для отладки
-            import traceback
-            traceback.print_exc()  # Полный стек вызовов
+        if self._connection_in_progress:
+            return
+        if self._is_connected:
+            return
+
+        logger.info(f"Попытка подключения к {self._host}:{self._port} (в фоне, без блокировки UI)")
+
+        # Если был старый клиент/соединение — сначала логически отключаемся
+        if self._modbus_client is not None:
+            self.disconnect()
+
+        # Создаем новый клиент (сам connect() будет выполнен в worker-потоке)
+        self._modbus_client = ModbusClient(
+            host=self._host,
+            port=self._port,
+            unit_id=self._unit_id,
+            framer="rtu"
+        )
+
+        self._connection_in_progress = True
+        self._status_text = "Connecting"
+        self._connection_button_text = "Connecting..."
+        self.statusTextChanged.emit(self._status_text)
+        self.connectionButtonTextChanged.emit(self._connection_button_text)
+
+        # Передаем клиента в worker и запускаем connect
+        self._workerSetClient.emit(self._modbus_client)
+        self._workerConnect.emit()
     
     @Slot()
     def disconnect(self):
         """Отключение от Modbus устройства"""
         try:
             logger.info("Отключение от Modbus устройства")
+            self._connection_in_progress = False
             self._connection_check_timer.stop()
             self._sync_timer.stop()  # Останавливаем синхронизацию
             self._relay_1021_timer.stop()  # Останавливаем чтение регистра 1021
@@ -551,9 +616,10 @@ class ModbusManager(QObject):
             self._vacuum_pressure_timer.stop()  # Останавливаем чтение давления Vacuum
             self._fan_1131_timer.stop()  # Останавливаем чтение регистра 1131 (fans)
             
-            if self._modbus_client is not None:
-                self._modbus_client.disconnect()
-                self._modbus_client = None
+            # Отключение Modbus делаем в worker-потоке (чтобы UI не блокировался)
+            self._workerDisconnect.emit()
+            self._workerSetClient.emit(None)
+            self._modbus_client = None
             
             self._is_connected = False
             self._status_text = "Disconnected"
@@ -633,90 +699,362 @@ class ModbusManager(QObject):
             self.statusTextChanged.emit(self._status_text)
             self.connectionButtonTextChanged.emit(self._connection_button_text)
     
-    def _check_connection(self):
-        """Периодическая проверка состояния подключения и keep-alive"""
-        if self._modbus_client is None:
+    @Slot(bool, str)
+    def _onWorkerConnectFinished(self, success: bool, error_message: str):
+        """Результат подключения из worker-потока."""
+        self._connection_in_progress = False
+
+        if not success:
+            self._is_connected = False
+            self._status_text = "Connection Failed" if error_message else "Connection Failed"
+            self._connection_button_text = "Connect"
+            self.connectionStatusChanged.emit(self._is_connected)
+            self.statusTextChanged.emit(self._status_text)
+            self.connectionButtonTextChanged.emit(self._connection_button_text)
+
+            error_msg = (
+                f"Не удалось подключиться к {self._host}:{self._port}."
+                f"{' Причина: ' + error_message if error_message else ''}\n"
+                "Проверьте:\n"
+                "1. Устройство включено и доступно\n"
+                "2. IP адрес и порт правильные\n"
+                "3. Сеть настроена корректно"
+            )
+            self.errorOccurred.emit(error_msg)
+            logger.error(error_msg)
             return
-            
-        if not self._is_connected:
-            return
-        
-        # На macOS TCP keep-alive управляется системой с большим интервалом
-        # Поэтому используем Modbus keep-alive: читаем регистр 1021 (реле)
-        # Это также поддерживает соединение активным и обновляет состояния реле
-        try:
-            # Читаем регистр 1021 как keep-alive
-            value = self._modbus_client.read_register_1021_direct()
-            if value is not None:
-                logger.debug("Keep-alive: соединение активно (регистр 1021)")
-        except Exception as e:
-            logger.debug(f"Keep-alive запрос завершился с ошибкой (это нормально): {e}")
-        
-        # Проверяем состояние соединения
-        is_connected = self._modbus_client.is_connected()
-        
-        # Если соединение потеряно, пытаемся переподключиться
-        if not is_connected and self._is_connected:
-            self._connection_fail_count += 1
-            logger.warning(f"Соединение потеряно, попытка переподключения ({self._connection_fail_count})")
-            # Пытаемся переподключиться
-            try:
-                if self._modbus_client.connect():
-                    logger.info("Автоматическое переподключение успешно")
-                    self._is_connected = True
-                    # Обновляем статус подключения только при изменении состояния
-                    # Не перезаписываем последнее действие пользователя
-                    if self._status_text in ["Disconnected", "Connection Failed", "Error"]:
-                        self._status_text = "Connected"
-                        self._connection_button_text = "Disconnect"
-                        self.statusTextChanged.emit(self._status_text)
-                        self.connectionButtonTextChanged.emit(self._connection_button_text)
-                    self._sync_timer.start()
-                    self.connectionStatusChanged.emit(self._is_connected)
-                    self._connection_fail_count = 0
-                    self._sync_fail_count = 0
-                else:
-                    # Если переподключение не удалось, увеличиваем счетчик
-                    if self._connection_fail_count >= 5:
-                        logger.error("Не удалось переподключиться после нескольких попыток")
-                    self._is_connected = False
-                    # Обновляем статус только если он не был "Disconnected"
-                    if self._status_text not in ["Disconnected", "Connection Failed", "Error"]:
-                        self._status_text = "Disconnected"
-                        self._connection_button_text = "Connect"
-                        self.statusTextChanged.emit(self._status_text)
-                        self.connectionButtonTextChanged.emit(self._connection_button_text)
-                    self._sync_timer.stop()
-                    self.connectionStatusChanged.emit(self._is_connected)
-                    self._connection_fail_count = 0
-            except Exception as e:
-                logger.error(f"Ошибка при попытке переподключения: {e}")
-                if self._connection_fail_count >= 5:
-                    self._is_connected = False
-                    # Обновляем статус только если он не был "Disconnected"
-                    if self._status_text not in ["Disconnected", "Connection Failed", "Error"]:
-                        self._status_text = "Disconnected"
-                        self._connection_button_text = "Connect"
-                        self.statusTextChanged.emit(self._status_text)
-                        self.connectionButtonTextChanged.emit(self._connection_button_text)
-                    self._sync_timer.stop()
-                    self.connectionStatusChanged.emit(self._is_connected)
-                    self._connection_fail_count = 0
-        elif is_connected:
-            # Если соединение активно, сбрасываем счетчик
-            if not self._is_connected:
-                logger.info("Соединение восстановлено")
-                self._is_connected = True
-                # Обновляем статус подключения только при изменении состояния
-                # Не перезаписываем последнее действие пользователя
-                if self._status_text in ["Disconnected", "Connection Failed", "Error"]:
-                    self._status_text = "Connected"
-                    self._connection_button_text = "Disconnect"
-                    self.statusTextChanged.emit(self._status_text)
-                    self.connectionButtonTextChanged.emit(self._connection_button_text)
-                self._sync_timer.start()
-                self.connectionStatusChanged.emit(self._is_connected)
+
+        # Успешное подключение
+        self._is_connected = True
+        self._status_text = "Connected"
+        self._connection_button_text = "Disconnect"
+        self._connection_fail_count = 0
+        self._sync_fail_count = 0
+        self._last_modbus_ok_time = time.time()
+
+        self.connectionStatusChanged.emit(self._is_connected)
+        self.statusTextChanged.emit(self._status_text)
+        self.connectionButtonTextChanged.emit(self._connection_button_text)
+
+        # Немедленно отправляем текущие состояния из буфера в UI для мгновенного отображения
+        self._emitCachedStates()
+
+        # Запускаем таймеры (они теперь будут только ставить задачи в worker, не блокируя UI)
+        self._connection_check_timer.start()
+        QTimer.singleShot(100, lambda: self._sync_timer.start())
+        QTimer.singleShot(50, lambda: self._relay_1021_timer.start())
+        QTimer.singleShot(80, lambda: self._valve_1111_timer.start())
+        QTimer.singleShot(110, lambda: self._water_chiller_temp_timer.start())
+        QTimer.singleShot(140, lambda: self._seop_cell_temp_timer.start())
+        QTimer.singleShot(170, lambda: self._magnet_psu_current_timer.start())
+        QTimer.singleShot(200, lambda: self._laser_psu_current_timer.start())
+        QTimer.singleShot(230, lambda: self._xenon_pressure_timer.start())
+        QTimer.singleShot(260, lambda: self._n2_pressure_timer.start())
+        QTimer.singleShot(290, lambda: self._vacuum_pressure_timer.start())
+        QTimer.singleShot(320, lambda: self._fan_1131_timer.start())
+
+        # Таймеры автообновления setpoint (UI-логика)
+        self._water_chiller_setpoint_auto_update_timer.start()
+        self._magnet_psu_setpoint_auto_update_timer.start()
+        self._laser_psu_setpoint_auto_update_timer.start()
+        self._seop_cell_setpoint_auto_update_timer.start()
+        self._xenon_setpoint_auto_update_timer.start()
+        self._n2_setpoint_auto_update_timer.start()
+
+        logger.info("Успешное подключение к Modbus устройству (I/O в фоне)")
+
+    @Slot()
+    def _onWorkerDisconnected(self):
+        # Состояние UI уже сбрасывается в disconnect(), тут оставляем как защиту.
+        logger.info("Worker подтвердил отключение Modbus")
+
+    @Slot(str, object)
+    def _onWorkerReadFinished(self, key: str, value: object):
+        # Любое успешное чтение считаем keep-alive
+        if value is not None:
+            self._last_modbus_ok_time = time.time()
             self._connection_fail_count = 0
+
+        # Диспетчер чтений: ключи будут использоваться в polling методах
+        if key == "1021":
+            self._applyRelay1021Value(value)
+        elif key == "1111":
+            self._applyValve1111Value(value)
+        elif key == "1511":
+            self._applyWaterChillerTemperatureValue(value)
+        elif key == "1411":
+            self._applySeopCellTemperatureValue(value)
+        elif key == "1341":
+            self._applyMagnetPSUCurrentValue(value)
+        elif key == "1251":
+            self._applyLaserPSUCurrentValue(value)
+        elif key == "1611":
+            self._applyXenonPressureValue(value)
+        elif key == "1651":
+            self._applyN2PressureValue(value)
+        elif key == "1701":
+            self._applyVacuumPressureValue(value)
+        elif key == "1131":
+            self._applyFan1131Value(value)
+        elif key == "1020":
+            self._applyExternalRelays1020Value(value)
+        else:
+            # Это могут быть "fire-and-forget" задачи; игнорируем.
+            return
+
+    @Slot(str, bool, object)
+    def _onWorkerWriteFinished(self, key: str, success: bool, meta: object):
+        if success:
+            self._last_modbus_ok_time = time.time()
+        else:
+            logger.warning(f"Modbus write failed: {key} meta={meta}")
+
+    def _shutdownIoThread(self, *args):
+        """Аккуратно останавливаем worker-поток при завершении приложения."""
+        try:
+            # Пытаемся попросить worker закрыть соединение
+            try:
+                self._workerDisconnect.emit()
+            except Exception:
+                pass
+            if hasattr(self, "_io_thread") and self._io_thread.isRunning():
+                self._io_thread.quit()
+                self._io_thread.wait(1500)
+        except Exception:
+            pass
+
+    def _enqueue_read(self, key: str, func: Callable[[], Any]) -> None:
+        """Поставить задачу чтения в worker-поток."""
+        try:
+            self._workerEnqueueRead.emit(key, func)
+        except Exception:
+            logger.exception("Failed to enqueue read task")
+
+    def _enqueue_write(self, key: str, func: Callable[[], bool], meta: object = None) -> None:
+        """Поставить задачу записи в worker-поток (приоритет)."""
+        try:
+            self._workerEnqueueWrite.emit(key, func, meta)
+        except Exception:
+            logger.exception("Failed to enqueue write task")
+
+    # ===== apply-методы: применяют результат чтения в GUI-потоке =====
+    def _applyRelay1021Value(self, value: object):
+        self._reading_1021 = False
+        if value is None:
+            return
+        try:
+            value_int = int(value)
+        except Exception:
+            return
+
+        low_byte = value_int & 0xFF
+        self._relay_states['water_chiller'] = bool(low_byte & 0x01)
+        self._relay_states['magnet_psu'] = bool(low_byte & 0x02)
+        self._relay_states['laser_psu'] = bool(low_byte & 0x04)
+        self._relay_states['vacuum_pump'] = bool(low_byte & 0x08)
+        self._relay_states['vacuum_gauge'] = bool(low_byte & 0x10)
+        self._relay_states['pid_controller'] = bool(low_byte & 0x20)
+        self._relay_states['op_cell_heating'] = bool(low_byte & 0x40)
+
+        self.waterChillerStateChanged.emit(self._relay_states['water_chiller'])
+        self.magnetPSUStateChanged.emit(self._relay_states['magnet_psu'])
+        self.laserPSUStateChanged.emit(self._relay_states['laser_psu'])
+        self.vacuumPumpStateChanged.emit(self._relay_states['vacuum_pump'])
+        self.vacuumGaugeStateChanged.emit(self._relay_states['vacuum_gauge'])
+        self.pidControllerStateChanged.emit(self._relay_states['pid_controller'])
+        self.opCellHeatingStateChanged.emit(self._relay_states['op_cell_heating'])
+
+    def _applyValve1111Value(self, value: object):
+        self._reading_1111 = False
+        if value is None:
+            return
+        try:
+            value_int = int(value)
+        except Exception:
+            return
+        for valve_index in range(5, 12):
+            state = bool(value_int & (1 << valve_index))
+            self._valve_states[valve_index] = state
+            self.valveStateChanged.emit(valve_index, state)
+
+    def _applyWaterChillerTemperatureValue(self, value: object):
+        self._reading_1511 = False
+        if value is None:
+            return
+        try:
+            temperature = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._water_chiller_temperature != temperature:
+            self._water_chiller_temperature = temperature
+            self.waterChillerTemperatureChanged.emit(temperature)
+
+    def _applySeopCellTemperatureValue(self, value: object):
+        self._reading_1411 = False
+        if value is None:
+            return
+        try:
+            temperature = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._seop_cell_temperature != temperature:
+            self._seop_cell_temperature = temperature
+            self.seopCellTemperatureChanged.emit(temperature)
+
+    def _applyMagnetPSUCurrentValue(self, value: object):
+        self._reading_1341 = False
+        if value is None:
+            return
+        try:
+            current = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._magnet_psu_current != current:
+            self._magnet_psu_current = current
+            self.magnetPSUCurrentChanged.emit(current)
+
+    def _applyLaserPSUCurrentValue(self, value: object):
+        self._reading_1251 = False
+        if value is None:
+            return
+        try:
+            current = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._laser_psu_current != current:
+            self._laser_psu_current = current
+            self.laserPSUCurrentChanged.emit(current)
+
+    def _applyXenonPressureValue(self, value: object):
+        self._reading_1611 = False
+        if value is None:
+            return
+        try:
+            pressure = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._xenon_pressure != pressure:
+            self._xenon_pressure = pressure
+            self.xenonPressureChanged.emit(pressure)
+
+    def _applyN2PressureValue(self, value: object):
+        self._reading_1651 = False
+        if value is None:
+            return
+        try:
+            pressure = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._n2_pressure != pressure:
+            self._n2_pressure = pressure
+            self.n2PressureChanged.emit(pressure)
+
+    def _applyVacuumPressureValue(self, value: object):
+        self._reading_1701 = False
+        if value is None:
+            return
+        try:
+            pressure = float(int(value)) / 100.0
+        except Exception:
+            return
+        if self._vacuum_pressure != pressure:
+            self._vacuum_pressure = pressure
+            self.vacuumPressureChanged.emit(pressure)
+
+    def _applyFan1131Value(self, value: object):
+        self._reading_1131 = False
+        if value is None:
+            return
+        try:
+            value_int = int(value)
+        except Exception:
+            return
+
+        fan_mapping = {
+            0: 0,
+            1: 1,
+            2: 2,
+            3: 3,
+            6: 4,
+            7: 5,
+            8: 6,
+            9: 7,
+            4: 8,
+            5: 9,
+        }
+
+        current_time = time.time()
+        for fan_index, bit_pos in fan_mapping.items():
+            if fan_index in self._fan_optimistic_updates:
+                time_since_update = current_time - self._fan_optimistic_updates[fan_index]
+                if time_since_update < 0.5:
+                    continue
+                del self._fan_optimistic_updates[fan_index]
+
+            state = bool(value_int & (1 << bit_pos))
+            self._fan_states[fan_index] = state
+            self.fanStateChanged.emit(fan_index, state)
+
+        # laser fan: bit 15
+        if 10 in self._fan_optimistic_updates:
+            time_since_update = current_time - self._fan_optimistic_updates[10]
+            if time_since_update >= 0.5:
+                del self._fan_optimistic_updates[10]
+                laser_fan_state = bool(value_int & (1 << 15))
+                self._fan_states[10] = laser_fan_state
+                self.fanStateChanged.emit(10, laser_fan_state)
+        else:
+            laser_fan_state = bool(value_int & (1 << 15))
+            self._fan_states[10] = laser_fan_state
+            self.fanStateChanged.emit(10, laser_fan_state)
+
+    def _applyExternalRelays1020Value(self, value: object):
+        if value is None:
+            return
+        try:
+            value_int = int(value)
+        except Exception:
+            return
+        self._register_cache[1020] = value_int
+        low_byte = value_int & 0xFF
+        binary_str = format(low_byte, '08b')
+        self.externalRelaysChanged.emit(low_byte, binary_str)
+
+    def _check_connection(self):
+        """
+        Проверка "живости" соединения без блокирующих сетевых вызовов в GUI-потоке.
+        Если давно не было успешного I/O (чтение/запись), пробуем переподключиться через worker.
+        """
+        if not self._is_connected or self._modbus_client is None:
+            return
+        if self._connection_in_progress:
+            return
+
+        now = time.time()
+        if self._last_modbus_ok_time <= 0:
+            return
+
+        # Если давно не было успешных ответов — считаем соединение "подвисшим"
+        if (now - self._last_modbus_ok_time) < 3.0:
+            return
+
+        # Не дергаем reconnect слишком часто
+        if (now - self._last_reconnect_attempt_time) < 3.0:
+            return
+
+        self._last_reconnect_attempt_time = now
+        logger.warning("Нет успешных ответов Modbus >3с, пробуем переподключиться (в фоне)")
+
+        # Останавливаем polling таймеры, чтобы не засыпать очередь запросами во время reconnect
+        try:
+            for t in self._polling_timers:
+                t.stop()
+        except Exception:
+            pass
+
+        self._connection_in_progress = True
+        self._workerSetClient.emit(self._modbus_client)
+        self._workerConnect.emit()
     
     def _syncDeviceStates(self):
         """Синхронизация состояний всех устройств с Modbus"""
@@ -728,137 +1066,43 @@ class ModbusManager(QObject):
         """Чтение регистра 1020 (External Relays) и отправка сигнала с бинарным представлением"""
         if not self._is_connected or self._modbus_client is None:
             return
-        
-        try:
-            # В документации указано, что это setpoint (=), значит нужно использовать функцию 03 (Read Holding Registers)
-            # а не функцию 04 (Read Input Registers)
-            logger.info("Чтение регистра 1020 через функцию 03 (Read Holding Registers)")
-            # Читаем напрямую через клиент, чтобы обновить кэш
-            if self._modbus_client:
-                value = self._modbus_client.read_holding_register(1020)
-                if value is not None:
-                    # Обновляем кэш регистров
-                    self._register_cache[1020] = value
-            else:
-                value = None
-            
-            if value is not None:
-                # Преобразуем в бинарное представление (8 бит)
-                # Проверяем оба байта - младший и старший
-                low_byte = value & 0xFF
-                high_byte = (value >> 8) & 0xFF
-                binary_str_low = format(low_byte, '08b')
-                binary_str_high = format(high_byte, '08b')
-                logger.info(f"Регистр 1020 (External Relays): значение = {value} (0x{value:04X}), младший байт = {low_byte} (0x{low_byte:02X}) бинарно = {binary_str_low}, старший байт = {high_byte} (0x{high_byte:02X}) бинарно = {binary_str_high}")
-                
-                # Используем младший байт для бинарного представления
-                binary_str = binary_str_low
-                logger.info(f"Регистр 1020 (External Relays): финальное значение = {low_byte} (0x{low_byte:02X}), бинарно = {binary_str}")
-                self.externalRelaysChanged.emit(low_byte, binary_str)
-            else:
-                logger.warning("Не удалось прочитать регистр 1020 (External Relays) через функцию 03 - вернулось None")
-                # Пробуем через функцию 04 на всякий случай
-                logger.info("Пробуем через функцию 04 (Read Input Registers)")
-                value = self._modbus_client.read_input_register(1020)
-                if value is not None:
-                    # Обновляем кэш регистров
-                    self._register_cache[1020] = value
-                    low_byte = value & 0xFF
-                    binary_str = format(low_byte, '08b')
-                    logger.info(f"Регистр 1020 через функцию 04: значение = {low_byte} (0x{low_byte:02X}), бинарно = {binary_str}")
-                    self.externalRelaysChanged.emit(low_byte, binary_str)
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1020: {e}", exc_info=True)
+        client = self._modbus_client
+
+        def task():
+            # Сначала пробуем holding (03), потом input (04) как fallback
+            value = client.read_holding_register(1020)
+            if value is None:
+                value = client.read_input_register(1020)
+            return value
+
+        self._enqueue_read("1020", task)
     
     def _readRelay1021(self):
         """Чтение регистра 1021 (реле) и обновление состояний всех реле"""
         if not self._is_connected or self._modbus_client is None or self._reading_1021:
             return
-        
+
         self._reading_1021 = True
-        try:
-            value = self._modbus_client.read_register_1021_direct()
-            if value is not None:
-                low_byte = value & 0xFF
-                logger.debug(f"Регистр 1021: значение = {value} (0x{value:04X}), младший байт = {low_byte} (0x{low_byte:02X}) = {format(low_byte, '08b')}")
-                
-                # Обновляем буфер состояний реле
-                self._relay_states['water_chiller'] = bool(low_byte & 0x01)
-                self._relay_states['magnet_psu'] = bool(low_byte & 0x02)
-                self._relay_states['laser_psu'] = bool(low_byte & 0x04)
-                self._relay_states['vacuum_pump'] = bool(low_byte & 0x08)
-                self._relay_states['vacuum_gauge'] = bool(low_byte & 0x10)
-                self._relay_states['pid_controller'] = bool(low_byte & 0x20)
-                self._relay_states['op_cell_heating'] = bool(low_byte & 0x40)
-                
-                # Обновляем состояния всех реле на основе реального состояния устройства
-                # Реле 1 (бит 0) - Water Chiller
-                self.waterChillerStateChanged.emit(self._relay_states['water_chiller'])
-                # Реле 2 (бит 1) - Magnet PSU
-                self.magnetPSUStateChanged.emit(self._relay_states['magnet_psu'])
-                # Реле 3 (бит 2) - Laser PSU
-                self.laserPSUStateChanged.emit(self._relay_states['laser_psu'])
-                # Реле 4 (бит 3) - Vacuum Pump
-                self.vacuumPumpStateChanged.emit(self._relay_states['vacuum_pump'])
-                # Реле 5 (бит 4) - Vacuum Gauge
-                self.vacuumGaugeStateChanged.emit(self._relay_states['vacuum_gauge'])
-                # Реле 6 (бит 5) - PID Controller
-                self.pidControllerStateChanged.emit(self._relay_states['pid_controller'])
-                # Реле 7 (бит 6) - OP Cell Heating
-                self.opCellHeatingStateChanged.emit(self._relay_states['op_cell_heating'])
-            else:
-                logger.debug("Не удалось прочитать регистр 1021")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1021: {e}", exc_info=True)
-        finally:
-            self._reading_1021 = False
+        client = self._modbus_client
+        self._enqueue_read("1021", lambda: client.read_register_1021_direct())
     
     def _readValve1111(self):
         """Чтение регистра 1111 (клапаны X6-X12) и обновление состояний"""
         if not self._is_connected or self._modbus_client is None or self._reading_1111:
             return
-        
+
         self._reading_1111 = True
-        try:
-            value = self._modbus_client.read_register_1111_direct()
-            if value is not None:
-                logger.debug(f"Регистр 1111: значение = {value} (0x{value:04X}) = {format(value, '016b')}")
-                
-                # Обновляем буфер состояний клапанов X6-X12 на основе битов 5-11 (нумерация с 0)
-                for valve_index in range(5, 12):
-                    bit_pos = valve_index
-                    state = bool(value & (1 << bit_pos))
-                    self._valve_states[valve_index] = state
-                    self.valveStateChanged.emit(valve_index, state)
-            else:
-                logger.debug("Не удалось прочитать регистр 1111")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1111: {e}", exc_info=True)
-        finally:
-            self._reading_1111 = False
+        client = self._modbus_client
+        self._enqueue_read("1111", lambda: client.read_register_1111_direct())
     
     def _readWaterChillerTemperature(self):
         """Чтение регистра 1511 (температура Water Chiller) и обновление label C"""
         if not self._is_connected or self._modbus_client is None or self._reading_1511:
             return
-        
+
         self._reading_1511 = True
-        try:
-            value = self._modbus_client.read_register_1511_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения температуры в градусах Цельсия
-                # Например, 2300 -> 23.00°C
-                temperature = float(value) / 100.0
-                if self._water_chiller_temperature != temperature:
-                    self._water_chiller_temperature = temperature
-                    logger.debug(f"Регистр 1511 (Water Chiller температура): {temperature}°C (raw value: {value})")
-                    self.waterChillerTemperatureChanged.emit(temperature)
-            else:
-                logger.debug("Не удалось прочитать регистр 1511 (температура Water Chiller)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1511 (температура Water Chiller): {e}", exc_info=True)
-        finally:
-            self._reading_1511 = False
+        client = self._modbus_client
+        self._enqueue_read("1511", lambda: client.read_register_1511_direct())
     
     def _autoUpdateWaterChillerSetpoint(self):
         """
@@ -957,16 +1201,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка температуры SEOP Cell: {temperature}°C (регистр 1421 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1421_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1421_direct(register_value)
             if result:
                 logger.info(f"✅ Заданная температура SEOP Cell успешно установлена: {temperature}°C")
             else:
                 logger.error(f"❌ Не удалось установить заданную температуру SEOP Cell: {temperature}°C")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1421", task, {"temperature": temperature})
         return True
     
     @Slot(result=bool)
@@ -1072,16 +1317,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка давления Xenon: {pressure} Torr (регистр 1621 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1621_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1621_direct(register_value)
             if result:
                 logger.info(f"✅ Заданное давление Xenon успешно установлено: {pressure} Torr")
             else:
                 logger.error(f"❌ Не удалось установить заданное давление Xenon: {pressure} Torr")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1621", task, {"pressure": pressure})
         return True
     
     def _autoUpdateXenonSetpoint(self):
@@ -1170,16 +1416,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка давления N2: {pressure} Torr (регистр 1661 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1661_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1661_direct(register_value)
             if result:
                 logger.info(f"✅ Заданное давление N2 успешно установлено: {pressure} Torr")
             else:
                 logger.error(f"❌ Не удалось установить заданное давление N2: {pressure} Torr")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1661", task, {"pressure": pressure})
         return True
     
     @Slot(result=bool)
@@ -1216,218 +1463,64 @@ class ModbusManager(QObject):
         """Чтение регистра 1411 (температура SEOP Cell) и обновление label C"""
         if not self._is_connected or self._modbus_client is None or self._reading_1411:
             return
-        
+
         self._reading_1411 = True
-        try:
-            value = self._modbus_client.read_register_1411_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения температуры в градусах Цельсия
-                # Например, 2300 -> 23.00°C
-                temperature = float(value) / 100.0
-                if self._seop_cell_temperature != temperature:
-                    self._seop_cell_temperature = temperature
-                    logger.debug(f"Регистр 1411 (SEOP Cell температура): {temperature}°C (raw value: {value})")
-                    self.seopCellTemperatureChanged.emit(temperature)
-            else:
-                logger.debug("Не удалось прочитать регистр 1411 (температура SEOP Cell)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1411 (температура SEOP Cell): {e}", exc_info=True)
-        finally:
-            self._reading_1411 = False
+        client = self._modbus_client
+        self._enqueue_read("1411", lambda: client.read_register_1411_direct())
     
     def _readMagnetPSUCurrent(self):
         """Чтение регистра 1341 (ток Magnet PSU) и обновление label A"""
         if not self._is_connected or self._modbus_client is None or self._reading_1341:
             return
-        
+
         self._reading_1341 = True
-        try:
-            value = self._modbus_client.read_register_1341_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения тока в амперах
-                # Например, 1500 -> 15.00A
-                current = float(value) / 100.0
-                if self._magnet_psu_current != current:
-                    self._magnet_psu_current = current
-                    logger.debug(f"Регистр 1341 (Magnet PSU ток): {current}A (raw value: {value})")
-                    self.magnetPSUCurrentChanged.emit(current)
-            else:
-                logger.debug("Не удалось прочитать регистр 1341 (ток Magnet PSU)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1341 (ток Magnet PSU): {e}", exc_info=True)
-        finally:
-            self._reading_1341 = False
+        client = self._modbus_client
+        self._enqueue_read("1341", lambda: client.read_register_1341_direct())
     
     def _readLaserPSUCurrent(self):
         """Чтение регистра 1251 (ток Laser PSU) и обновление label A"""
         if not self._is_connected or self._modbus_client is None or self._reading_1251:
             return
-        
+
         self._reading_1251 = True
-        try:
-            value = self._modbus_client.read_register_1251_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения тока в амперах
-                # Например, 1500 -> 15.00A
-                current = float(value) / 100.0
-                if self._laser_psu_current != current:
-                    self._laser_psu_current = current
-                    logger.debug(f"Регистр 1251 (Laser PSU ток): {current}A (raw value: {value})")
-                    self.laserPSUCurrentChanged.emit(current)
-            else:
-                logger.debug("Не удалось прочитать регистр 1251 (ток Laser PSU)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1251 (ток Laser PSU): {e}", exc_info=True)
-        finally:
-            self._reading_1251 = False
+        client = self._modbus_client
+        self._enqueue_read("1251", lambda: client.read_register_1251_direct())
     
     def _readXenonPressure(self):
         """Чтение регистра 1611 (давление Xenon) и обновление label Torr"""
         if not self._is_connected or self._modbus_client is None or self._reading_1611:
             return
-        
+
         self._reading_1611 = True
-        try:
-            value = self._modbus_client.read_register_1611_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения давления в Torr
-                # Например, 1500 -> 15.00 Torr
-                pressure = float(value) / 100.0
-                if self._xenon_pressure != pressure:
-                    self._xenon_pressure = pressure
-                    logger.debug(f"Регистр 1611 (Xenon давление): {pressure} Torr (raw value: {value})")
-                    self.xenonPressureChanged.emit(pressure)
-            else:
-                logger.debug("Не удалось прочитать регистр 1611 (давление Xenon)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1611 (давление Xenon): {e}", exc_info=True)
-        finally:
-            self._reading_1611 = False
+        client = self._modbus_client
+        self._enqueue_read("1611", lambda: client.read_register_1611_direct())
     
     def _readN2Pressure(self):
         """Чтение регистра 1651 (давление N2) и обновление label Torr"""
         if not self._is_connected or self._modbus_client is None or self._reading_1651:
             return
-        
+
         self._reading_1651 = True
-        try:
-            value = self._modbus_client.read_register_1651_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения давления в Torr
-                # Например, 1500 -> 15.00 Torr
-                pressure = float(value) / 100.0
-                if self._n2_pressure != pressure:
-                    self._n2_pressure = pressure
-                    logger.debug(f"Регистр 1651 (N2 давление): {pressure} Torr (raw value: {value})")
-                    self.n2PressureChanged.emit(pressure)
-            else:
-                logger.debug("Не удалось прочитать регистр 1651 (давление N2)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1651 (давление N2): {e}", exc_info=True)
-        finally:
-            self._reading_1651 = False
+        client = self._modbus_client
+        self._enqueue_read("1651", lambda: client.read_register_1651_direct())
     
     def _readVacuumPressure(self):
         """Чтение регистра 1701 (давление Vacuum) и обновление label Torr"""
         if not self._is_connected or self._modbus_client is None or self._reading_1701:
             return
-        
+
         self._reading_1701 = True
-        try:
-            value = self._modbus_client.read_register_1701_direct()
-            if value is not None:
-                # Значение из регистра нужно разделить на 100 для получения давления в Torr
-                # Например, 1500 -> 15.00 Torr
-                pressure = float(value) / 100.0
-                if self._vacuum_pressure != pressure:
-                    self._vacuum_pressure = pressure
-                    logger.debug(f"Регистр 1701 (Vacuum давление): {pressure} Torr (raw value: {value})")
-                    self.vacuumPressureChanged.emit(pressure)
-            else:
-                logger.debug("Не удалось прочитать регистр 1701 (давление Vacuum)")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1701 (давление Vacuum): {e}", exc_info=True)
-        finally:
-            self._reading_1701 = False
+        client = self._modbus_client
+        self._enqueue_read("1701", lambda: client.read_register_1701_direct())
     
     def _readFan1131(self):
         """Чтение регистра 1131 (fans) и обновление состояний всех вентиляторов"""
         if not self._is_connected or self._modbus_client is None or self._reading_1131:
             return
-        
+
         self._reading_1131 = True
-        try:
-            value = self._modbus_client.read_register_1131_direct()
-            if value is not None:
-                logger.debug(f"Регистр 1131: значение = {value} (0x{value:04X}) = {format(value, '032b')}")
-                
-                # Маппинг fanIndex -> бит в регистре 1131 (считая с 0)
-                # inlet fan 1 - бит 0 (бит 1 считая с 1)
-                # inlet fan 2 - бит 1 (бит 2 считая с 1)
-                # inlet fan 3 - бит 2 (бит 3 считая с 1)
-                # inlet fan 4 - бит 3 (бит 4 считая с 1)
-                # opcell fan 1 - бит 4 (бит 5 считая с 1)
-                # opcell fan 2 - бит 5 (бит 6 считая с 1)
-                # opcell fan 3 - бит 6 (бит 7 считая с 1)
-                # opcell fan 4 - бит 7 (бит 8 считая с 1)
-                # outlet fan 1 - бит 8 (бит 9 считая с 1)
-                # outlet fan 2 - бит 9 (бит 10 считая с 1)
-                # laser fan - бит 15 (бит 16 считая с 1)
-                
-                # Обновляем состояния вентиляторов на основе реального состояния устройства
-                # Маппинг: fanIndex (из QML) -> бит в регистре 1131 (считая с 0)
-                fan_mapping = {
-                    0: 0,   # inlet fan 1 (button4) -> бит 0 (бит 1 считая с 1)
-                    1: 1,   # inlet fan 2 (button3) -> бит 1 (бит 2 считая с 1)
-                    2: 2,   # inlet fan 3 (button2) -> бит 2 (бит 3 считая с 1)
-                    3: 3,   # inlet fan 4 (button7) -> бит 3 (бит 4 считая с 1)
-                    6: 4,   # opcell fan 1 (button10) -> бит 4 (бит 5 считая с 1)
-                    7: 5,   # opcell fan 2 (button9) -> бит 5 (бит 6 считая с 1)
-                    8: 6,   # opcell fan 3 (button8) -> бит 6 (бит 7 считая с 1)
-                    9: 7,   # opcell fan 4 (button13) -> бит 7 (бит 8 считая с 1)
-                    4: 8,   # outlet fan 1 (button6) -> бит 8 (бит 9 считая с 1)
-                    5: 9,   # outlet fan 2 (button5) -> бит 9 (бит 10 считая с 1)
-                }
-                
-                # Обновляем буфер состояний вентиляторов
-                # Игнорируем обновления для вентиляторов, которые были оптимистично обновлены недавно (в течение 500мс)
-                import time
-                current_time = time.time()
-                for fan_index, bit_pos in fan_mapping.items():
-                    # Проверяем, было ли недавно оптимистичное обновление для этого вентилятора
-                    if fan_index in self._fan_optimistic_updates:
-                        time_since_update = current_time - self._fan_optimistic_updates[fan_index]
-                        if time_since_update < 0.5:  # Игнорируем чтение в течение 500мс после оптимистичного обновления
-                            continue
-                        else:
-                            # Удаляем флаг, если прошло достаточно времени
-                            del self._fan_optimistic_updates[fan_index]
-                    
-                    state = bool(value & (1 << bit_pos))
-                    self._fan_states[fan_index] = state
-                    self.fanStateChanged.emit(fan_index, state)
-                
-                # Laser fan использует бит 15 (считая с 0), что соответствует биту 16 (считая с 1)
-                if 10 in self._fan_optimistic_updates:
-                    time_since_update = current_time - self._fan_optimistic_updates[10]
-                    if time_since_update < 0.5:  # Игнорируем чтение в течение 500мс после оптимистичного обновления
-                        pass  # Не обновляем состояние laser fan
-                    else:
-                        # Удаляем флаг, если прошло достаточно времени
-                        del self._fan_optimistic_updates[10]
-                        laser_fan_state = bool(value & (1 << 15))
-                        self._fan_states[10] = laser_fan_state
-                        self.fanStateChanged.emit(10, laser_fan_state)
-                else:
-                    laser_fan_state = bool(value & (1 << 15))
-                    self._fan_states[10] = laser_fan_state
-                    self.fanStateChanged.emit(10, laser_fan_state)
-            else:
-                logger.debug("Не удалось прочитать регистр 1131")
-        except Exception as e:
-            logger.error(f"Ошибка при чтении регистра 1131: {e}", exc_info=True)
-        finally:
-            self._reading_1131 = False
+        client = self._modbus_client
+        self._enqueue_read("1131", lambda: client.read_register_1131_direct())
     
     @Slot(int, bool, result=bool)
     def setFan(self, fanIndex: int, state: bool) -> bool:
@@ -1510,133 +1603,81 @@ class ModbusManager(QObject):
             logger.error(f"Неизвестный индекс вентилятора: {fanIndex}")
             return False
     
-    def _addModbusTask(self, task: Callable, priority: bool = False):
-        """
-        Добавление задачи в очередь для асинхронного выполнения
-        
-        Args:
-            task: Задача для выполнения
-            priority: Если True, задача добавляется в приоритетную очередь (для команд записи)
-        """
-        if priority:
-            # Приоритетные задачи (записи) добавляются в начало очереди
-            self._modbus_priority_queue.append(task)
-            # Для приоритетных задач запускаем обработчик немедленно, даже если он уже активен
-            # Это гарантирует, что команды записи выполнятся как можно быстрее
-            if not self._modbus_task_timer.isActive():
-                self._modbus_task_timer.start(0)  # Немедленный старт для приоритетных задач
-            elif not self._modbus_task_processing:
-                # Если обработчик активен, но не обрабатывает задачу, запускаем немедленно
-                self._modbus_task_timer.stop()
-                self._modbus_task_timer.start(0)
-        else:
-            # Обычные задачи (чтения) добавляются в конец очереди
-            self._modbus_task_queue.append(task)
-            # Запускаем обработчик очереди только если он не активен
-            if not self._modbus_task_timer.isActive():
-                self._modbus_task_timer.start(5)
-    
-    def _processModbusTaskQueue(self):
-        """Обработка очереди задач Modbus (выполняется по одной, не блокируя UI)"""
-        # Сначала обрабатываем приоритетные задачи (записи)
-        if not self._modbus_priority_queue and not self._modbus_task_queue:
-            self._modbus_task_processing = False
-            return
-        
-        if self._modbus_task_processing:
-            # Если уже обрабатываем задачу, планируем следующую попытку
-            self._modbus_task_timer.start(5)  # Минимальная задержка для быстрой обработки
-            return
-        
-        self._modbus_task_processing = True
-        # Берем задачу из приоритетной очереди, если она есть, иначе из обычной
-        if self._modbus_priority_queue:
-            task = self._modbus_priority_queue.popleft()
-        else:
-            task = self._modbus_task_queue.popleft()
-        
-        try:
-            task()
-        except Exception as e:
-            logger.error(f"Ошибка при выполнении задачи Modbus: {e}", exc_info=True)
-        finally:
-            self._modbus_task_processing = False
-            # Планируем обработку следующей задачи немедленно
-            if self._modbus_priority_queue or self._modbus_task_queue:
-                self._modbus_task_timer.start(5)  # Минимальная задержка между задачами для быстрой обработки
+    # Очередь задач Modbus из GUI-потока удалена:
+    # любые блокирующие операции (connect/read/write) выполняются в _ModbusIoWorker (QThread).
     
     def _setFanAsync(self, fanIndex: int, fan_bit: int, state: bool):
         """Асинхронная установка состояния вентилятора (не блокирует UI)"""
-        def task():
+        client = self._modbus_client
+
+        def task() -> bool:
             try:
-                result = self._modbus_client.set_fan_1131(fan_bit, state)
+                result = client.set_fan_1131(fan_bit, state)
                 if result:
                     logger.info(f"✅ Вентилятор {fanIndex} успешно {'включен' if state else 'выключен'}")
                 else:
                     logger.error(f"❌ Не удалось {'включить' if state else 'выключить'} вентилятор {fanIndex}")
-                    # Если команда не удалась, синхронизируем с реальным состоянием устройства
-                    # (при следующем чтении регистра 1131 состояние обновится)
+                return bool(result)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке вентилятора {fanIndex}: {e}", exc_info=True)
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+                return False
+
+        self._enqueue_write("fan1131", task, {"fanIndex": fanIndex, "state": state})
     
     def _setLaserFanAsync(self, state: bool):
         """Асинхронная установка состояния Laser Fan (не блокирует UI)"""
-        def task():
+        client = self._modbus_client
+
+        def task() -> bool:
             try:
-                # Читаем текущее состояние
-                current_value = self._modbus_client.read_register_1131_direct()
-                if current_value is None:
-                    logger.error("Не удалось прочитать текущее состояние регистра 1131 для Laser Fan")
-                    return
-                
-                if state:
-                    # Включаем - устанавливаем бит 15 (считая с 0), что соответствует биту 16 (считая с 1)
-                    new_value = current_value | (1 << 15)
-                else:
-                    # Выключаем - сбрасываем бит 15 (считая с 0), что соответствует биту 16 (считая с 1)
-                    new_value = current_value & ~(1 << 15)
-                
-                result = self._modbus_client.write_register_1131_direct(new_value)
+                # laser fan: bit 15
+                result = client.set_fan_1131(15, state)
                 if result:
                     logger.info(f"✅ Laser Fan успешно {'включен' if state else 'выключен'}")
                 else:
                     logger.error(f"❌ Не удалось {'включить' if state else 'выключить'} Laser Fan")
-                    # Если команда не удалась, синхронизируем с реальным состоянием устройства
-                    # (при следующем чтении регистра 1131 состояние обновится)
+                return bool(result)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке Laser Fan: {e}", exc_info=True)
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+                return False
+
+        self._enqueue_write("laser_fan", task, {"state": state})
     
     def _setRelayAsync(self, relay_num: int, state: bool, name: str):
         """Асинхронная установка состояния реле (не блокирует UI)"""
-        def task():
+        client = self._modbus_client
+
+        def task() -> bool:
             try:
-                result = self._modbus_client.set_relay_1021(relay_num, state)
+                result = client.set_relay_1021(relay_num, state)
                 if result:
                     logger.info(f"✅ {name} успешно {'включен' if state else 'выключен'}")
                 else:
                     logger.error(f"❌ Не удалось {'включить' if state else 'выключить'} {name}")
-                    # Если команда не удалась, синхронизируем с реальным состоянием устройства
-                    # (при следующем чтении регистра 1021 состояние обновится)
+                return bool(result)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке {name}: {e}", exc_info=True)
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+                return False
+
+        self._enqueue_write(f"relay:{relay_num}", task, {"relay": relay_num, "state": state, "name": name})
     
     def _setValveAsync(self, valveIndex: int, valve_bit: int, state: bool):
         """Асинхронная установка состояния клапана (не блокирует UI)"""
-        def task():
+        client = self._modbus_client
+
+        def task() -> bool:
             try:
-                result = self._modbus_client.set_valve_1111(valve_bit, state)
+                result = client.set_valve_1111(valve_bit, state)
                 if result:
                     logger.info(f"✅ Клапан {valveIndex} (бит {valve_bit}) успешно {'открыт' if state else 'закрыт'}")
                 else:
                     logger.error(f"❌ Не удалось {'открыть' if state else 'закрыть'} клапан {valveIndex}")
-                    # Если команда не удалась, синхронизируем с реальным состоянием устройства
-                    # (при следующем чтении регистра 1111 состояние обновится)
+                return bool(result)
             except Exception as e:
                 logger.error(f"Ошибка при асинхронной установке клапана {valveIndex}: {e}", exc_info=True)
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+                return False
+
+        self._enqueue_write(f"valve:{valveIndex}", task, {"valveIndex": valveIndex, "state": state})
     
     @Slot(float, result=bool)
     def setWaterChillerSetpointValue(self, temperature: float) -> bool:
@@ -1692,16 +1733,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка температуры Water Chiller: {temperature}°C (регистр 1531 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1531_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1531_direct(register_value)
             if result:
                 logger.info(f"✅ Заданная температура Water Chiller успешно установлена: {temperature}°C")
             else:
                 logger.error(f"❌ Не удалось установить заданную температуру Water Chiller: {temperature}°C")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1531", task, {"temperature": temperature})
         return True
     
     @Slot(result=bool)
@@ -1782,16 +1824,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка температуры Magnet PSU: {temperature}°C (регистр 1331 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1331_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1331_direct(register_value)
             if result:
                 logger.info(f"✅ Заданная температура Magnet PSU успешно установлена: {temperature}°C")
             else:
                 logger.error(f"❌ Не удалось установить заданную температуру Magnet PSU: {temperature}°C")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1331", task, {"temperature": temperature})
         return True
     
     @Slot(result=bool)
@@ -1872,16 +1915,17 @@ class ModbusManager(QObject):
         
         logger.info(f"Установка температуры Laser PSU: {temperature}°C (регистр 1241 = {register_value})")
         
-        # Добавляем задачу в очередь для асинхронной отправки
-        def task():
-            result = self._modbus_client.write_register_1241_direct(register_value)
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register_1241_direct(register_value)
             if result:
                 logger.info(f"✅ Заданная температура Laser PSU успешно установлена: {temperature}°C")
             else:
                 logger.error(f"❌ Не удалось установить заданную температуру Laser PSU: {temperature}°C")
-        
-        logger.info(f"🔵 Добавляем задачу в очередь Modbus")
-        self._addModbusTask(task, priority=True)  # Команды записи имеют приоритет
+            return bool(result)
+
+        self._enqueue_write("1241", task, {"temperature": temperature})
         return True
     
     @Slot(result=bool)
@@ -1946,50 +1990,21 @@ class ModbusManager(QObject):
         if not self._is_connected or self._modbus_client is None:
             logger.warning(f"Попытка записи в регистр {address} без подключения")
             return False
-        
-        # Проверяем соединение перед записью
-        if not self._modbus_client.is_connected():
-            logger.warning(f"Соединение потеряно, попытка переподключения перед записью в регистр {address}")
-            if self._modbus_client.connect():
-                self._is_connected = True
-                self._status_text = "Connected"
-                self._connection_button_text = "Disconnect"
-                self.statusTextChanged.emit(self._status_text)
-                self.connectionButtonTextChanged.emit(self._connection_button_text)
-                self.connectionStatusChanged.emit(self._is_connected)
-            else:
-                logger.error(f"Не удалось переподключиться для записи в регистр {address}")
-                self._is_connected = False
-                self._status_text = "Disconnected"
-                self._connection_button_text = "Connect"
-                self.statusTextChanged.emit(self._status_text)
-                self.connectionButtonTextChanged.emit(self._connection_button_text)
-                self.connectionStatusChanged.emit(self._is_connected)
-            return False
-        
-        result = self._modbus_client.write_register(address, value)
-        logger.info(f"writeRegister({address}, {value}) вернул {result}")
-        
-        # Если запись не удалась, выводим предупреждение
-        if not result:
-            logger.warning(f"⚠️ Запись в регистр {address} не удалась. Возможные причины:")
-            logger.warning(f"  1. Устройство не поддерживает запись в этот регистр")
-            logger.warning(f"  2. Неправильный адрес регистра")
-            logger.warning(f"  3. Устройство требует другой формат запросов (coils вместо registers)")
-            logger.warning(f"  4. Неправильный unit_id (текущий: {self._modbus_client.unit_id})")
-        
-        # Если запись не удалась и соединение закрыто, пытаемся переподключиться
-        if not result and not self._modbus_client.is_connected():
-            logger.warning(f"Соединение потеряно после записи, попытка переподключения")
-            if self._modbus_client.connect():
-                self._is_connected = True
-                self._status_text = "Connected"
-                self._connection_button_text = "Disconnect"
-                self.statusTextChanged.emit(self._status_text)
-                self.connectionButtonTextChanged.emit(self._connection_button_text)
-                self.connectionStatusChanged.emit(self._is_connected)
-        
-        return result
+
+        # Оптимистично обновляем кэш, чтобы UI не ждал ответ
+        self._register_cache[address] = value
+
+        client = self._modbus_client
+
+        def task() -> bool:
+            result = client.write_register(address, value)
+            if not result:
+                logger.warning(f"⚠️ Запись в регистр {address} не удалась (value={value}).")
+            return bool(result)
+
+        # Неблокирующая отправка в worker; возвращаем True если задача поставлена
+        self._enqueue_write(f"write:{address}", task, {"address": address, "value": value})
+        return True
     
     
     # Методы для управления реле через регистр 1021
