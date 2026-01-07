@@ -450,6 +450,13 @@ Item {
     property string activeParam: ""
     property string activeParamGroup: ""
 
+    // При смене активного параметра выключаем опрос реле, если закрываем External Relays
+    onActiveParamChanged: {
+        if (activeParam !== "External Relays" && modbusManager) {
+            modbusManager.disableRelayPolling()
+        }
+    }
+
     // Область для отображения информации о параметре (справа от sidebar)
     Rectangle {
         id: infoPanel
@@ -533,6 +540,158 @@ Item {
                         Text { id: paramMax; text: "—"; font.pixelSize: 12; color: "#000000" }
                         Text { text: "Data Type:"; font.pixelSize: 12; color: "#666666" }
                         Text { id: paramDtype; text: "—"; font.pixelSize: 12; color: "#000000" }
+                    }
+
+                    // Список реле для External Relays
+                    Column {
+                        id: relayButtonsColumn
+                        width: parent.width
+                        spacing: 12
+                        visible: false
+
+                        Button {
+                            id: relayWaterChiller
+                            width: parent.width
+                            height: 50
+                            text: "Water Chiller"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayWaterChiller.checked ? relayWaterChiller.pressedColor : relayWaterChiller.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setWaterChiller(relayWaterChiller.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onWaterChillerStateChanged(state) {
+                                    if (relayWaterChiller.checked !== state) relayWaterChiller.checked = state
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: relayMagnetPSU
+                            width: parent.width
+                            height: 50
+                            text: "Magnet PSU"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayMagnetPSU.checked ? relayMagnetPSU.pressedColor : relayMagnetPSU.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setMagnetPSU(relayMagnetPSU.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onMagnetPSUStateChanged(state) {
+                                    if (relayMagnetPSU.checked !== state) relayMagnetPSU.checked = state
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: relayLaserPSU
+                            width: parent.width
+                            height: 50
+                            text: "Laser PSU"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayLaserPSU.checked ? relayLaserPSU.pressedColor : relayLaserPSU.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setLaserPSU(relayLaserPSU.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onLaserPSUStateChanged(state) {
+                                    if (relayLaserPSU.checked !== state) relayLaserPSU.checked = state
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: relayVacuumPump
+                            width: parent.width
+                            height: 50
+                            text: "Vacuum Pump"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayVacuumPump.checked ? relayVacuumPump.pressedColor : relayVacuumPump.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setVacuumPump(relayVacuumPump.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onVacuumPumpStateChanged(state) {
+                                    if (relayVacuumPump.checked !== state) relayVacuumPump.checked = state
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: relayVacuumGauge
+                            width: parent.width
+                            height: 50
+                            text: "Vacuum Gauge"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayVacuumGauge.checked ? relayVacuumGauge.pressedColor : relayVacuumGauge.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setVacuumGauge(relayVacuumGauge.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onVacuumGaugeStateChanged(state) {
+                                    if (relayVacuumGauge.checked !== state) relayVacuumGauge.checked = state
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: relayPIDController
+                            width: parent.width
+                            height: 50
+                            text: "PID Controller"
+                            font.pointSize: 18
+                            checkable: true
+                            property color normalColor: "#979797"
+                            property color pressedColor: "#38691e"
+                            background: Rectangle {
+                                color: relayPIDController.checked ? relayPIDController.pressedColor : relayPIDController.normalColor
+                                radius: 5
+                            }
+                            onClicked: {
+                                if (modbusManager) modbusManager.setPIDController(relayPIDController.checked)
+                            }
+                            Connections {
+                                target: modbusManager
+                                function onPidControllerStateChanged(state) {
+                                    if (relayPIDController.checked !== state) relayPIDController.checked = state
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -918,37 +1077,58 @@ Item {
                                             activeParam = modelData
                                             activeParamGroup = menuItemContainer.groupData.label
                                             
-                                            // Получаем данные о параметре
-                                            var paramData = menuData.params[modelData]
-                                            
-                                            // Обновляем информацию о параметре
-                                            infoTitle.text = modelData
-                                            infoSubtitle.text = menuItemContainer.groupData.label
-                                            
-                                            if (paramData) {
-                                                // Показываем таблицу параметров с реальными данными
-                                                paramGrid.visible = true
-                                                paramId.text = paramData.id ? paramData.id.toString() : "—"
-                                                paramType.text = paramData.type || "—"
-                                                paramUnits.text = paramData.units || "—"
-                                                paramDefault.text = paramData.defaultValue || "—"
-                                                paramMin.text = paramData.min || "—"
-                                                paramMax.text = paramData.max || "—"
-                                                paramDtype.text = paramData.dtype || "—"
-                                                
-                                                infoContent.text = "Parameter " + modelData + " from group " + menuItemContainer.groupData.label + ".\n\nType: " + (paramData.type || "—") + ", ID: " + (paramData.id || "—")
+                                            // Специальная обработка для External Relays - показываем кнопки реле
+                                            if (modelData === "External Relays") {
+                                                // Включаем опрос реле (регистр 1021) по требованию
+                                                if (modbusManager) {
+                                                    modbusManager.enableRelayPolling()
+                                                }
+                                                // Показываем список реле вместо таблицы параметров
+                                                relayButtonsColumn.visible = true
+                                                paramGrid.visible = false
+                                                infoTitle.text = "External Relays"
+                                                infoSubtitle.text = menuItemContainer.groupData.label
+                                                infoContent.text = "Control external relay devices"
                                             } else {
-                                                // Если данных нет, показываем упрощенную информацию
-                                                paramGrid.visible = true
-                                                paramId.text = "—"
-                                                paramType.text = "Parameter"
-                                                paramUnits.text = "—"
-                                                paramDefault.text = "—"
-                                                paramMin.text = "—"
-                                                paramMax.text = "—"
-                                                paramDtype.text = "—"
+                                                // Для остальных параметров - стандартная таблица
+                                                if (modbusManager && activeParam === "External Relays") {
+                                                    // Если закрываем External Relays - выключаем опрос реле
+                                                    modbusManager.disableRelayPolling()
+                                                }
+                                                relayButtonsColumn.visible = false
                                                 
-                                                infoContent.text = "Parameter " + modelData + " from group " + menuItemContainer.groupData.label + ".\n\nDetailed parameter information will be available after data integration."
+                                                // Получаем данные о параметре
+                                                var paramData = menuData.params[modelData]
+                                                
+                                                // Обновляем информацию о параметре
+                                                infoTitle.text = modelData
+                                                infoSubtitle.text = menuItemContainer.groupData.label
+                                                
+                                                if (paramData) {
+                                                    // Показываем таблицу параметров с реальными данными
+                                                    paramGrid.visible = true
+                                                    paramId.text = paramData.id ? paramData.id.toString() : "—"
+                                                    paramType.text = paramData.type || "—"
+                                                    paramUnits.text = paramData.units || "—"
+                                                    paramDefault.text = paramData.defaultValue || "—"
+                                                    paramMin.text = paramData.min || "—"
+                                                    paramMax.text = paramData.max || "—"
+                                                    paramDtype.text = paramData.dtype || "—"
+                                                    
+                                                    infoContent.text = "Parameter " + modelData + " from group " + menuItemContainer.groupData.label + ".\n\nType: " + (paramData.type || "—") + ", ID: " + (paramData.id || "—")
+                                                } else {
+                                                    // Если данных нет, показываем упрощенную информацию
+                                                    paramGrid.visible = true
+                                                    paramId.text = "—"
+                                                    paramType.text = "Parameter"
+                                                    paramUnits.text = "—"
+                                                    paramDefault.text = "—"
+                                                    paramMin.text = "—"
+                                                    paramMax.text = "—"
+                                                    paramDtype.text = "—"
+                                                    
+                                                    infoContent.text = "Parameter " + modelData + " from group " + menuItemContainer.groupData.label + ".\n\nDetailed parameter information will be available after data integration."
+                                                }
                                             }
                                         }
                                     }

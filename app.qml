@@ -14,19 +14,23 @@ Window {
     title: "Xeus"
     flags: Qt.Window
 
-    // Функция для смены экрана - пауза опросов, затем мгновенное переключение через z-order
+    // Функция для смены экрана - пауза опросов первой страницы, затем мгновенное переключение через z-order
     function changeScreen(screenName) {
         console.log("⚡ changeScreen вызван:", screenName, "время:", Date.now())
-        // Приостанавливаем опрос Modbus, чтобы не блокировать UI
-        if (typeof modbusManager !== 'undefined' && modbusManager) {
-            modbusManager.pausePolling()
-        }
-
+        
         if (screenName === "Screen01") {
+            // Возвращаемся на первый экран - возобновляем все опросы первой страницы
+            if (typeof modbusManager !== 'undefined' && modbusManager) {
+                modbusManager.resumePolling()
+            }
             screen01Item.z = 1
             clinicalModeLoader.z = 0
             console.log("✅ Screen01 показан, время:", Date.now())
         } else if (screenName === "Clinicalmode") {
+            // Переходим на второй экран - останавливаем опросы первой страницы (графики продолжают работать через QML таймеры)
+            if (typeof modbusManager !== 'undefined' && modbusManager) {
+                modbusManager.pausePolling()
+            }
             if (clinicalModeLoader.status === Loader.Ready && clinicalModeLoader.item) {
                 screen01Item.z = 0
                 clinicalModeLoader.z = 1
@@ -35,11 +39,6 @@ Window {
             } else {
                 console.log("⏳ Clinicalmode еще не готов, статус:", clinicalModeLoader.status)
             }
-        }
-
-        // Возобновляем опрос Modbus после переключения
-        if (typeof modbusManager !== 'undefined' && modbusManager) {
-            Qt.callLater(function() { modbusManager.resumePolling() })
         }
     }
 

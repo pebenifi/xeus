@@ -433,6 +433,21 @@ class ModbusManager(QObject):
         logger.info("▶️ Опрос Modbus возобновлен после переключения экрана")
     
     @Slot()
+    def enableRelayPolling(self):
+        """Включить чтение регистра 1021 (реле) по требованию (например, при открытии External Relays)"""
+        if self._is_connected and not self._polling_paused:
+            if not self._relay_1021_timer.isActive():
+                self._relay_1021_timer.start()
+                logger.info("▶️ Опрос реле (регистр 1021) включен")
+    
+    @Slot()
+    def disableRelayPolling(self):
+        """Выключить чтение регистра 1021 (реле) по требованию (например, при закрытии External Relays)"""
+        if self._relay_1021_timer.isActive():
+            self._relay_1021_timer.stop()
+            logger.info("⏸ Опрос реле (регистр 1021) выключен")
+    
+    @Slot()
     def refreshUIFromCache(self):
         """Публичный метод для принудительного обновления UI из буфера (можно вызывать из QML при переключении страниц)"""
         self._emitCachedStates()
