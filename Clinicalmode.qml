@@ -480,6 +480,9 @@ Item {
             // При изменении активного параметра отключаем опрос SEOP Parameters
             modbusManager.disableSEOPParametersPolling()
             seopParametersGrid.visible = false
+            // При изменении активного параметра отключаем опрос Calculated Parameters
+            modbusManager.disableCalculatedParametersPolling()
+            calculatedParametersGrid.visible = false
         }
     }
 
@@ -2967,6 +2970,288 @@ Item {
                         }
                     }
 
+                    // Таблица Calculated Parameters для "4 Calculated Parameters" меню
+                    Column {
+                        id: calculatedParametersGrid
+                        width: parent.width
+                        spacing: 0
+                        visible: false
+
+                        // Electron Polarization
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedElectronPolarization
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // 129Xe Polarization
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedXePolarization
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // The buildup rate
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "The buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedBuildupRate
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "1/min"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Error bar for Electron Polarization
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Error bar for Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedElectronPolarizationError
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Error bar for 129Xe Polarization
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Error bar for 129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedXePolarizationError
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Error bar for the buildup rate
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Error bar for the buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedBuildupRateError
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "1/min"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Fitted 129Xe Polarization maximum
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Fitted 129Xe Polarization maximum:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedFittedXePolarizationMax
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Fitted 129Xe Polarization max error bar
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Fitted 129Xe Polarization max error bar:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedFittedXePolarizationMaxError
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // HP 129Xe T1
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "HP 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedHPXeT1
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "min"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Error bar for 129Xe T1
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Error bar for 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: calculatedHPXeT1Error
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0.00"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                Text { text: "min"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+
+                        // Connections для обновления значений Calculated Parameters
+                        Connections {
+                            target: modbusManager
+                            function onCalculatedElectronPolarizationChanged(value) {
+                                calculatedElectronPolarization.text = value.toFixed(2)
+                            }
+                            function onCalculatedXePolarizationChanged(value) {
+                                calculatedXePolarization.text = value.toFixed(2)
+                            }
+                            function onCalculatedBuildupRateChanged(value) {
+                                calculatedBuildupRate.text = value.toFixed(2)
+                            }
+                            function onCalculatedElectronPolarizationErrorChanged(value) {
+                                calculatedElectronPolarizationError.text = value.toFixed(2)
+                            }
+                            function onCalculatedXePolarizationErrorChanged(value) {
+                                calculatedXePolarizationError.text = value.toFixed(2)
+                            }
+                            function onCalculatedBuildupRateErrorChanged(value) {
+                                calculatedBuildupRateError.text = value.toFixed(2)
+                            }
+                            function onCalculatedFittedXePolarizationMaxChanged(value) {
+                                calculatedFittedXePolarizationMax.text = value.toFixed(2)
+                            }
+                            function onCalculatedFittedXePolarizationMaxErrorChanged(value) {
+                                calculatedFittedXePolarizationMaxError.text = value.toFixed(2)
+                            }
+                            function onCalculatedHPXeT1Changed(value) {
+                                calculatedHPXeT1.text = value.toFixed(2)
+                            }
+                            function onCalculatedHPXeT1ErrorChanged(value) {
+                                calculatedHPXeT1Error.text = value.toFixed(2)
+                            }
+                        }
+                    }
+
                     // Таблица Laser для Laser меню
                     Column {
                         id: laserGrid
@@ -3538,6 +3823,7 @@ Item {
                                         }
                                         // Показываем таблицу SEOP Parameters
                                         seopParametersGrid.visible = true
+                                        calculatedParametersGrid.visible = false
                                         relayTableGrid.visible = false
                                         valvesFansTableGrid.visible = false
                                         powerSupplyGrid.visible = false
@@ -3552,6 +3838,32 @@ Item {
                                         infoContent.text = "SEOP Parameters control"
                                         console.log("SEOP Parameters grid visible:", seopParametersGrid.visible)
                                         // Не раскрываем подменю для SEOP Parameters
+                                        if (expandedMenuItem === modelData) {
+                                            expandedMenuItem = ""
+                                        }
+                                    } else if (modelData === "4 Calculated Parameters") {
+                                        console.log("Calculated Parameters clicked, enabling polling")
+                                        // Включаем опрос Calculated Parameters по требованию
+                                        if (modbusManager) {
+                                            modbusManager.enableCalculatedParametersPolling()
+                                        }
+                                        // Показываем таблицу Calculated Parameters
+                                        calculatedParametersGrid.visible = true
+                                        seopParametersGrid.visible = false
+                                        relayTableGrid.visible = false
+                                        valvesFansTableGrid.visible = false
+                                        powerSupplyGrid.visible = false
+                                        pidControllerGrid.visible = false
+                                        waterChillerGrid.visible = false
+                                        alicatsGrid.visible = false
+                                        vacuumControllerGrid.visible = false
+                                        laserGrid.visible = false
+                                        paramGrid.visible = false
+                                        infoTitle.text = "4 Calculated Parameters"
+                                        infoSubtitle.text = menuItemContainer.groupData.label
+                                        infoContent.text = "Calculated Parameters display"
+                                        console.log("Calculated Parameters grid visible:", calculatedParametersGrid.visible)
+                                        // Не раскрываем подменю для Calculated Parameters
                                         if (expandedMenuItem === modelData) {
                                             expandedMenuItem = ""
                                         }
@@ -3640,6 +3952,7 @@ Item {
                                                 vacuumControllerGrid.visible = false
                                                 laserGrid.visible = false
                                                 seopParametersGrid.visible = false
+                                                calculatedParametersGrid.visible = false
                                                 paramGrid.visible = false
                                                 infoTitle.text = "External Relays"
                                                 infoSubtitle.text = menuItemContainer.groupData.label
@@ -3660,6 +3973,7 @@ Item {
                                                 vacuumControllerGrid.visible = false
                                                 laserGrid.visible = false
                                                 seopParametersGrid.visible = false
+                                                calculatedParametersGrid.visible = false
                                                 paramGrid.visible = false
                                                 infoTitle.text = "Valves and Fans"
                                                 infoSubtitle.text = menuItemContainer.groupData.label
@@ -3809,6 +4123,7 @@ Item {
                                                 vacuumControllerGrid.visible = false
                                                 laserGrid.visible = false
                                                 seopParametersGrid.visible = false
+                                                calculatedParametersGrid.visible = false
                                                 
                                                 // Получаем данные о параметре
                                                 var paramData = menuData.params[modelData]

@@ -179,6 +179,17 @@ class ModbusManager(QObject):
     seopWaterProtonConcentrationChanged = Signal(float)  # Water proton concentration в Mol (регистр 3151)
     seopCellNumberChanged = Signal(int)  # Cell number (регистр 3171)
     seopRefillCycleChanged = Signal(int)  # Refill cycle (регистр 3181)
+    # Calculated Parameters signals
+    calculatedElectronPolarizationChanged = Signal(float)  # Electron Polarization (PRb %) (регистр 4011)
+    calculatedXePolarizationChanged = Signal(float)  # 129Xe Polarization (PXe %) (регистр 4021)
+    calculatedBuildupRateChanged = Signal(float)  # The buildup rate (g-SEOP 1/min) (регистр 4031)
+    calculatedElectronPolarizationErrorChanged = Signal(float)  # Error bar for Electron Polarization (PRb-err %) (регистр 4041)
+    calculatedXePolarizationErrorChanged = Signal(float)  # Error bar for 129Xe Polarization (PXe err %) (регистр 4051)
+    calculatedBuildupRateErrorChanged = Signal(float)  # Error bar for the buildup rate (g-SEOP err 1/min) (регистр 4061)
+    calculatedFittedXePolarizationMaxChanged = Signal(float)  # Fitted 129Xe Polarization maximum (PXe max %) (регистр 4071)
+    calculatedFittedXePolarizationMaxErrorChanged = Signal(float)  # Fitted 129Xe Polarization max error bar (PXe max err %) (регистр 4081)
+    calculatedHPXeT1Changed = Signal(float)  # HP 129Xe T1 (T1 min) (регистр 4091)
+    calculatedHPXeT1ErrorChanged = Signal(float)  # Error bar for 129Xe T1 (T1 err min) (регистр 4101)
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
@@ -278,6 +289,17 @@ class ModbusManager(QObject):
         self._seop_water_proton_concentration = 0.0  # Water proton concentration в Mol (регистр 3151)
         self._seop_cell_number = 0  # Cell number (регистр 3171)
         self._seop_refill_cycle = 0  # Refill cycle (регистр 3181)
+        # Calculated Parameters state variables
+        self._calculated_electron_polarization = 0.0  # Electron Polarization (PRb %) (регистр 4011)
+        self._calculated_xe_polarization = 0.0  # 129Xe Polarization (PXe %) (регистр 4021)
+        self._calculated_buildup_rate = 0.0  # The buildup rate (g-SEOP 1/min) (регистр 4031)
+        self._calculated_electron_polarization_error = 0.0  # Error bar for Electron Polarization (PRb-err %) (регистр 4041)
+        self._calculated_xe_polarization_error = 0.0  # Error bar for 129Xe Polarization (PXe err %) (регистр 4051)
+        self._calculated_buildup_rate_error = 0.0  # Error bar for the buildup rate (g-SEOP err 1/min) (регистр 4061)
+        self._calculated_fitted_xe_polarization_max = 0.0  # Fitted 129Xe Polarization maximum (PXe max %) (регистр 4071)
+        self._calculated_fitted_xe_polarization_max_error = 0.0  # Fitted 129Xe Polarization max error bar (PXe max err %) (регистр 4081)
+        self._calculated_hp_xe_t1 = 0.0  # HP 129Xe T1 (T1 min) (регистр 4091)
+        self._calculated_hp_xe_t1_error = 0.0  # Error bar for 129Xe T1 (T1 err min) (регистр 4101)
         # Флаги взаимодействия пользователя для автообновления
         self._seop_laser_max_temp_user_interaction = False
         self._seop_laser_min_temp_user_interaction = False
@@ -448,6 +470,12 @@ class ModbusManager(QObject):
         self._seop_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         self._reading_seop_parameters = False  # Флаг для предотвращения параллельных чтений
 
+        # Таймер для чтения регистров Calculated Parameters (4011-4101) - быстрое обновление
+        self._calculated_parameters_timer = QTimer(self)
+        self._calculated_parameters_timer.timeout.connect(self._readCalculatedParameters)
+        self._calculated_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
+        self._reading_calculated_parameters = False  # Флаг для предотвращения параллельных чтений
+
         # Список таймеров для паузы/возобновления опросов
         self._polling_timers = [
             self._connection_check_timer,
@@ -469,6 +497,7 @@ class ModbusManager(QObject):
             self._vacuum_controller_timer,
             self._laser_timer,
             self._seop_parameters_timer,
+            self._calculated_parameters_timer,
         ]
         
         # Worker-поток для Modbus I/O (чтобы UI не подвисал)
@@ -741,6 +770,26 @@ class ModbusManager(QObject):
         if self._seop_parameters_timer.isActive():
             self._seop_parameters_timer.stop()
             logger.info("⏸ Опрос SEOP Parameters выключен")
+    
+    @Slot()
+    def enableCalculatedParametersPolling(self):
+        """Включить чтение регистров Calculated Parameters (4011-4101) по требованию (например, при открытии Calculated Parameters)"""
+        logger.info(f"enableCalculatedParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+        if self._is_connected and not self._polling_paused:
+            if not self._calculated_parameters_timer.isActive():
+                self._calculated_parameters_timer.start()
+                logger.info("▶️ Опрос Calculated Parameters включен")
+            else:
+                logger.info("⏸ Опрос Calculated Parameters уже активен")
+        else:
+            logger.warning(f"⏸ Опрос Calculated Parameters не включен: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+    
+    @Slot()
+    def disableCalculatedParametersPolling(self):
+        """Выключить чтение регистров Calculated Parameters по требованию (например, при закрытии Calculated Parameters)"""
+        if self._calculated_parameters_timer.isActive():
+            self._calculated_parameters_timer.stop()
+            logger.info("⏸ Опрос Calculated Parameters выключен")
     
     @Slot()
     def refreshUIFromCache(self):
@@ -1128,6 +1177,8 @@ class ModbusManager(QObject):
             self._applyLaserValue(value)
         elif key == "seop_parameters":
             self._applySEOPParametersValue(value)
+        elif key == "calculated_parameters":
+            self._applyCalculatedParametersValue(value)
         elif key == "1020":
             self._applyExternalRelays1020Value(value)
         elif key == "ir":
@@ -2850,6 +2901,124 @@ class ModbusManager(QObject):
             return result
         
         self._enqueue_read("seop_parameters", task)
+    
+    def _readCalculatedParameters(self):
+        """Чтение регистров Calculated Parameters (4011-4101)"""
+        if not self._is_connected or self._modbus_client is None or self._reading_calculated_parameters:
+            return
+
+        self._reading_calculated_parameters = True
+        client = self._modbus_client
+        
+        def task():
+            """Чтение всех регистров Calculated Parameters"""
+            # Регистры 4011-4101
+            electron_polarization_regs = client.read_input_registers_direct(4011, 1, max_chunk=1)
+            xe_polarization_regs = client.read_input_registers_direct(4021, 1, max_chunk=1)
+            buildup_rate_regs = client.read_input_registers_direct(4031, 1, max_chunk=1)
+            electron_polarization_error_regs = client.read_input_registers_direct(4041, 1, max_chunk=1)
+            xe_polarization_error_regs = client.read_input_registers_direct(4051, 1, max_chunk=1)
+            buildup_rate_error_regs = client.read_input_registers_direct(4061, 1, max_chunk=1)
+            fitted_xe_polarization_max_regs = client.read_input_registers_direct(4071, 1, max_chunk=1)
+            fitted_xe_polarization_max_error_regs = client.read_input_registers_direct(4081, 1, max_chunk=1)
+            hp_xe_t1_regs = client.read_input_registers_direct(4091, 1, max_chunk=1)
+            hp_xe_t1_error_regs = client.read_input_registers_direct(4101, 1, max_chunk=1)
+            
+            result = {}
+            if electron_polarization_regs and len(electron_polarization_regs) >= 1:
+                # Electron Polarization (PRb %) - преобразуем из int (PRb * 100) в float
+                result['electron_polarization'] = float(int(electron_polarization_regs[0])) / 100.0
+            if xe_polarization_regs and len(xe_polarization_regs) >= 1:
+                # 129Xe Polarization (PXe %) - преобразуем из int (PXe * 100) в float
+                result['xe_polarization'] = float(int(xe_polarization_regs[0])) / 100.0
+            if buildup_rate_regs and len(buildup_rate_regs) >= 1:
+                # The buildup rate (g-SEOP 1/min) - преобразуем из int (g-SEOP * 100) в float
+                result['buildup_rate'] = float(int(buildup_rate_regs[0])) / 100.0
+            if electron_polarization_error_regs and len(electron_polarization_error_regs) >= 1:
+                # Error bar for Electron Polarization (PRb-err %) - преобразуем из int (PRb-err * 100) в float
+                result['electron_polarization_error'] = float(int(electron_polarization_error_regs[0])) / 100.0
+            if xe_polarization_error_regs and len(xe_polarization_error_regs) >= 1:
+                # Error bar for 129Xe Polarization (PXe err %) - преобразуем из int (PXe err * 100) в float
+                result['xe_polarization_error'] = float(int(xe_polarization_error_regs[0])) / 100.0
+            if buildup_rate_error_regs and len(buildup_rate_error_regs) >= 1:
+                # Error bar for the buildup rate (g-SEOP err 1/min) - преобразуем из int (g-SEOP err * 100) в float
+                result['buildup_rate_error'] = float(int(buildup_rate_error_regs[0])) / 100.0
+            if fitted_xe_polarization_max_regs and len(fitted_xe_polarization_max_regs) >= 1:
+                # Fitted 129Xe Polarization maximum (PXe max %) - преобразуем из int (PXe max * 100) в float
+                result['fitted_xe_polarization_max'] = float(int(fitted_xe_polarization_max_regs[0])) / 100.0
+            if fitted_xe_polarization_max_error_regs and len(fitted_xe_polarization_max_error_regs) >= 1:
+                # Fitted 129Xe Polarization max error bar (PXe max err %) - преобразуем из int (PXe max err * 100) в float
+                result['fitted_xe_polarization_max_error'] = float(int(fitted_xe_polarization_max_error_regs[0])) / 100.0
+            if hp_xe_t1_regs and len(hp_xe_t1_regs) >= 1:
+                # HP 129Xe T1 (T1 min) - преобразуем из int (T1 * 100) в float
+                result['hp_xe_t1'] = float(int(hp_xe_t1_regs[0])) / 100.0
+            if hp_xe_t1_error_regs and len(hp_xe_t1_error_regs) >= 1:
+                # Error bar for 129Xe T1 (T1 err min) - преобразуем из int (T1 err * 100) в float
+                result['hp_xe_t1_error'] = float(int(hp_xe_t1_error_regs[0])) / 100.0
+            
+            return result
+        
+        self._enqueue_read("calculated_parameters", task)
+    
+    def _applyCalculatedParametersValue(self, value: object):
+        """Применение результатов чтения Calculated Parameters (4011-4101)"""
+        self._reading_calculated_parameters = False
+        if value is None or not isinstance(value, dict):
+            logger.warning(f"_applyCalculatedParametersValue: value is None or not dict: {value}")
+            return
+        
+        logger.debug(f"_applyCalculatedParametersValue: received value={value}")
+        
+        if 'electron_polarization' in value:
+            val = float(value['electron_polarization'])
+            self._calculated_electron_polarization = val
+            self.calculatedElectronPolarizationChanged.emit(val)
+            logger.debug(f"Calculated Electron Polarization: {val}%")
+        if 'xe_polarization' in value:
+            val = float(value['xe_polarization'])
+            self._calculated_xe_polarization = val
+            self.calculatedXePolarizationChanged.emit(val)
+            logger.debug(f"Calculated 129Xe Polarization: {val}%")
+        if 'buildup_rate' in value:
+            val = float(value['buildup_rate'])
+            self._calculated_buildup_rate = val
+            self.calculatedBuildupRateChanged.emit(val)
+            logger.debug(f"Calculated Buildup Rate: {val} 1/min")
+        if 'electron_polarization_error' in value:
+            val = float(value['electron_polarization_error'])
+            self._calculated_electron_polarization_error = val
+            self.calculatedElectronPolarizationErrorChanged.emit(val)
+            logger.debug(f"Calculated Electron Polarization Error: {val}%")
+        if 'xe_polarization_error' in value:
+            val = float(value['xe_polarization_error'])
+            self._calculated_xe_polarization_error = val
+            self.calculatedXePolarizationErrorChanged.emit(val)
+            logger.debug(f"Calculated 129Xe Polarization Error: {val}%")
+        if 'buildup_rate_error' in value:
+            val = float(value['buildup_rate_error'])
+            self._calculated_buildup_rate_error = val
+            self.calculatedBuildupRateErrorChanged.emit(val)
+            logger.debug(f"Calculated Buildup Rate Error: {val} 1/min")
+        if 'fitted_xe_polarization_max' in value:
+            val = float(value['fitted_xe_polarization_max'])
+            self._calculated_fitted_xe_polarization_max = val
+            self.calculatedFittedXePolarizationMaxChanged.emit(val)
+            logger.debug(f"Calculated Fitted 129Xe Polarization Max: {val}%")
+        if 'fitted_xe_polarization_max_error' in value:
+            val = float(value['fitted_xe_polarization_max_error'])
+            self._calculated_fitted_xe_polarization_max_error = val
+            self.calculatedFittedXePolarizationMaxErrorChanged.emit(val)
+            logger.debug(f"Calculated Fitted 129Xe Polarization Max Error: {val}%")
+        if 'hp_xe_t1' in value:
+            val = float(value['hp_xe_t1'])
+            self._calculated_hp_xe_t1 = val
+            self.calculatedHPXeT1Changed.emit(val)
+            logger.debug(f"Calculated HP 129Xe T1: {val} min")
+        if 'hp_xe_t1_error' in value:
+            val = float(value['hp_xe_t1_error'])
+            self._calculated_hp_xe_t1_error = val
+            self.calculatedHPXeT1ErrorChanged.emit(val)
+            logger.debug(f"Calculated HP 129Xe T1 Error: {val} min")
     
     @Slot(int, bool, result=bool)
     def setFan(self, fanIndex: int, state: bool) -> bool:
