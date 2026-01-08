@@ -483,6 +483,9 @@ Item {
             // При изменении активного параметра отключаем опрос Calculated Parameters
             modbusManager.disableCalculatedParametersPolling()
             calculatedParametersGrid.visible = false
+            // При изменении активного параметра отключаем опрос Measured Parameters
+            modbusManager.disableMeasuredParametersPolling()
+            measuredParametersGrid.visible = false
         }
     }
 
@@ -3252,6 +3255,353 @@ Item {
                         }
                     }
 
+                    // Таблица Measured Parameters для "5 Measured Parameters" меню
+                    Column {
+                        id: measuredParametersGrid
+                        width: parent.width
+                        spacing: 0
+                        visible: false
+
+                        // Current IR Signal (только чтение)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Current IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: measuredCurrentIRSignal
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Cold Cell IR Signal (чтение и запись)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Cold Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: measuredColdCellIRSignal
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setMeasuredColdCellIRSignalValue(val)
+                                            modbusManager.setMeasuredColdCellIRSignal(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseMeasuredColdCellIRSignal()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseMeasuredColdCellIRSignal()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Hot Cell IR Signal (чтение и запись)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Hot Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: measuredHotCellIRSignal
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setMeasuredHotCellIRSignalValue(val)
+                                            modbusManager.setMeasuredHotCellIRSignal(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseMeasuredHotCellIRSignal()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseMeasuredHotCellIRSignal()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Water 1H NMR Reference Signal (чтение и запись)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Water 1H NMR Reference Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: measuredWater1HNMRReferenceSignal
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setMeasuredWater1HNMRReferenceSignalValue(val)
+                                            modbusManager.setMeasuredWater1HNMRReferenceSignal(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseMeasuredWater1HNMRReferenceSignal()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseMeasuredWater1HNMRReferenceSignal()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Water T2 (чтение и запись)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Water T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: measuredWaterT2
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setMeasuredWaterT2Value(val)
+                                            modbusManager.setMeasuredWaterT2(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "ms"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseMeasuredWaterT2()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseMeasuredWaterT2()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // HP 129Xe NMR Signal (только чтение)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "HP 129Xe NMR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: measuredHP129XeNMRSignal
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // HP 129Xe T2 (чтение и запись)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "HP 129Xe T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: measuredHP129XeT2
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setMeasuredHP129XeT2Value(val)
+                                            modbusManager.setMeasuredHP129XeT2(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "ms"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseMeasuredHP129XeT2()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseMeasuredHP129XeT2()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // T2* correction factor (только чтение)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "T2* correction factor:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Text {
+                                    id: measuredT2CorrectionFactor
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    color: "#000000"
+                                    text: "0"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                        }
+
+                        // Connections для обновления значений Measured Parameters
+                        Connections {
+                            target: modbusManager
+                            function onMeasuredCurrentIRSignalChanged(value) {
+                                measuredCurrentIRSignal.text = value.toFixed(0)
+                            }
+                            function onMeasuredColdCellIRSignalChanged(value) {
+                                if (!measuredColdCellIRSignal.activeFocus) {
+                                    measuredColdCellIRSignal.text = value.toFixed(0)
+                                }
+                            }
+                            function onMeasuredHotCellIRSignalChanged(value) {
+                                if (!measuredHotCellIRSignal.activeFocus) {
+                                    measuredHotCellIRSignal.text = value.toFixed(0)
+                                }
+                            }
+                            function onMeasuredWater1HNMRReferenceSignalChanged(value) {
+                                if (!measuredWater1HNMRReferenceSignal.activeFocus) {
+                                    measuredWater1HNMRReferenceSignal.text = value.toFixed(0)
+                                }
+                            }
+                            function onMeasuredWaterT2Changed(value) {
+                                if (!measuredWaterT2.activeFocus) {
+                                    measuredWaterT2.text = value.toFixed(2)
+                                }
+                            }
+                            function onMeasuredHP129XeNMRSignalChanged(value) {
+                                measuredHP129XeNMRSignal.text = value.toFixed(0)
+                            }
+                            function onMeasuredHP129XeT2Changed(value) {
+                                if (!measuredHP129XeT2.activeFocus) {
+                                    measuredHP129XeT2.text = value.toFixed(2)
+                                }
+                            }
+                            function onMeasuredT2CorrectionFactorChanged(value) {
+                                measuredT2CorrectionFactor.text = value.toFixed(0)
+                            }
+                        }
+                    }
+
                     // Таблица Laser для Laser меню
                     Column {
                         id: laserGrid
@@ -3824,6 +4174,7 @@ Item {
                                         // Показываем таблицу SEOP Parameters
                                         seopParametersGrid.visible = true
                                         calculatedParametersGrid.visible = false
+                                        measuredParametersGrid.visible = false
                                         relayTableGrid.visible = false
                                         valvesFansTableGrid.visible = false
                                         powerSupplyGrid.visible = false
@@ -3864,6 +4215,34 @@ Item {
                                         infoContent.text = "Calculated Parameters display"
                                         console.log("Calculated Parameters grid visible:", calculatedParametersGrid.visible)
                                         // Не раскрываем подменю для Calculated Parameters
+                                        if (expandedMenuItem === modelData) {
+                                            expandedMenuItem = ""
+                                        }
+                                    } else if (modelData === "5 Measured Parameters") {
+                                        console.log("Measured Parameters clicked, enabling polling")
+                                        // Включаем опрос Measured Parameters по требованию
+                                        if (modbusManager) {
+                                            modbusManager.enableMeasuredParametersPolling()
+                                        }
+                                        // Показываем таблицу Measured Parameters
+                                        measuredParametersGrid.visible = true
+                                        seopParametersGrid.visible = false
+                                        calculatedParametersGrid.visible = false
+                                        measuredParametersGrid.visible = false
+                                        relayTableGrid.visible = false
+                                        valvesFansTableGrid.visible = false
+                                        powerSupplyGrid.visible = false
+                                        pidControllerGrid.visible = false
+                                        waterChillerGrid.visible = false
+                                        alicatsGrid.visible = false
+                                        vacuumControllerGrid.visible = false
+                                        laserGrid.visible = false
+                                        paramGrid.visible = false
+                                        infoTitle.text = "5 Measured Parameters"
+                                        infoSubtitle.text = menuItemContainer.groupData.label
+                                        infoContent.text = "Measured Parameters control"
+                                        console.log("Measured Parameters grid visible:", measuredParametersGrid.visible)
+                                        // Не раскрываем подменю для Measured Parameters
                                         if (expandedMenuItem === modelData) {
                                             expandedMenuItem = ""
                                         }

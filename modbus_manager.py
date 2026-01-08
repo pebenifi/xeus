@@ -190,6 +190,15 @@ class ModbusManager(QObject):
     calculatedFittedXePolarizationMaxErrorChanged = Signal(float)  # Fitted 129Xe Polarization max error bar (PXe max err %) (регистр 4081)
     calculatedHPXeT1Changed = Signal(float)  # HP 129Xe T1 (T1 min) (регистр 4091)
     calculatedHPXeT1ErrorChanged = Signal(float)  # Error bar for 129Xe T1 (T1 err min) (регистр 4101)
+    # Measured Parameters signals
+    measuredCurrentIRSignalChanged = Signal(float)  # Current IR Signal (регистр 5011) - только чтение
+    measuredColdCellIRSignalChanged = Signal(float)  # Cold Cell IR Signal (регистр 5021) - чтение и запись
+    measuredHotCellIRSignalChanged = Signal(float)  # Hot Cell IR Signal (регистр 5031) - чтение и запись
+    measuredWater1HNMRReferenceSignalChanged = Signal(float)  # Water 1H NMR Reference Signal (регистр 5041) - чтение и запись
+    measuredWaterT2Changed = Signal(float)  # Water T2 в ms (регистр 5051) - чтение и запись
+    measuredHP129XeNMRSignalChanged = Signal(float)  # HP 129Xe NMR Signal (регистр 5061) - только чтение
+    measuredHP129XeT2Changed = Signal(float)  # HP 129Xe T2 в ms (регистр 5071) - чтение и запись
+    measuredT2CorrectionFactorChanged = Signal(float)  # T2* correction factor (регистр 5081) - только чтение
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
@@ -300,6 +309,21 @@ class ModbusManager(QObject):
         self._calculated_fitted_xe_polarization_max_error = 0.0  # Fitted 129Xe Polarization max error bar (PXe max err %) (регистр 4081)
         self._calculated_hp_xe_t1 = 0.0  # HP 129Xe T1 (T1 min) (регистр 4091)
         self._calculated_hp_xe_t1_error = 0.0  # Error bar for 129Xe T1 (T1 err min) (регистр 4101)
+        # Measured Parameters state variables
+        self._measured_current_ir_signal = 0.0  # Current IR Signal (регистр 5011) - только чтение
+        self._measured_cold_cell_ir_signal = 0.0  # Cold Cell IR Signal (регистр 5021) - чтение и запись
+        self._measured_hot_cell_ir_signal = 0.0  # Hot Cell IR Signal (регистр 5031) - чтение и запись
+        self._measured_water_1h_nmr_reference_signal = 0.0  # Water 1H NMR Reference Signal (регистр 5041) - чтение и запись
+        self._measured_water_t2 = 0.0  # Water T2 в ms (регистр 5051) - чтение и запись
+        self._measured_hp_129xe_nmr_signal = 0.0  # HP 129Xe NMR Signal (регистр 5061) - только чтение
+        self._measured_hp_129xe_t2 = 0.0  # HP 129Xe T2 в ms (регистр 5071) - чтение и запись
+        self._measured_t2_correction_factor = 0.0  # T2* correction factor (регистр 5081) - только чтение
+        # Флаги взаимодействия пользователя для автообновления
+        self._measured_cold_cell_ir_signal_user_interaction = False
+        self._measured_hot_cell_ir_signal_user_interaction = False
+        self._measured_water_1h_nmr_reference_signal_user_interaction = False
+        self._measured_water_t2_user_interaction = False
+        self._measured_hp_129xe_t2_user_interaction = False
         # Флаги взаимодействия пользователя для автообновления
         self._seop_laser_max_temp_user_interaction = False
         self._seop_laser_min_temp_user_interaction = False
@@ -476,6 +500,12 @@ class ModbusManager(QObject):
         self._calculated_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         self._reading_calculated_parameters = False  # Флаг для предотвращения параллельных чтений
 
+        # Таймер для чтения регистров Measured Parameters (5011-5081) - быстрое обновление
+        self._measured_parameters_timer = QTimer(self)
+        self._measured_parameters_timer.timeout.connect(self._readMeasuredParameters)
+        self._measured_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
+        self._reading_measured_parameters = False  # Флаг для предотвращения параллельных чтений
+
         # Список таймеров для паузы/возобновления опросов
         self._polling_timers = [
             self._connection_check_timer,
@@ -498,6 +528,7 @@ class ModbusManager(QObject):
             self._laser_timer,
             self._seop_parameters_timer,
             self._calculated_parameters_timer,
+            self._measured_parameters_timer,
         ]
         
         # Worker-поток для Modbus I/O (чтобы UI не подвисал)
@@ -790,6 +821,26 @@ class ModbusManager(QObject):
         if self._calculated_parameters_timer.isActive():
             self._calculated_parameters_timer.stop()
             logger.info("⏸ Опрос Calculated Parameters выключен")
+    
+    @Slot()
+    def enableMeasuredParametersPolling(self):
+        """Включить чтение регистров Measured Parameters (5011-5081) по требованию (например, при открытии Measured Parameters)"""
+        logger.info(f"enableMeasuredParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+        if self._is_connected and not self._polling_paused:
+            if not self._measured_parameters_timer.isActive():
+                self._measured_parameters_timer.start()
+                logger.info("▶️ Опрос Measured Parameters включен")
+            else:
+                logger.info("⏸ Опрос Measured Parameters уже активен")
+        else:
+            logger.warning(f"⏸ Опрос Measured Parameters не включен: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+    
+    @Slot()
+    def disableMeasuredParametersPolling(self):
+        """Выключить чтение регистров Measured Parameters по требованию (например, при закрытии Measured Parameters)"""
+        if self._measured_parameters_timer.isActive():
+            self._measured_parameters_timer.stop()
+            logger.info("⏸ Опрос Measured Parameters выключен")
     
     @Slot()
     def refreshUIFromCache(self):
@@ -1179,6 +1230,8 @@ class ModbusManager(QObject):
             self._applySEOPParametersValue(value)
         elif key == "calculated_parameters":
             self._applyCalculatedParametersValue(value)
+        elif key == "measured_parameters":
+            self._applyMeasuredParametersValue(value)
         elif key == "1020":
             self._applyExternalRelays1020Value(value)
         elif key == "ir":
@@ -3019,6 +3072,283 @@ class ModbusManager(QObject):
             self._calculated_hp_xe_t1_error = val
             self.calculatedHPXeT1ErrorChanged.emit(val)
             logger.debug(f"Calculated HP 129Xe T1 Error: {val} min")
+    
+    def _readMeasuredParameters(self):
+        """Чтение регистров Measured Parameters (5011-5081)"""
+        if not self._is_connected or self._modbus_client is None or self._reading_measured_parameters:
+            return
+
+        self._reading_measured_parameters = True
+        client = self._modbus_client
+        
+        def task():
+            """Чтение всех регистров Measured Parameters"""
+            # Регистры 5011-5081
+            current_ir_signal_regs = client.read_input_registers_direct(5011, 1, max_chunk=1)
+            cold_cell_ir_signal_regs = client.read_input_registers_direct(5021, 1, max_chunk=1)
+            hot_cell_ir_signal_regs = client.read_input_registers_direct(5031, 1, max_chunk=1)
+            water_1h_nmr_reference_signal_regs = client.read_input_registers_direct(5041, 1, max_chunk=1)
+            water_t2_regs = client.read_input_registers_direct(5051, 1, max_chunk=1)
+            hp_129xe_nmr_signal_regs = client.read_input_registers_direct(5061, 1, max_chunk=1)
+            hp_129xe_t2_regs = client.read_input_registers_direct(5071, 1, max_chunk=1)
+            t2_correction_factor_regs = client.read_input_registers_direct(5081, 1, max_chunk=1)
+            
+            result = {}
+            if current_ir_signal_regs and len(current_ir_signal_regs) >= 1:
+                # Current IR Signal - значение уже в нужных единицах
+                result['current_ir_signal'] = float(int(current_ir_signal_regs[0]))
+            if cold_cell_ir_signal_regs and len(cold_cell_ir_signal_regs) >= 1:
+                # Cold Cell IR Signal - значение уже в нужных единицах
+                result['cold_cell_ir_signal'] = float(int(cold_cell_ir_signal_regs[0]))
+            if hot_cell_ir_signal_regs and len(hot_cell_ir_signal_regs) >= 1:
+                # Hot Cell IR Signal - значение уже в нужных единицах
+                result['hot_cell_ir_signal'] = float(int(hot_cell_ir_signal_regs[0]))
+            if water_1h_nmr_reference_signal_regs and len(water_1h_nmr_reference_signal_regs) >= 1:
+                # Water 1H NMR Reference Signal - значение уже в нужных единицах
+                result['water_1h_nmr_reference_signal'] = float(int(water_1h_nmr_reference_signal_regs[0]))
+            if water_t2_regs and len(water_t2_regs) >= 1:
+                # Water T2 в ms - преобразуем из int (ms * 100) в float
+                result['water_t2'] = float(int(water_t2_regs[0])) / 100.0
+            if hp_129xe_nmr_signal_regs and len(hp_129xe_nmr_signal_regs) >= 1:
+                # HP 129Xe NMR Signal - значение уже в нужных единицах
+                result['hp_129xe_nmr_signal'] = float(int(hp_129xe_nmr_signal_regs[0]))
+            if hp_129xe_t2_regs and len(hp_129xe_t2_regs) >= 1:
+                # HP 129Xe T2 в ms - преобразуем из int (ms * 100) в float
+                result['hp_129xe_t2'] = float(int(hp_129xe_t2_regs[0])) / 100.0
+            if t2_correction_factor_regs and len(t2_correction_factor_regs) >= 1:
+                # T2* correction factor - значение уже в нужных единицах
+                result['t2_correction_factor'] = float(int(t2_correction_factor_regs[0]))
+            
+            return result
+        
+        self._enqueue_read("measured_parameters", task)
+    
+    def _applyMeasuredParametersValue(self, value: object):
+        """Применение результатов чтения Measured Parameters (5011-5081)"""
+        self._reading_measured_parameters = False
+        if value is None or not isinstance(value, dict):
+            logger.warning(f"_applyMeasuredParametersValue: value is None or not dict: {value}")
+            return
+        
+        logger.debug(f"_applyMeasuredParametersValue: received value={value}")
+        
+        if 'current_ir_signal' in value:
+            val = float(value['current_ir_signal'])
+            self._measured_current_ir_signal = val
+            self.measuredCurrentIRSignalChanged.emit(val)
+            logger.debug(f"Measured Current IR Signal: {val}")
+        if 'cold_cell_ir_signal' in value:
+            val = float(value['cold_cell_ir_signal'])
+            if not self._measured_cold_cell_ir_signal_user_interaction:
+                self._measured_cold_cell_ir_signal = val
+                self.measuredColdCellIRSignalChanged.emit(val)
+                logger.debug(f"Measured Cold Cell IR Signal: {val}")
+        if 'hot_cell_ir_signal' in value:
+            val = float(value['hot_cell_ir_signal'])
+            if not self._measured_hot_cell_ir_signal_user_interaction:
+                self._measured_hot_cell_ir_signal = val
+                self.measuredHotCellIRSignalChanged.emit(val)
+                logger.debug(f"Measured Hot Cell IR Signal: {val}")
+        if 'water_1h_nmr_reference_signal' in value:
+            val = float(value['water_1h_nmr_reference_signal'])
+            if not self._measured_water_1h_nmr_reference_signal_user_interaction:
+                self._measured_water_1h_nmr_reference_signal = val
+                self.measuredWater1HNMRReferenceSignalChanged.emit(val)
+                logger.debug(f"Measured Water 1H NMR Reference Signal: {val}")
+        if 'water_t2' in value:
+            val = float(value['water_t2'])
+            if not self._measured_water_t2_user_interaction:
+                self._measured_water_t2 = val
+                self.measuredWaterT2Changed.emit(val)
+                logger.debug(f"Measured Water T2: {val} ms")
+        if 'hp_129xe_nmr_signal' in value:
+            val = float(value['hp_129xe_nmr_signal'])
+            self._measured_hp_129xe_nmr_signal = val
+            self.measuredHP129XeNMRSignalChanged.emit(val)
+            logger.debug(f"Measured HP 129Xe NMR Signal: {val}")
+        if 'hp_129xe_t2' in value:
+            val = float(value['hp_129xe_t2'])
+            if not self._measured_hp_129xe_t2_user_interaction:
+                self._measured_hp_129xe_t2 = val
+                self.measuredHP129XeT2Changed.emit(val)
+                logger.debug(f"Measured HP 129Xe T2: {val} ms")
+        if 't2_correction_factor' in value:
+            val = float(value['t2_correction_factor'])
+            self._measured_t2_correction_factor = val
+            self.measuredT2CorrectionFactorChanged.emit(val)
+            logger.debug(f"Measured T2* correction factor: {val}")
+    
+    # ===== Measured Parameters методы записи =====
+    @Slot(float, result=bool)
+    def setMeasuredColdCellIRSignal(self, value: float) -> bool:
+        """Установка Cold Cell IR Signal (регистр 5021)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._measured_cold_cell_ir_signal = value
+        self._measured_cold_cell_ir_signal_user_interaction = True
+        self.measuredColdCellIRSignalChanged.emit(value)
+        register_value = int(value)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(5021, register_value)
+            return bool(result)
+        self._enqueue_write("measured_cold_cell_ir_signal", task, {"value": value})
+        return True
+    
+    @Slot(result=bool)
+    def increaseMeasuredColdCellIRSignal(self) -> bool:
+        """Увеличение Cold Cell IR Signal на 1"""
+        return self.setMeasuredColdCellIRSignal(self._measured_cold_cell_ir_signal + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseMeasuredColdCellIRSignal(self) -> bool:
+        """Уменьшение Cold Cell IR Signal на 1"""
+        return self.setMeasuredColdCellIRSignal(self._measured_cold_cell_ir_signal - 1.0)
+    
+    @Slot(float, result=bool)
+    def setMeasuredHotCellIRSignal(self, value: float) -> bool:
+        """Установка Hot Cell IR Signal (регистр 5031)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._measured_hot_cell_ir_signal = value
+        self._measured_hot_cell_ir_signal_user_interaction = True
+        self.measuredHotCellIRSignalChanged.emit(value)
+        register_value = int(value)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(5031, register_value)
+            return bool(result)
+        self._enqueue_write("measured_hot_cell_ir_signal", task, {"value": value})
+        return True
+    
+    @Slot(result=bool)
+    def increaseMeasuredHotCellIRSignal(self) -> bool:
+        """Увеличение Hot Cell IR Signal на 1"""
+        return self.setMeasuredHotCellIRSignal(self._measured_hot_cell_ir_signal + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseMeasuredHotCellIRSignal(self) -> bool:
+        """Уменьшение Hot Cell IR Signal на 1"""
+        return self.setMeasuredHotCellIRSignal(self._measured_hot_cell_ir_signal - 1.0)
+    
+    @Slot(float, result=bool)
+    def setMeasuredWater1HNMRReferenceSignal(self, value: float) -> bool:
+        """Установка Water 1H NMR Reference Signal (регистр 5041)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._measured_water_1h_nmr_reference_signal = value
+        self._measured_water_1h_nmr_reference_signal_user_interaction = True
+        self.measuredWater1HNMRReferenceSignalChanged.emit(value)
+        register_value = int(value)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(5041, register_value)
+            return bool(result)
+        self._enqueue_write("measured_water_1h_nmr_reference_signal", task, {"value": value})
+        return True
+    
+    @Slot(result=bool)
+    def increaseMeasuredWater1HNMRReferenceSignal(self) -> bool:
+        """Увеличение Water 1H NMR Reference Signal на 1"""
+        return self.setMeasuredWater1HNMRReferenceSignal(self._measured_water_1h_nmr_reference_signal + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseMeasuredWater1HNMRReferenceSignal(self) -> bool:
+        """Уменьшение Water 1H NMR Reference Signal на 1"""
+        return self.setMeasuredWater1HNMRReferenceSignal(self._measured_water_1h_nmr_reference_signal - 1.0)
+    
+    @Slot(float, result=bool)
+    def setMeasuredWaterT2(self, value_ms: float) -> bool:
+        """Установка Water T2 в ms (регистр 5051)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._measured_water_t2 = value_ms
+        self._measured_water_t2_user_interaction = True
+        self.measuredWaterT2Changed.emit(value_ms)
+        register_value = int(value_ms * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(5051, register_value)
+            return bool(result)
+        self._enqueue_write("measured_water_t2", task, {"value_ms": value_ms})
+        return True
+    
+    @Slot(result=bool)
+    def increaseMeasuredWaterT2(self) -> bool:
+        """Увеличение Water T2 на 0.01 ms"""
+        return self.setMeasuredWaterT2(self._measured_water_t2 + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseMeasuredWaterT2(self) -> bool:
+        """Уменьшение Water T2 на 0.01 ms"""
+        return self.setMeasuredWaterT2(self._measured_water_t2 - 0.01)
+    
+    @Slot(float, result=bool)
+    def setMeasuredHP129XeT2(self, value_ms: float) -> bool:
+        """Установка HP 129Xe T2 в ms (регистр 5071)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._measured_hp_129xe_t2 = value_ms
+        self._measured_hp_129xe_t2_user_interaction = True
+        self.measuredHP129XeT2Changed.emit(value_ms)
+        register_value = int(value_ms * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(5071, register_value)
+            return bool(result)
+        self._enqueue_write("measured_hp_129xe_t2", task, {"value_ms": value_ms})
+        return True
+    
+    @Slot(result=bool)
+    def increaseMeasuredHP129XeT2(self) -> bool:
+        """Увеличение HP 129Xe T2 на 0.01 ms"""
+        return self.setMeasuredHP129XeT2(self._measured_hp_129xe_t2 + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseMeasuredHP129XeT2(self) -> bool:
+        """Уменьшение HP 129Xe T2 на 0.01 ms"""
+        return self.setMeasuredHP129XeT2(self._measured_hp_129xe_t2 - 0.01)
+    
+    # Методы setValue для TextField (ввод с клавиатуры)
+    @Slot(float, result=bool)
+    def setMeasuredColdCellIRSignalValue(self, value: float) -> bool:
+        """Обновление внутреннего значения Cold Cell IR Signal без отправки на устройство"""
+        self._measured_cold_cell_ir_signal = value
+        self.measuredColdCellIRSignalChanged.emit(value)
+        self._measured_cold_cell_ir_signal_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setMeasuredHotCellIRSignalValue(self, value: float) -> bool:
+        """Обновление внутреннего значения Hot Cell IR Signal без отправки на устройство"""
+        self._measured_hot_cell_ir_signal = value
+        self.measuredHotCellIRSignalChanged.emit(value)
+        self._measured_hot_cell_ir_signal_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setMeasuredWater1HNMRReferenceSignalValue(self, value: float) -> bool:
+        """Обновление внутреннего значения Water 1H NMR Reference Signal без отправки на устройство"""
+        self._measured_water_1h_nmr_reference_signal = value
+        self.measuredWater1HNMRReferenceSignalChanged.emit(value)
+        self._measured_water_1h_nmr_reference_signal_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setMeasuredWaterT2Value(self, value_ms: float) -> bool:
+        """Обновление внутреннего значения Water T2 без отправки на устройство"""
+        self._measured_water_t2 = value_ms
+        self.measuredWaterT2Changed.emit(value_ms)
+        self._measured_water_t2_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setMeasuredHP129XeT2Value(self, value_ms: float) -> bool:
+        """Обновление внутреннего значения HP 129Xe T2 без отправки на устройство"""
+        self._measured_hp_129xe_t2 = value_ms
+        self.measuredHP129XeT2Changed.emit(value_ms)
+        self._measured_hp_129xe_t2_user_interaction = True
+        return True
     
     @Slot(int, bool, result=bool)
     def setFan(self, fanIndex: int, state: bool) -> bool:
