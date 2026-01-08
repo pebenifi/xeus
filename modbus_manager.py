@@ -157,6 +157,28 @@ class ModbusManager(QObject):
     vacuumControllerPressureChanged = Signal(float)  # Давление Vacuum Controller в mTorr (регистр 1701)
     vacuumPumpStateChanged = Signal(bool)
     vacuumGaugeStateChanged = Signal(bool)
+    laserBeamStateChanged = Signal(bool)  # Состояние Beam Laser (вкл/выкл, регистр 1811)
+    laserMPDChanged = Signal(float)  # MPD Laser в uA (регистр 1821)
+    laserOutputPowerChanged = Signal(float)  # Output Power Laser (регистр 1831)
+    laserTempChanged = Signal(float)  # Temp Laser (регистр 1841)
+    # SEOP Parameters signals
+    seopLaserMaxTempChanged = Signal(float)  # Laser Max Temp (регистр 3011)
+    seopLaserMinTempChanged = Signal(float)  # Laser Min Temp (регистр 3021)
+    seopCellMaxTempChanged = Signal(float)  # SEOP Cell Max Temp (регистр 3031)
+    seopCellMinTempChanged = Signal(float)  # SEOP Cell Min Temp (регистр 3041)
+    seopRampTempChanged = Signal(float)  # Seop ramp Temp (регистр 3051)
+    seopTempChanged = Signal(float)  # SEOP Temp (регистр 3061)
+    seopCellRefillTempChanged = Signal(float)  # Cell Refill Temp (регистр 3071)
+    seopLoopTimeChanged = Signal(float)  # SEOP loop time в секундах (регистр 3081)
+    seopProcessDurationChanged = Signal(float)  # SEOP process duration в минутах (регистр 3091)
+    seopLaserMaxOutputPowerChanged = Signal(float)  # Laser Max Output Power в W (регистр 3101)
+    seopLaserPSUMaxCurrentChanged = Signal(float)  # Laser PSU MAX Current в A (регистр 3111)
+    seopWaterChillerMaxTempChanged = Signal(float)  # Water Chiller Max Temp в C (регистр 3121)
+    seopWaterChillerMinTempChanged = Signal(float)  # Water Chiller Min Temp в C (регистр 3131)
+    seopXeConcentrationChanged = Signal(float)  # 129Xe concentration of gas mixture в mMol (регистр 3141)
+    seopWaterProtonConcentrationChanged = Signal(float)  # Water proton concentration в Mol (регистр 3151)
+    seopCellNumberChanged = Signal(int)  # Cell number (регистр 3171)
+    seopRefillCycleChanged = Signal(int)  # Refill cycle (регистр 3181)
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
@@ -234,6 +256,46 @@ class ModbusManager(QObject):
         self._n2_setpoint_auto_update_timer.setInterval(20000)  # 20 секунд
         self._vacuum_pressure = 0.0  # Давление Vacuum в Torr (регистр 1701)
         self._vacuum_controller_pressure = 0.0  # Давление Vacuum Controller в mTorr (регистр 1701)
+        self._laser_beam_state = False  # Состояние Beam Laser (вкл/выкл, регистр 1811)
+        self._laser_mpd = 0.0  # MPD Laser в uA (регистр 1821)
+        self._laser_output_power = 0.0  # Output Power Laser (регистр 1831)
+        self._laser_temp = 0.0  # Temp Laser (регистр 1841)
+        # SEOP Parameters state variables
+        self._seop_laser_max_temp = 0.0  # Laser Max Temp (регистр 3011)
+        self._seop_laser_min_temp = 0.0  # Laser Min Temp (регистр 3021)
+        self._seop_cell_max_temp = 0.0  # SEOP Cell Max Temp (регистр 3031)
+        self._seop_cell_min_temp = 0.0  # SEOP Cell Min Temp (регистр 3041)
+        self._seop_ramp_temp = 0.0  # Seop ramp Temp (регистр 3051)
+        self._seop_temp = 0.0  # SEOP Temp (регистр 3061)
+        self._seop_cell_refill_temp = 0.0  # Cell Refill Temp (регистр 3071)
+        self._seop_loop_time = 0.0  # SEOP loop time в секундах (регистр 3081)
+        self._seop_process_duration = 0.0  # SEOP process duration в минутах (регистр 3091)
+        self._seop_laser_max_output_power = 0.0  # Laser Max Output Power в W (регистр 3101)
+        self._seop_laser_psu_max_current = 0.0  # Laser PSU MAX Current в A (регистр 3111)
+        self._seop_water_chiller_max_temp = 0.0  # Water Chiller Max Temp в C (регистр 3121)
+        self._seop_water_chiller_min_temp = 0.0  # Water Chiller Min Temp в C (регистр 3131)
+        self._seop_xe_concentration = 0.0  # 129Xe concentration of gas mixture в mMol (регистр 3141)
+        self._seop_water_proton_concentration = 0.0  # Water proton concentration в Mol (регистр 3151)
+        self._seop_cell_number = 0  # Cell number (регистр 3171)
+        self._seop_refill_cycle = 0  # Refill cycle (регистр 3181)
+        # Флаги взаимодействия пользователя для автообновления
+        self._seop_laser_max_temp_user_interaction = False
+        self._seop_laser_min_temp_user_interaction = False
+        self._seop_cell_max_temp_user_interaction = False
+        self._seop_cell_min_temp_user_interaction = False
+        self._seop_ramp_temp_user_interaction = False
+        self._seop_temp_user_interaction = False
+        self._seop_cell_refill_temp_user_interaction = False
+        self._seop_loop_time_user_interaction = False
+        self._seop_process_duration_user_interaction = False
+        self._seop_laser_max_output_power_user_interaction = False
+        self._seop_laser_psu_max_current_user_interaction = False
+        self._seop_water_chiller_max_temp_user_interaction = False
+        self._seop_water_chiller_min_temp_user_interaction = False
+        self._seop_xe_concentration_user_interaction = False
+        self._seop_water_proton_concentration_user_interaction = False
+        self._seop_cell_number_user_interaction = False
+        self._seop_refill_cycle_user_interaction = False
 
         # IR spectrum cache
         self._ir_last = None
@@ -374,6 +436,18 @@ class ModbusManager(QObject):
         self._vacuum_controller_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         self._reading_vacuum_controller = False  # Флаг для предотвращения параллельных чтений
 
+        # Таймер для чтения регистров Laser (1811, 1821, 1831, 1841) - быстрое обновление
+        self._laser_timer = QTimer(self)
+        self._laser_timer.timeout.connect(self._readLaser)
+        self._laser_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
+        self._reading_laser = False  # Флаг для предотвращения параллельных чтений
+
+        # Таймер для чтения регистров SEOP Parameters (3011-3081) - быстрое обновление
+        self._seop_parameters_timer = QTimer(self)
+        self._seop_parameters_timer.timeout.connect(self._readSEOPParameters)
+        self._seop_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
+        self._reading_seop_parameters = False  # Флаг для предотвращения параллельных чтений
+
         # Список таймеров для паузы/возобновления опросов
         self._polling_timers = [
             self._connection_check_timer,
@@ -393,6 +467,8 @@ class ModbusManager(QObject):
             self._pid_controller_timer,
             self._alicats_timer,
             self._vacuum_controller_timer,
+            self._laser_timer,
+            self._seop_parameters_timer,
         ]
         
         # Worker-поток для Modbus I/O (чтобы UI не подвисал)
@@ -625,6 +701,46 @@ class ModbusManager(QObject):
         if self._vacuum_controller_timer.isActive():
             self._vacuum_controller_timer.stop()
             logger.info("⏸ Опрос Vacuum Controller выключен")
+    
+    @Slot()
+    def enableLaserPolling(self):
+        """Включить чтение регистров Laser (1811, 1821, 1831, 1841) по требованию (например, при открытии Laser)"""
+        logger.info(f"enableLaserPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+        if self._is_connected and not self._polling_paused:
+            if not self._laser_timer.isActive():
+                self._laser_timer.start()
+                logger.info("▶️ Опрос Laser включен")
+            else:
+                logger.info("⏸ Опрос Laser уже активен")
+        else:
+            logger.warning(f"⏸ Опрос Laser не включен: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+    
+    @Slot()
+    def disableLaserPolling(self):
+        """Выключить чтение регистров Laser по требованию (например, при закрытии Laser)"""
+        if self._laser_timer.isActive():
+            self._laser_timer.stop()
+            logger.info("⏸ Опрос Laser выключен")
+    
+    @Slot()
+    def enableSEOPParametersPolling(self):
+        """Включить чтение регистров SEOP Parameters (3011-3081) по требованию (например, при открытии SEOP Parameters)"""
+        logger.info(f"enableSEOPParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+        if self._is_connected and not self._polling_paused:
+            if not self._seop_parameters_timer.isActive():
+                self._seop_parameters_timer.start()
+                logger.info("▶️ Опрос SEOP Parameters включен")
+            else:
+                logger.info("⏸ Опрос SEOP Parameters уже активен")
+        else:
+            logger.warning(f"⏸ Опрос SEOP Parameters не включен: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+    
+    @Slot()
+    def disableSEOPParametersPolling(self):
+        """Выключить чтение регистров SEOP Parameters по требованию (например, при закрытии SEOP Parameters)"""
+        if self._seop_parameters_timer.isActive():
+            self._seop_parameters_timer.stop()
+            logger.info("⏸ Опрос SEOP Parameters выключен")
     
     @Slot()
     def refreshUIFromCache(self):
@@ -1008,6 +1124,10 @@ class ModbusManager(QObject):
             self._applyAlicatsValue(value)
         elif key == "vacuum_controller":
             self._applyVacuumControllerValue(value)
+        elif key == "laser":
+            self._applyLaserValue(value)
+        elif key == "seop_parameters":
+            self._applySEOPParametersValue(value)
         elif key == "1020":
             self._applyExternalRelays1020Value(value)
         elif key == "ir":
@@ -1358,6 +1478,148 @@ class ModbusManager(QObject):
             self._vacuum_controller_pressure = pressure_mtorr
             self.vacuumControllerPressureChanged.emit(pressure_mtorr)
             logger.debug(f"Vacuum Controller pressure: {pressure_mtorr} mTorr")
+    
+    def _applyLaserValue(self, value: object):
+        """Применение результатов чтения Laser (1811, 1821, 1831, 1841)"""
+        self._reading_laser = False
+        if value is None or not isinstance(value, dict):
+            logger.warning(f"_applyLaserValue: value is None or not dict: {value}")
+            return
+        
+        logger.debug(f"_applyLaserValue: received value={value}")
+        
+        if 'beam_state' in value:
+            state = bool(value['beam_state'])
+            self._laser_beam_state = state
+            self.laserBeamStateChanged.emit(state)
+            logger.debug(f"Laser Beam state: {state}")
+        if 'mpd' in value:
+            mpd = float(value['mpd'])
+            self._laser_mpd = mpd
+            self.laserMPDChanged.emit(mpd)
+            logger.debug(f"Laser MPD: {mpd} uA")
+        if 'output_power' in value:
+            output_power = float(value['output_power'])
+            self._laser_output_power = output_power
+            self.laserOutputPowerChanged.emit(output_power)
+            logger.debug(f"Laser Output Power: {output_power}")
+        if 'temp' in value:
+            temp = float(value['temp'])
+            self._laser_temp = temp
+            self.laserTempChanged.emit(temp)
+            logger.debug(f"Laser Temp: {temp}")
+    
+    def _applySEOPParametersValue(self, value: object):
+        """Применение результатов чтения SEOP Parameters (3011-3081)"""
+        self._reading_seop_parameters = False
+        if value is None or not isinstance(value, dict):
+            logger.warning(f"_applySEOPParametersValue: value is None or not dict: {value}")
+            return
+        
+        logger.debug(f"_applySEOPParametersValue: received value={value}")
+        
+        if 'laser_max_temp' in value:
+            temp = float(value['laser_max_temp'])
+            if not self._seop_laser_max_temp_user_interaction:
+                self._seop_laser_max_temp = temp
+                self.seopLaserMaxTempChanged.emit(temp)
+                logger.debug(f"SEOP Laser Max Temp: {temp}°C")
+        if 'laser_min_temp' in value:
+            temp = float(value['laser_min_temp'])
+            if not self._seop_laser_min_temp_user_interaction:
+                self._seop_laser_min_temp = temp
+                self.seopLaserMinTempChanged.emit(temp)
+                logger.debug(f"SEOP Laser Min Temp: {temp}°C")
+        if 'cell_max_temp' in value:
+            temp = float(value['cell_max_temp'])
+            if not self._seop_cell_max_temp_user_interaction:
+                self._seop_cell_max_temp = temp
+                self.seopCellMaxTempChanged.emit(temp)
+                logger.debug(f"SEOP Cell Max Temp: {temp}°C")
+        if 'cell_min_temp' in value:
+            temp = float(value['cell_min_temp'])
+            if not self._seop_cell_min_temp_user_interaction:
+                self._seop_cell_min_temp = temp
+                self.seopCellMinTempChanged.emit(temp)
+                logger.debug(f"SEOP Cell Min Temp: {temp}°C")
+        if 'ramp_temp' in value:
+            temp = float(value['ramp_temp'])
+            if not self._seop_ramp_temp_user_interaction:
+                self._seop_ramp_temp = temp
+                self.seopRampTempChanged.emit(temp)
+                logger.debug(f"SEOP Ramp Temp: {temp}°C")
+        if 'seop_temp' in value:
+            temp = float(value['seop_temp'])
+            if not self._seop_temp_user_interaction:
+                self._seop_temp = temp
+                self.seopTempChanged.emit(temp)
+                logger.debug(f"SEOP Temp: {temp}°C")
+        if 'cell_refill_temp' in value:
+            temp = float(value['cell_refill_temp'])
+            if not self._seop_cell_refill_temp_user_interaction:
+                self._seop_cell_refill_temp = temp
+                self.seopCellRefillTempChanged.emit(temp)
+                logger.debug(f"SEOP Cell Refill Temp: {temp}°C")
+        if 'loop_time' in value:
+            time_val = float(value['loop_time'])
+            if not self._seop_loop_time_user_interaction:
+                self._seop_loop_time = time_val
+                self.seopLoopTimeChanged.emit(time_val)
+                logger.debug(f"SEOP Loop Time: {time_val} s")
+        if 'process_duration' in value:
+            duration = float(value['process_duration'])
+            if not self._seop_process_duration_user_interaction:
+                self._seop_process_duration = duration
+                self.seopProcessDurationChanged.emit(duration)
+                logger.debug(f"SEOP Process Duration: {duration} min")
+        if 'laser_max_output_power' in value:
+            power = float(value['laser_max_output_power'])
+            if not self._seop_laser_max_output_power_user_interaction:
+                self._seop_laser_max_output_power = power
+                self.seopLaserMaxOutputPowerChanged.emit(power)
+                logger.debug(f"SEOP Laser Max Output Power: {power} W")
+        if 'laser_psu_max_current' in value:
+            current = float(value['laser_psu_max_current'])
+            if not self._seop_laser_psu_max_current_user_interaction:
+                self._seop_laser_psu_max_current = current
+                self.seopLaserPSUMaxCurrentChanged.emit(current)
+                logger.debug(f"SEOP Laser PSU MAX Current: {current} A")
+        if 'water_chiller_max_temp' in value:
+            temp = float(value['water_chiller_max_temp'])
+            if not self._seop_water_chiller_max_temp_user_interaction:
+                self._seop_water_chiller_max_temp = temp
+                self.seopWaterChillerMaxTempChanged.emit(temp)
+                logger.debug(f"SEOP Water Chiller Max Temp: {temp}°C")
+        if 'water_chiller_min_temp' in value:
+            temp = float(value['water_chiller_min_temp'])
+            if not self._seop_water_chiller_min_temp_user_interaction:
+                self._seop_water_chiller_min_temp = temp
+                self.seopWaterChillerMinTempChanged.emit(temp)
+                logger.debug(f"SEOP Water Chiller Min Temp: {temp}°C")
+        if 'xe_concentration' in value:
+            concentration = float(value['xe_concentration'])
+            if not self._seop_xe_concentration_user_interaction:
+                self._seop_xe_concentration = concentration
+                self.seopXeConcentrationChanged.emit(concentration)
+                logger.debug(f"SEOP 129Xe concentration: {concentration} mMol")
+        if 'water_proton_concentration' in value:
+            concentration = float(value['water_proton_concentration'])
+            if not self._seop_water_proton_concentration_user_interaction:
+                self._seop_water_proton_concentration = concentration
+                self.seopWaterProtonConcentrationChanged.emit(concentration)
+                logger.debug(f"SEOP Water proton concentration: {concentration} Mol")
+        if 'cell_number' in value:
+            cell_num = int(value['cell_number'])
+            if not self._seop_cell_number_user_interaction:
+                self._seop_cell_number = cell_num
+                self.seopCellNumberChanged.emit(cell_num)
+                logger.debug(f"SEOP Cell number: {cell_num}")
+        if 'refill_cycle' in value:
+            refill = int(value['refill_cycle'])
+            if not self._seop_refill_cycle_user_interaction:
+                self._seop_refill_cycle = refill
+                self.seopRefillCycleChanged.emit(refill)
+                logger.debug(f"SEOP Refill cycle: {refill}")
     
     def _applyExternalRelays1020Value(self, value: object):
         if value is None:
@@ -2472,6 +2734,123 @@ class ModbusManager(QObject):
         
         self._enqueue_read("vacuum_controller", task)
     
+    def _readLaser(self):
+        """Чтение регистров Laser (1811 - Beam on/off, 1821 - MPD uA, 1831 - Output Power, 1841 - Temp)"""
+        if not self._is_connected or self._modbus_client is None or self._reading_laser:
+            return
+
+        self._reading_laser = True
+        client = self._modbus_client
+        
+        def task():
+            """Чтение всех регистров Laser"""
+            # Регистр 1811 - Beam on/off (1 = on, 0 = off)
+            beam_state_regs = client.read_input_registers_direct(1811, 1, max_chunk=1)
+            # Регистр 1821 - MPD в uA
+            mpd_regs = client.read_input_registers_direct(1821, 1, max_chunk=1)
+            # Регистр 1831 - Output Power
+            output_power_regs = client.read_input_registers_direct(1831, 1, max_chunk=1)
+            # Регистр 1841 - Temp
+            temp_regs = client.read_input_registers_direct(1841, 1, max_chunk=1)
+            
+            result = {}
+            if beam_state_regs and len(beam_state_regs) >= 1:
+                result['beam_state'] = bool(int(beam_state_regs[0]) & 0x01)
+            if mpd_regs and len(mpd_regs) >= 1:
+                # MPD в uA - значение уже в нужных единицах
+                result['mpd'] = float(int(mpd_regs[0]))
+            if output_power_regs and len(output_power_regs) >= 1:
+                # Output Power - значение уже в нужных единицах
+                result['output_power'] = float(int(output_power_regs[0]))
+            if temp_regs and len(temp_regs) >= 1:
+                # Temp - значение уже в нужных единицах
+                result['temp'] = float(int(temp_regs[0]))
+            
+            return result
+        
+        self._enqueue_read("laser", task)
+    
+    def _readSEOPParameters(self):
+        """Чтение регистров SEOP Parameters (3011-3181)"""
+        if not self._is_connected or self._modbus_client is None or self._reading_seop_parameters:
+            return
+
+        self._reading_seop_parameters = True
+        client = self._modbus_client
+        
+        def task():
+            """Чтение всех регистров SEOP Parameters"""
+            # Регистры 3011-3081 - первые 8 параметров
+            laser_max_temp_regs = client.read_input_registers_direct(3011, 1, max_chunk=1)
+            laser_min_temp_regs = client.read_input_registers_direct(3021, 1, max_chunk=1)
+            cell_max_temp_regs = client.read_input_registers_direct(3031, 1, max_chunk=1)
+            cell_min_temp_regs = client.read_input_registers_direct(3041, 1, max_chunk=1)
+            ramp_temp_regs = client.read_input_registers_direct(3051, 1, max_chunk=1)
+            seop_temp_regs = client.read_input_registers_direct(3061, 1, max_chunk=1)
+            cell_refill_temp_regs = client.read_input_registers_direct(3071, 1, max_chunk=1)
+            loop_time_regs = client.read_input_registers_direct(3081, 1, max_chunk=1)
+            # Новые регистры 3091-3151
+            process_duration_regs = client.read_input_registers_direct(3091, 1, max_chunk=1)
+            laser_max_output_power_regs = client.read_input_registers_direct(3101, 1, max_chunk=1)
+            laser_psu_max_current_regs = client.read_input_registers_direct(3111, 1, max_chunk=1)
+            water_chiller_max_temp_regs = client.read_input_registers_direct(3121, 1, max_chunk=1)
+            water_chiller_min_temp_regs = client.read_input_registers_direct(3131, 1, max_chunk=1)
+            xe_concentration_regs = client.read_input_registers_direct(3141, 1, max_chunk=1)
+            water_proton_concentration_regs = client.read_input_registers_direct(3151, 1, max_chunk=1)
+            # Регистры 3171-3181
+            cell_number_regs = client.read_input_registers_direct(3171, 1, max_chunk=1)
+            refill_cycle_regs = client.read_input_registers_direct(3181, 1, max_chunk=1)
+            
+            result = {}
+            if laser_max_temp_regs and len(laser_max_temp_regs) >= 1:
+                result['laser_max_temp'] = float(int(laser_max_temp_regs[0])) / 100.0
+            if laser_min_temp_regs and len(laser_min_temp_regs) >= 1:
+                result['laser_min_temp'] = float(int(laser_min_temp_regs[0])) / 100.0
+            if cell_max_temp_regs and len(cell_max_temp_regs) >= 1:
+                result['cell_max_temp'] = float(int(cell_max_temp_regs[0])) / 100.0
+            if cell_min_temp_regs and len(cell_min_temp_regs) >= 1:
+                result['cell_min_temp'] = float(int(cell_min_temp_regs[0])) / 100.0
+            if ramp_temp_regs and len(ramp_temp_regs) >= 1:
+                result['ramp_temp'] = float(int(ramp_temp_regs[0])) / 100.0
+            if seop_temp_regs and len(seop_temp_regs) >= 1:
+                result['seop_temp'] = float(int(seop_temp_regs[0])) / 100.0
+            if cell_refill_temp_regs and len(cell_refill_temp_regs) >= 1:
+                result['cell_refill_temp'] = float(int(cell_refill_temp_regs[0])) / 100.0
+            if loop_time_regs and len(loop_time_regs) >= 1:
+                # SEOP loop time в секундах - значение уже в секундах
+                result['loop_time'] = float(int(loop_time_regs[0]))
+            if process_duration_regs and len(process_duration_regs) >= 1:
+                # SEOP process duration в секундах - значение уже в секундах (отображается как m:s)
+                result['process_duration'] = float(int(process_duration_regs[0]))
+            if laser_max_output_power_regs and len(laser_max_output_power_regs) >= 1:
+                # Laser Max Output Power в W - преобразуем из int (W * 100) в float
+                result['laser_max_output_power'] = float(int(laser_max_output_power_regs[0])) / 100.0
+            if laser_psu_max_current_regs and len(laser_psu_max_current_regs) >= 1:
+                # Laser PSU MAX Current в A - преобразуем из int (A * 100) в float
+                result['laser_psu_max_current'] = float(int(laser_psu_max_current_regs[0])) / 100.0
+            if water_chiller_max_temp_regs and len(water_chiller_max_temp_regs) >= 1:
+                # Water Chiller Max Temp в C - преобразуем из int (температура * 100) в float
+                result['water_chiller_max_temp'] = float(int(water_chiller_max_temp_regs[0])) / 100.0
+            if water_chiller_min_temp_regs and len(water_chiller_min_temp_regs) >= 1:
+                # Water Chiller Min Temp в C - преобразуем из int (температура * 100) в float
+                result['water_chiller_min_temp'] = float(int(water_chiller_min_temp_regs[0])) / 100.0
+            if xe_concentration_regs and len(xe_concentration_regs) >= 1:
+                # 129Xe concentration в mMol - значение уже в mMol, ничего умножать не надо
+                result['xe_concentration'] = float(int(xe_concentration_regs[0]))
+            if water_proton_concentration_regs and len(water_proton_concentration_regs) >= 1:
+                # Water proton concentration в Mol - преобразуем из int (Mol * 100) в float
+                result['water_proton_concentration'] = float(int(water_proton_concentration_regs[0])) / 100.0
+            if cell_number_regs and len(cell_number_regs) >= 1:
+                # Cell number - целое число
+                result['cell_number'] = int(cell_number_regs[0])
+            if refill_cycle_regs and len(refill_cycle_regs) >= 1:
+                # Refill cycle - целое число
+                result['refill_cycle'] = int(refill_cycle_regs[0])
+            
+            return result
+        
+        self._enqueue_read("seop_parameters", task)
+    
     @Slot(int, bool, result=bool)
     def setFan(self, fanIndex: int, state: bool) -> bool:
         """
@@ -3383,6 +3762,620 @@ class ModbusManager(QObject):
         self._water_chiller_setpoint_auto_update_timer.stop()
         self._water_chiller_setpoint_auto_update_timer.start()
         return self.setWaterChillerTemperature(new_temp)
+    
+    @Slot(bool, result=bool)
+    def setLaserBeam(self, state: bool) -> bool:
+        """Управление Beam Laser через регистр 1811 (1 = on, 0 = off)"""
+        if not self._is_connected or self._modbus_client is None:
+            logger.warning("Попытка установить Laser Beam без подключения")
+            return False
+        
+        # Оптимистично обновляем UI
+        self._laser_beam_state = state
+        self.laserBeamStateChanged.emit(state)
+        
+        register_value = 1 if state else 0
+        client = self._modbus_client
+        
+        def task() -> bool:
+            result = client.write_holding_register(1811, register_value)
+            if not result:
+                logger.warning(f"⚠️ Запись Laser Beam в регистр 1811 не удалась (value={register_value}).")
+            return bool(result)
+        
+        self._enqueue_write("laser_beam", task, {"state": state, "value": register_value})
+        return True
+    
+    # ===== SEOP Parameters методы записи =====
+    @Slot(float, result=bool)
+    def setSEOPLaserMaxTemp(self, temperature: float) -> bool:
+        """Установка Laser Max Temp (регистр 3011)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_laser_max_temp = temperature
+        self._seop_laser_max_temp_user_interaction = True
+        self.seopLaserMaxTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3011, register_value)
+            return bool(result)
+        self._enqueue_write("seop_laser_max_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPLaserMaxTemp(self) -> bool:
+        """Увеличение Laser Max Temp на 1°C"""
+        return self.setSEOPLaserMaxTemp(self._seop_laser_max_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPLaserMaxTemp(self) -> bool:
+        """Уменьшение Laser Max Temp на 1°C"""
+        return self.setSEOPLaserMaxTemp(self._seop_laser_max_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserMinTemp(self, temperature: float) -> bool:
+        """Установка Laser Min Temp (регистр 3021)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_laser_min_temp = temperature
+        self._seop_laser_min_temp_user_interaction = True
+        self.seopLaserMinTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3021, register_value)
+            return bool(result)
+        self._enqueue_write("seop_laser_min_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPLaserMinTemp(self) -> bool:
+        """Увеличение Laser Min Temp на 1°C"""
+        return self.setSEOPLaserMinTemp(self._seop_laser_min_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPLaserMinTemp(self) -> bool:
+        """Уменьшение Laser Min Temp на 1°C"""
+        return self.setSEOPLaserMinTemp(self._seop_laser_min_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPCellMaxTemp(self, temperature: float) -> bool:
+        """Установка SEOP Cell Max Temp (регистр 3031)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_cell_max_temp = temperature
+        self._seop_cell_max_temp_user_interaction = True
+        self.seopCellMaxTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3031, register_value)
+            return bool(result)
+        self._enqueue_write("seop_cell_max_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPCellMaxTemp(self) -> bool:
+        """Увеличение SEOP Cell Max Temp на 1°C"""
+        return self.setSEOPCellMaxTemp(self._seop_cell_max_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPCellMaxTemp(self) -> bool:
+        """Уменьшение SEOP Cell Max Temp на 1°C"""
+        return self.setSEOPCellMaxTemp(self._seop_cell_max_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPCellMinTemp(self, temperature: float) -> bool:
+        """Установка SEOP Cell Min Temp (регистр 3041)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_cell_min_temp = temperature
+        self._seop_cell_min_temp_user_interaction = True
+        self.seopCellMinTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3041, register_value)
+            return bool(result)
+        self._enqueue_write("seop_cell_min_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPCellMinTemp(self) -> bool:
+        """Увеличение SEOP Cell Min Temp на 1°C"""
+        return self.setSEOPCellMinTemp(self._seop_cell_min_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPCellMinTemp(self) -> bool:
+        """Уменьшение SEOP Cell Min Temp на 1°C"""
+        return self.setSEOPCellMinTemp(self._seop_cell_min_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPRampTemp(self, temperature: float) -> bool:
+        """Установка Seop ramp Temp (регистр 3051)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_ramp_temp = temperature
+        self._seop_ramp_temp_user_interaction = True
+        self.seopRampTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3051, register_value)
+            return bool(result)
+        self._enqueue_write("seop_ramp_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPRampTemp(self) -> bool:
+        """Увеличение Seop ramp Temp на 1°C"""
+        return self.setSEOPRampTemp(self._seop_ramp_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPRampTemp(self) -> bool:
+        """Уменьшение Seop ramp Temp на 1°C"""
+        return self.setSEOPRampTemp(self._seop_ramp_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPTemp(self, temperature: float) -> bool:
+        """Установка SEOP Temp (регистр 3061)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_temp = temperature
+        self._seop_temp_user_interaction = True
+        self.seopTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3061, register_value)
+            return bool(result)
+        self._enqueue_write("seop_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPTemp(self) -> bool:
+        """Увеличение SEOP Temp на 1°C"""
+        return self.setSEOPTemp(self._seop_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPTemp(self) -> bool:
+        """Уменьшение SEOP Temp на 1°C"""
+        return self.setSEOPTemp(self._seop_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPCellRefillTemp(self, temperature: float) -> bool:
+        """Установка Cell Refill Temp (регистр 3071)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_cell_refill_temp = temperature
+        self._seop_cell_refill_temp_user_interaction = True
+        self.seopCellRefillTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3071, register_value)
+            return bool(result)
+        self._enqueue_write("seop_cell_refill_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPCellRefillTemp(self) -> bool:
+        """Увеличение Cell Refill Temp на 1°C"""
+        return self.setSEOPCellRefillTemp(self._seop_cell_refill_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPCellRefillTemp(self) -> bool:
+        """Уменьшение Cell Refill Temp на 1°C"""
+        return self.setSEOPCellRefillTemp(self._seop_cell_refill_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPLoopTime(self, time_seconds: float) -> bool:
+        """Установка SEOP loop time в секундах (регистр 3081)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_loop_time = time_seconds
+        self._seop_loop_time_user_interaction = True
+        self.seopLoopTimeChanged.emit(time_seconds)
+        register_value = int(time_seconds)  # Время в секундах - целое число
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3081, register_value)
+            return bool(result)
+        self._enqueue_write("seop_loop_time", task, {"time_seconds": time_seconds})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPLoopTime(self) -> bool:
+        """Увеличение SEOP loop time на 1 секунду"""
+        return self.setSEOPLoopTime(self._seop_loop_time + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPLoopTime(self) -> bool:
+        """Уменьшение SEOP loop time на 1 секунду"""
+        return self.setSEOPLoopTime(self._seop_loop_time - 1.0)
+    
+    # Методы setValue для TextField (ввод с клавиатуры)
+    @Slot(float, result=bool)
+    def setSEOPLaserMaxTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Laser Max Temp без отправки на устройство"""
+        self._seop_laser_max_temp = temperature
+        self.seopLaserMaxTempChanged.emit(temperature)
+        self._seop_laser_max_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserMinTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Laser Min Temp без отправки на устройство"""
+        self._seop_laser_min_temp = temperature
+        self.seopLaserMinTempChanged.emit(temperature)
+        self._seop_laser_min_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPCellMaxTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения SEOP Cell Max Temp без отправки на устройство"""
+        self._seop_cell_max_temp = temperature
+        self.seopCellMaxTempChanged.emit(temperature)
+        self._seop_cell_max_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPCellMinTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения SEOP Cell Min Temp без отправки на устройство"""
+        self._seop_cell_min_temp = temperature
+        self.seopCellMinTempChanged.emit(temperature)
+        self._seop_cell_min_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPRampTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Seop ramp Temp без отправки на устройство"""
+        self._seop_ramp_temp = temperature
+        self.seopRampTempChanged.emit(temperature)
+        self._seop_ramp_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения SEOP Temp без отправки на устройство"""
+        self._seop_temp = temperature
+        self.seopTempChanged.emit(temperature)
+        self._seop_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPCellRefillTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Cell Refill Temp без отправки на устройство"""
+        self._seop_cell_refill_temp = temperature
+        self.seopCellRefillTempChanged.emit(temperature)
+        self._seop_cell_refill_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPLoopTimeValue(self, time_seconds: float) -> bool:
+        """Обновление внутреннего значения SEOP loop time без отправки на устройство"""
+        self._seop_loop_time = time_seconds
+        self.seopLoopTimeChanged.emit(time_seconds)
+        self._seop_loop_time_user_interaction = True
+        return True
+    
+    # Новые методы для дополнительных параметров SEOP
+    @Slot(float, result=bool)
+    def setSEOPProcessDuration(self, duration_seconds: float) -> bool:
+        """Установка SEOP process duration в секундах (регистр 3091), отображается как m:s"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_process_duration = duration_seconds
+        self._seop_process_duration_user_interaction = True
+        self.seopProcessDurationChanged.emit(duration_seconds)
+        register_value = int(duration_seconds)  # В секундах - целое число
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3091, register_value)
+            return bool(result)
+        self._enqueue_write("seop_process_duration", task, {"duration_seconds": duration_seconds})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPProcessDuration(self) -> bool:
+        """Увеличение SEOP process duration на 1 секунду"""
+        return self.setSEOPProcessDuration(self._seop_process_duration + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPProcessDuration(self) -> bool:
+        """Уменьшение SEOP process duration на 1 секунду"""
+        return self.setSEOPProcessDuration(self._seop_process_duration - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserMaxOutputPower(self, power_w: float) -> bool:
+        """Установка Laser Max Output Power в W (регистр 3101)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_laser_max_output_power = power_w
+        self._seop_laser_max_output_power_user_interaction = True
+        self.seopLaserMaxOutputPowerChanged.emit(power_w)
+        register_value = int(power_w * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3101, register_value)
+            return bool(result)
+        self._enqueue_write("seop_laser_max_output_power", task, {"power_w": power_w})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPLaserMaxOutputPower(self) -> bool:
+        """Увеличение Laser Max Output Power на 0.1 W"""
+        return self.setSEOPLaserMaxOutputPower(self._seop_laser_max_output_power + 0.1)
+    
+    @Slot(result=bool)
+    def decreaseSEOPLaserMaxOutputPower(self) -> bool:
+        """Уменьшение Laser Max Output Power на 0.1 W"""
+        return self.setSEOPLaserMaxOutputPower(self._seop_laser_max_output_power - 0.1)
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserPSUMaxCurrent(self, current_a: float) -> bool:
+        """Установка Laser PSU MAX Current в A (регистр 3111)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_laser_psu_max_current = current_a
+        self._seop_laser_psu_max_current_user_interaction = True
+        self.seopLaserPSUMaxCurrentChanged.emit(current_a)
+        register_value = int(current_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3111, register_value)
+            return bool(result)
+        self._enqueue_write("seop_laser_psu_max_current", task, {"current_a": current_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPLaserPSUMaxCurrent(self) -> bool:
+        """Увеличение Laser PSU MAX Current на 0.1 A"""
+        return self.setSEOPLaserPSUMaxCurrent(self._seop_laser_psu_max_current + 0.1)
+    
+    @Slot(result=bool)
+    def decreaseSEOPLaserPSUMaxCurrent(self) -> bool:
+        """Уменьшение Laser PSU MAX Current на 0.1 A"""
+        return self.setSEOPLaserPSUMaxCurrent(self._seop_laser_psu_max_current - 0.1)
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterChillerMaxTemp(self, temperature: float) -> bool:
+        """Установка Water Chiller Max Temp в C (регистр 3121)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_water_chiller_max_temp = temperature
+        self._seop_water_chiller_max_temp_user_interaction = True
+        self.seopWaterChillerMaxTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3121, register_value)
+            return bool(result)
+        self._enqueue_write("seop_water_chiller_max_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPWaterChillerMaxTemp(self) -> bool:
+        """Увеличение Water Chiller Max Temp на 1°C"""
+        return self.setSEOPWaterChillerMaxTemp(self._seop_water_chiller_max_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPWaterChillerMaxTemp(self) -> bool:
+        """Уменьшение Water Chiller Max Temp на 1°C"""
+        return self.setSEOPWaterChillerMaxTemp(self._seop_water_chiller_max_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterChillerMinTemp(self, temperature: float) -> bool:
+        """Установка Water Chiller Min Temp в C (регистр 3131)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_water_chiller_min_temp = temperature
+        self._seop_water_chiller_min_temp_user_interaction = True
+        self.seopWaterChillerMinTempChanged.emit(temperature)
+        register_value = int(temperature * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3131, register_value)
+            return bool(result)
+        self._enqueue_write("seop_water_chiller_min_temp", task, {"temperature": temperature})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPWaterChillerMinTemp(self) -> bool:
+        """Увеличение Water Chiller Min Temp на 1°C"""
+        return self.setSEOPWaterChillerMinTemp(self._seop_water_chiller_min_temp + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPWaterChillerMinTemp(self) -> bool:
+        """Уменьшение Water Chiller Min Temp на 1°C"""
+        return self.setSEOPWaterChillerMinTemp(self._seop_water_chiller_min_temp - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPXeConcentration(self, concentration_mmol: float) -> bool:
+        """Установка 129Xe concentration of gas mixture в mMol (регистр 3141)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_xe_concentration = concentration_mmol
+        self._seop_xe_concentration_user_interaction = True
+        self.seopXeConcentrationChanged.emit(concentration_mmol)
+        register_value = int(concentration_mmol)  # Уже в mMol, целое число
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3141, register_value)
+            return bool(result)
+        self._enqueue_write("seop_xe_concentration", task, {"concentration_mmol": concentration_mmol})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPXeConcentration(self) -> bool:
+        """Увеличение 129Xe concentration на 1 mMol"""
+        return self.setSEOPXeConcentration(self._seop_xe_concentration + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseSEOPXeConcentration(self) -> bool:
+        """Уменьшение 129Xe concentration на 1 mMol"""
+        return self.setSEOPXeConcentration(self._seop_xe_concentration - 1.0)
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterProtonConcentration(self, concentration_mol: float) -> bool:
+        """Установка Water proton concentration в Mol (регистр 3151)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_water_proton_concentration = concentration_mol
+        self._seop_water_proton_concentration_user_interaction = True
+        self.seopWaterProtonConcentrationChanged.emit(concentration_mol)
+        register_value = int(concentration_mol * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3151, register_value)
+            return bool(result)
+        self._enqueue_write("seop_water_proton_concentration", task, {"concentration_mol": concentration_mol})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPWaterProtonConcentration(self) -> bool:
+        """Увеличение Water proton concentration на 0.01 Mol"""
+        return self.setSEOPWaterProtonConcentration(self._seop_water_proton_concentration + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseSEOPWaterProtonConcentration(self) -> bool:
+        """Уменьшение Water proton concentration на 0.01 Mol"""
+        return self.setSEOPWaterProtonConcentration(self._seop_water_proton_concentration - 0.01)
+    
+    # Методы setValue для новых параметров
+    @Slot(float, result=bool)
+    def setSEOPProcessDurationValue(self, duration_min: float) -> bool:
+        """Обновление внутреннего значения SEOP process duration без отправки на устройство"""
+        self._seop_process_duration = duration_min
+        self.seopProcessDurationChanged.emit(duration_min)
+        self._seop_process_duration_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserMaxOutputPowerValue(self, power_w: float) -> bool:
+        """Обновление внутреннего значения Laser Max Output Power без отправки на устройство"""
+        self._seop_laser_max_output_power = power_w
+        self.seopLaserMaxOutputPowerChanged.emit(power_w)
+        self._seop_laser_max_output_power_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPLaserPSUMaxCurrentValue(self, current_a: float) -> bool:
+        """Обновление внутреннего значения Laser PSU MAX Current без отправки на устройство"""
+        self._seop_laser_psu_max_current = current_a
+        self.seopLaserPSUMaxCurrentChanged.emit(current_a)
+        self._seop_laser_psu_max_current_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterChillerMaxTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Water Chiller Max Temp без отправки на устройство"""
+        self._seop_water_chiller_max_temp = temperature
+        self.seopWaterChillerMaxTempChanged.emit(temperature)
+        self._seop_water_chiller_max_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterChillerMinTempValue(self, temperature: float) -> bool:
+        """Обновление внутреннего значения Water Chiller Min Temp без отправки на устройство"""
+        self._seop_water_chiller_min_temp = temperature
+        self.seopWaterChillerMinTempChanged.emit(temperature)
+        self._seop_water_chiller_min_temp_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPXeConcentrationValue(self, concentration_mmol: float) -> bool:
+        """Обновление внутреннего значения 129Xe concentration без отправки на устройство"""
+        self._seop_xe_concentration = concentration_mmol
+        self.seopXeConcentrationChanged.emit(concentration_mmol)
+        self._seop_xe_concentration_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setSEOPWaterProtonConcentrationValue(self, concentration_mol: float) -> bool:
+        """Обновление внутреннего значения Water proton concentration без отправки на устройство"""
+        self._seop_water_proton_concentration = concentration_mol
+        self.seopWaterProtonConcentrationChanged.emit(concentration_mol)
+        self._seop_water_proton_concentration_user_interaction = True
+        return True
+    
+    @Slot(int, result=bool)
+    def setSEOPCellNumber(self, cell_number: int) -> bool:
+        """Установка Cell number (регистр 3171)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_cell_number = cell_number
+        self._seop_cell_number_user_interaction = True
+        self.seopCellNumberChanged.emit(cell_number)
+        register_value = int(cell_number)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3171, register_value)
+            return bool(result)
+        self._enqueue_write("seop_cell_number", task, {"cell_number": cell_number})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPCellNumber(self) -> bool:
+        """Увеличение Cell number на 1"""
+        return self.setSEOPCellNumber(self._seop_cell_number + 1)
+    
+    @Slot(result=bool)
+    def decreaseSEOPCellNumber(self) -> bool:
+        """Уменьшение Cell number на 1"""
+        return self.setSEOPCellNumber(self._seop_cell_number - 1)
+    
+    @Slot(int, result=bool)
+    def setSEOPRefillCycle(self, refill_cycle: int) -> bool:
+        """Установка Refill cycle (регистр 3181)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._seop_refill_cycle = refill_cycle
+        self._seop_refill_cycle_user_interaction = True
+        self.seopRefillCycleChanged.emit(refill_cycle)
+        register_value = int(refill_cycle)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(3181, register_value)
+            return bool(result)
+        self._enqueue_write("seop_refill_cycle", task, {"refill_cycle": refill_cycle})
+        return True
+    
+    @Slot(result=bool)
+    def increaseSEOPRefillCycle(self) -> bool:
+        """Увеличение Refill cycle на 1"""
+        return self.setSEOPRefillCycle(self._seop_refill_cycle + 1)
+    
+    @Slot(result=bool)
+    def decreaseSEOPRefillCycle(self) -> bool:
+        """Уменьшение Refill cycle на 1"""
+        return self.setSEOPRefillCycle(self._seop_refill_cycle - 1)
+    
+    # Методы setValue для новых параметров
+    @Slot(float, result=bool)
+    def setSEOPProcessDurationValue(self, duration_seconds: float) -> bool:
+        """Обновление внутреннего значения SEOP process duration без отправки на устройство (в секундах)"""
+        self._seop_process_duration = duration_seconds
+        self.seopProcessDurationChanged.emit(duration_seconds)
+        self._seop_process_duration_user_interaction = True
+        return True
+    
+    @Slot(int, result=bool)
+    def setSEOPCellNumberValue(self, cell_number: int) -> bool:
+        """Обновление внутреннего значения Cell number без отправки на устройство"""
+        self._seop_cell_number = cell_number
+        self.seopCellNumberChanged.emit(cell_number)
+        self._seop_cell_number_user_interaction = True
+        return True
+    
+    @Slot(int, result=bool)
+    def setSEOPRefillCycleValue(self, refill_cycle: int) -> bool:
+        """Обновление внутреннего значения Refill cycle без отправки на устройство"""
+        self._seop_refill_cycle = refill_cycle
+        self.seopRefillCycleChanged.emit(refill_cycle)
+        self._seop_refill_cycle_user_interaction = True
+        return True
     
     @Slot(bool, result=bool)
     def setWaterChillerPower(self, state: bool) -> bool:

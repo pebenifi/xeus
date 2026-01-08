@@ -473,6 +473,12 @@ Item {
             if (activeParam !== "Vacuum Controller") {
                 modbusManager.disableVacuumControllerPolling()
             }
+            if (activeParam !== "Laser") {
+                modbusManager.disableLaserPolling()
+            }
+            // При изменении активного параметра отключаем опрос SEOP Parameters
+            modbusManager.disableSEOPParametersPolling()
+            seopParametersGrid.visible = false
         }
     }
 
@@ -2075,6 +2081,1003 @@ Item {
                         }
                     }
 
+                    // Таблица SEOP Parameters для "3 SEOP Parameters" меню
+                    Column {
+                        id: seopParametersGrid
+                        width: parent.width
+                        spacing: 0
+                        visible: false
+
+                        // Laser Max Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Laser Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopLaserMaxTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPLaserMaxTempValue(val)
+                                            modbusManager.setSEOPLaserMaxTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPLaserMaxTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPLaserMaxTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Laser Min Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Laser Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopLaserMinTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPLaserMinTempValue(val)
+                                            modbusManager.setSEOPLaserMinTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPLaserMinTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPLaserMinTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP Cell Max Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP Cell Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopCellMaxTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPCellMaxTempValue(val)
+                                            modbusManager.setSEOPCellMaxTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPCellMaxTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPCellMaxTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP Cell Min Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP Cell Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopCellMinTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPCellMinTempValue(val)
+                                            modbusManager.setSEOPCellMinTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPCellMinTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPCellMinTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP Ramp Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP Ramp Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopRampTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPRampTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPRampTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPTempValue(val)
+                                            modbusManager.setSEOPTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Cell Refill Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Cell Refill Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopCellRefillTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPCellRefillTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPCellRefillTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP loop time
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP loop time:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopLoopTime
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPLoopTimeValue(val)
+                                            modbusManager.setSEOPLoopTime(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "s"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPLoopTime()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPLoopTime()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // SEOP process duration (m:s)
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "SEOP process duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopProcessDuration
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0:00"
+                                    onEditingFinished: {
+                                        // Парсим формат m:s (например, "5:30" -> 330 секунд)
+                                        var parts = text.split(":")
+                                        if (parts.length === 2 && modbusManager) {
+                                            var minutes = parseInt(parts[0]) || 0
+                                            var seconds = parseInt(parts[1]) || 0
+                                            var totalSeconds = minutes * 60 + seconds
+                                            modbusManager.setSEOPProcessDurationValue(totalSeconds)
+                                            modbusManager.setSEOPProcessDuration(totalSeconds)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPProcessDuration()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPProcessDuration()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Laser Max Output Power
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Laser Max Output Power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopLaserMaxOutputPower
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPLaserMaxOutputPowerValue(val)
+                                            modbusManager.setSEOPLaserMaxOutputPower(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "W"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPLaserMaxOutputPower()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPLaserMaxOutputPower()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Laser PSU Max Current
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Laser PSU Max Current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopLaserPSUMaxCurrent
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPLaserPSUMaxCurrentValue(val)
+                                            modbusManager.setSEOPLaserPSUMaxCurrent(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPLaserPSUMaxCurrent()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPLaserPSUMaxCurrent()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Water Chiller Max Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Water Chiller Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopWaterChillerMaxTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPWaterChillerMaxTempValue(val)
+                                            modbusManager.setSEOPWaterChillerMaxTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPWaterChillerMaxTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPWaterChillerMaxTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Water Chiller Min Temp
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Water Chiller Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopWaterChillerMinTemp
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPWaterChillerMinTempValue(val)
+                                            modbusManager.setSEOPWaterChillerMinTemp(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPWaterChillerMinTemp()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPWaterChillerMinTemp()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // 129Xe concentration of the gas mixture
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "129Xe concentration of the gas mixture:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopXeConcentration
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPXeConcentrationValue(val)
+                                            modbusManager.setSEOPXeConcentration(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "mMol"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPXeConcentration()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPXeConcentration()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Water Proton Concentration
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Water Proton Concentration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopWaterProtonConcentration
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPWaterProtonConcentrationValue(val)
+                                            modbusManager.setSEOPWaterProtonConcentration(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "Mol"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPWaterProtonConcentration()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPWaterProtonConcentration()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Cell number
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Cell number:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopCellNumber
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseInt(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPCellNumberValue(val)
+                                            modbusManager.setSEOPCellNumber(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPCellNumber()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPCellNumber()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Refill cycle
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Refill cycle:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: seopRefillCycle
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseInt(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setSEOPRefillCycleValue(val)
+                                            modbusManager.setSEOPRefillCycle(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseSEOPRefillCycle()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseSEOPRefillCycle()
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 150 - 180 - 16; height: 0 }
+                        }
+
+                        // Connections для обновления значений SEOP Parameters
+                        Connections {
+                            target: modbusManager
+                            function onSeopLaserMaxTempChanged(value) {
+                                if (!seopLaserMaxTemp.activeFocus) {
+                                    seopLaserMaxTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopLaserMinTempChanged(value) {
+                                if (!seopLaserMinTemp.activeFocus) {
+                                    seopLaserMinTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopCellMaxTempChanged(value) {
+                                if (!seopCellMaxTemp.activeFocus) {
+                                    seopCellMaxTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopCellMinTempChanged(value) {
+                                if (!seopCellMinTemp.activeFocus) {
+                                    seopCellMinTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopRampTempChanged(value) {
+                                if (!seopRampTemp.activeFocus) {
+                                    seopRampTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopTempChanged(value) {
+                                if (!seopTemp.activeFocus) {
+                                    seopTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopCellRefillTempChanged(value) {
+                                if (!seopCellRefillTemp.activeFocus) {
+                                    seopCellRefillTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopLoopTimeChanged(value) {
+                                if (!seopLoopTime.activeFocus) {
+                                    seopLoopTime.text = value.toFixed(0)
+                                }
+                            }
+                            function onSeopProcessDurationChanged(value) {
+                                if (!seopProcessDuration.activeFocus) {
+                                    var minutes = Math.floor(value / 60)
+                                    var seconds = Math.floor(value % 60)
+                                    seopProcessDuration.text = minutes + ":" + (seconds < 10 ? "0" : "") + seconds
+                                }
+                            }
+                            function onSeopCellNumberChanged(value) {
+                                if (!seopCellNumber.activeFocus) {
+                                    seopCellNumber.text = value.toString()
+                                }
+                            }
+                            function onSeopRefillCycleChanged(value) {
+                                if (!seopRefillCycle.activeFocus) {
+                                    seopRefillCycle.text = value.toString()
+                                }
+                            }
+                            function onSeopLaserMaxOutputPowerChanged(value) {
+                                if (!seopLaserMaxOutputPower.activeFocus) {
+                                    seopLaserMaxOutputPower.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopLaserPSUMaxCurrentChanged(value) {
+                                if (!seopLaserPSUMaxCurrent.activeFocus) {
+                                    seopLaserPSUMaxCurrent.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopWaterChillerMaxTempChanged(value) {
+                                if (!seopWaterChillerMaxTemp.activeFocus) {
+                                    seopWaterChillerMaxTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopWaterChillerMinTempChanged(value) {
+                                if (!seopWaterChillerMinTemp.activeFocus) {
+                                    seopWaterChillerMinTemp.text = value.toFixed(2)
+                                }
+                            }
+                            function onSeopXeConcentrationChanged(value) {
+                                if (!seopXeConcentration.activeFocus) {
+                                    seopXeConcentration.text = value.toFixed(0)
+                                }
+                            }
+                            function onSeopWaterProtonConcentrationChanged(value) {
+                                if (!seopWaterProtonConcentration.activeFocus) {
+                                    seopWaterProtonConcentration.text = value.toFixed(2)
+                                }
+                            }
+                        }
+                    }
+
+                    // Таблица Laser для Laser меню
+                    Column {
+                        id: laserGrid
+                        width: parent.width
+                        spacing: 0
+                        visible: false
+
+                        // Beam On/Off
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Beam:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 120 }
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                Button {
+                                    id: laserBeam
+                                    width: 80
+                                    height: 28
+                                    text: laserBeam.checked ? "ON" : "OFF"
+                                    font.pixelSize: 11
+                                    checkable: true
+                                    property color normalColor: "#979797"
+                                    property color pressedColor: "#38691e"
+                                    background: Rectangle {
+                                        color: laserBeam.checked ? laserBeam.pressedColor : laserBeam.normalColor
+                                        radius: 3
+                                    }
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.setLaserBeam(laserBeam.checked)
+                                    }
+                                    Connections {
+                                        target: modbusManager
+                                        function onLaserBeamStateChanged(state) {
+                                            if (laserBeam.checked !== state) laserBeam.checked = state
+                                        }
+                                    }
+                                }
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 120 - 80 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // MPD Value
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "MPD:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 120 }
+                            Text { 
+                                id: laserMPD
+                                text: "0.00 uA"
+                                font.pixelSize: 12
+                                color: "#000000"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 120 - 100 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Output Power Value
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Output Power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 120 }
+                            Text { 
+                                id: laserOutputPower
+                                text: "0.00"
+                                font.pixelSize: 12
+                                color: "#000000"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 120 - 100 - 16; height: 0 }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Temp Value
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 120 }
+                            Text { 
+                                id: laserTemp
+                                text: "0.00"
+                                font.pixelSize: 12
+                                color: "#000000"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Rectangle { width: parent.width - parent.padding * 2 - 120 - 100 - 16; height: 0 }
+                        }
+
+                        // Connections для обновления значений Laser
+                        Connections {
+                            target: modbusManager
+                            function onLaserBeamStateChanged(state) {
+                                laserBeam.checked = state
+                            }
+                            function onLaserMPDChanged(value) {
+                                laserMPD.text = value.toFixed(2) + " uA"
+                            }
+                            function onLaserOutputPowerChanged(value) {
+                                laserOutputPower.text = value.toFixed(2)
+                            }
+                            function onLaserTempChanged(value) {
+                                laserTemp.text = value.toFixed(2)
+                            }
+                        }
+                    }
+
                     // Таблица Water Chiller для Water Chiller меню
                     Column {
                         id: waterChillerGrid
@@ -2525,11 +3528,39 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onClicked: {
-                                    // Переключаем раскрытие
-                                    if (expandedMenuItem === modelData) {
-                                        expandedMenuItem = ""
+                                    // Специальная обработка для "3 SEOP Parameters" - открываем сразу grid без подменю
+                                    if (modelData === "3 SEOP Parameters") {
+                                        console.log("SEOP Parameters clicked, enabling polling")
+                                        // Включаем опрос SEOP Parameters по требованию
+                                        if (modbusManager) {
+                                            modbusManager.enableSEOPParametersPolling()
+                                        }
+                                        // Показываем таблицу SEOP Parameters
+                                        seopParametersGrid.visible = true
+                                        relayTableGrid.visible = false
+                                        valvesFansTableGrid.visible = false
+                                        powerSupplyGrid.visible = false
+                                        pidControllerGrid.visible = false
+                                        waterChillerGrid.visible = false
+                                        alicatsGrid.visible = false
+                                        vacuumControllerGrid.visible = false
+                                        laserGrid.visible = false
+                                        paramGrid.visible = false
+                                        infoTitle.text = "3 SEOP Parameters"
+                                        infoSubtitle.text = menuItemContainer.groupData.label
+                                        infoContent.text = "SEOP Parameters control"
+                                        console.log("SEOP Parameters grid visible:", seopParametersGrid.visible)
+                                        // Не раскрываем подменю для SEOP Parameters
+                                        if (expandedMenuItem === modelData) {
+                                            expandedMenuItem = ""
+                                        }
                                     } else {
-                                        expandedMenuItem = modelData
+                                        // Для остальных меню - переключаем раскрытие
+                                        if (expandedMenuItem === modelData) {
+                                            expandedMenuItem = ""
+                                        } else {
+                                            expandedMenuItem = modelData
+                                        }
                                     }
                                 }
                             }
@@ -2606,6 +3637,8 @@ Item {
                                                 waterChillerGrid.visible = false
                                                 alicatsGrid.visible = false
                                                 vacuumControllerGrid.visible = false
+                                                laserGrid.visible = false
+                                                seopParametersGrid.visible = false
                                                 paramGrid.visible = false
                                                 infoTitle.text = "External Relays"
                                                 infoSubtitle.text = menuItemContainer.groupData.label
@@ -2624,6 +3657,8 @@ Item {
                                                 waterChillerGrid.visible = false
                                                 alicatsGrid.visible = false
                                                 vacuumControllerGrid.visible = false
+                                                laserGrid.visible = false
+                                                seopParametersGrid.visible = false
                                                 paramGrid.visible = false
                                                 infoTitle.text = "Valves and Fans"
                                                 infoSubtitle.text = menuItemContainer.groupData.label
@@ -2666,6 +3701,26 @@ Item {
                                                 infoSubtitle.text = menuItemContainer.groupData.label
                                                 infoContent.text = "Vacuum pressure monitoring"
                                                 console.log("Vacuum Controller grid visible:", vacuumControllerGrid.visible)
+                                            } else if (modelData === "Laser") {
+                                                console.log("Laser clicked, enabling polling")
+                                                // Включаем опрос Laser по требованию
+                                                if (modbusManager) {
+                                                    modbusManager.enableLaserPolling()
+                                                }
+                                                // Показываем таблицу Laser
+                                                laserGrid.visible = true
+                                                relayTableGrid.visible = false
+                                                valvesFansTableGrid.visible = false
+                                                powerSupplyGrid.visible = false
+                                                pidControllerGrid.visible = false
+                                                waterChillerGrid.visible = false
+                                                alicatsGrid.visible = false
+                                                vacuumControllerGrid.visible = false
+                                                paramGrid.visible = false
+                                                infoTitle.text = "Laser"
+                                                infoSubtitle.text = menuItemContainer.groupData.label
+                                                infoContent.text = "Laser control and monitoring"
+                                                console.log("Laser grid visible:", laserGrid.visible)
                                             } else if (modelData === "Power Supply") {
                                                 // Включаем опрос Power Supply по требованию
                                                 if (modbusManager) {
@@ -2743,6 +3798,8 @@ Item {
                                                 waterChillerGrid.visible = false
                                                 alicatsGrid.visible = false
                                                 vacuumControllerGrid.visible = false
+                                                laserGrid.visible = false
+                                                seopParametersGrid.visible = false
                                                 
                                                 // Получаем данные о параметре
                                                 var paramData = menuData.params[modelData]
