@@ -210,6 +210,16 @@ class ModbusManager(QObject):
     additionalStepSizeB0SweepHP129XeChanged = Signal(float)  # Step size during B0 field sweep for HP 129Xe в A (регистр 6081) - чтение и запись
     additionalStepSizeB0SweepProtonsChanged = Signal(float)  # Step size during B0 field sweep for protons в A (регистр 6091) - чтение и запись
     additionalXeAlicatsPressureChanged = Signal(float)  # Xe ALICATS pressure в Torr (регистр 6101) - чтение и запись
+    additionalNitrogenAlicatsPressureChanged = Signal(float)  # Nitrogen ALICATS pressure в Torr (регистр 6111) - чтение и запись
+    additionalChillerTempSetpointChanged = Signal(float)  # Chiller Temp setpoint (регистр 6121) - чтение и запись
+    additionalSEOPResonanceFrequencyChanged = Signal(float)  # SEOP Resonance Frequency в nm (регистр 6131) - чтение и запись
+    additionalSEOPResonanceFrequencyToleranceChanged = Signal(float)  # SEOP Resonance Frequency Tolerance (регистр 6141) - чтение и запись
+    additionalIRSpectrometerNumberOfScansChanged = Signal(float)  # IR spectrometer number of scans (регистр 6151) - чтение и запись
+    additionalIRSpectrometerExposureDurationChanged = Signal(float)  # IR spectrometer exposure duration в ms (регистр 6161) - чтение и запись
+    additional1HReferenceNScansChanged = Signal(float)  # 1H Reference N Scans (регистр 6171) - чтение и запись
+    additional1HCurrentSweepNScansChanged = Signal(float)  # 1H Current Sweep N Scans (регистр 6181) - чтение и запись
+    additionalBaselineCorrectionMinFrequencyChanged = Signal(float)  # Baseline correction min frequency в kHz (регистр 6191) - чтение и запись
+    additionalBaselineCorrectionMaxFrequencyChanged = Signal(float)  # Baseline correction max frequency в kHz (регистр 6201) - чтение и запись
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
@@ -340,6 +350,16 @@ class ModbusManager(QObject):
         self._additional_step_size_b0_sweep_hp_129xe = 0.0  # Step size during B0 field sweep for HP 129Xe в A (регистр 6081) - чтение и запись
         self._additional_step_size_b0_sweep_protons = 0.0  # Step size during B0 field sweep for protons в A (регистр 6091) - чтение и запись
         self._additional_xe_alicats_pressure = 0.0  # Xe ALICATS pressure в Torr (регистр 6101) - чтение и запись
+        self._additional_nitrogen_alicats_pressure = 0.0  # Nitrogen ALICATS pressure в Torr (регистр 6111) - чтение и запись
+        self._additional_chiller_temp_setpoint = 0.0  # Chiller Temp setpoint (регистр 6121) - чтение и запись
+        self._additional_seop_resonance_frequency = 0.0  # SEOP Resonance Frequency в nm (регистр 6131) - чтение и запись
+        self._additional_seop_resonance_frequency_tolerance = 0.0  # SEOP Resonance Frequency Tolerance (регистр 6141) - чтение и запись
+        self._additional_ir_spectrometer_number_of_scans = 0.0  # IR spectrometer number of scans (регистр 6151) - чтение и запись
+        self._additional_ir_spectrometer_exposure_duration = 0.0  # IR spectrometer exposure duration в ms (регистр 6161) - чтение и запись
+        self._additional_1h_reference_n_scans = 0.0  # 1H Reference N Scans (регистр 6171) - чтение и запись
+        self._additional_1h_current_sweep_n_scans = 0.0  # 1H Current Sweep N Scans (регистр 6181) - чтение и запись
+        self._additional_baseline_correction_min_frequency = 0.0  # Baseline correction min frequency в kHz (регистр 6191) - чтение и запись
+        self._additional_baseline_correction_max_frequency = 0.0  # Baseline correction max frequency в kHz (регистр 6201) - чтение и запись
         # Флаги взаимодействия пользователя для автообновления
         self._additional_magnet_psu_current_proton_nmr_user_interaction = False
         self._additional_magnet_psu_current_129xe_nmr_user_interaction = False
@@ -351,6 +371,16 @@ class ModbusManager(QObject):
         self._additional_step_size_b0_sweep_hp_129xe_user_interaction = False
         self._additional_step_size_b0_sweep_protons_user_interaction = False
         self._additional_xe_alicats_pressure_user_interaction = False
+        self._additional_nitrogen_alicats_pressure_user_interaction = False
+        self._additional_chiller_temp_setpoint_user_interaction = False
+        self._additional_seop_resonance_frequency_user_interaction = False
+        self._additional_seop_resonance_frequency_tolerance_user_interaction = False
+        self._additional_ir_spectrometer_number_of_scans_user_interaction = False
+        self._additional_ir_spectrometer_exposure_duration_user_interaction = False
+        self._additional_1h_reference_n_scans_user_interaction = False
+        self._additional_1h_current_sweep_n_scans_user_interaction = False
+        self._additional_baseline_correction_min_frequency_user_interaction = False
+        self._additional_baseline_correction_max_frequency_user_interaction = False
         # Флаги взаимодействия пользователя для автообновления
         self._measured_cold_cell_ir_signal_user_interaction = False
         self._measured_hot_cell_ir_signal_user_interaction = False
@@ -539,7 +569,7 @@ class ModbusManager(QObject):
         self._measured_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
         self._reading_measured_parameters = False  # Флаг для предотвращения параллельных чтений
 
-        # Таймер для чтения регистров Additional Parameters (6011-6101) - быстрое обновление
+        # Таймер для чтения регистров Additional Parameters (6011-6201) - быстрое обновление
         self._additional_parameters_timer = QTimer(self)
         self._additional_parameters_timer.timeout.connect(self._readAdditionalParameters)
         self._additional_parameters_timer.setInterval(300)  # Чтение каждые 300 мс для максимально быстрого обновления
@@ -884,7 +914,7 @@ class ModbusManager(QObject):
     
     @Slot()
     def enableAdditionalParametersPolling(self):
-        """Включить чтение регистров Additional Parameters (6011-6101) по требованию (например, при открытии Additional Parameters)"""
+        """Включить чтение регистров Additional Parameters (6011-6201) по требованию (например, при открытии Additional Parameters)"""
         logger.info(f"enableAdditionalParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
         if self._is_connected and not self._polling_paused:
             if not self._additional_parameters_timer.isActive():
@@ -3241,7 +3271,7 @@ class ModbusManager(QObject):
             logger.debug(f"Measured T2* correction factor: {val}")
     
     def _readAdditionalParameters(self):
-        """Чтение регистров Additional Parameters (6011-6101)"""
+        """Чтение регистров Additional Parameters (6011-6201)"""
         if not self._is_connected or self._modbus_client is None or self._reading_additional_parameters:
             return
 
@@ -3250,7 +3280,7 @@ class ModbusManager(QObject):
         
         def task():
             """Чтение всех регистров Additional Parameters"""
-            # Регистры 6011-6101
+            # Регистры 6011-6201
             magnet_psu_current_proton_nmr_regs = client.read_input_registers_direct(6011, 1, max_chunk=1)
             magnet_psu_current_129xe_nmr_regs = client.read_input_registers_direct(6021, 1, max_chunk=1)
             operational_laser_psu_current_regs = client.read_input_registers_direct(6031, 1, max_chunk=1)
@@ -3261,6 +3291,16 @@ class ModbusManager(QObject):
             step_size_b0_sweep_hp_129xe_regs = client.read_input_registers_direct(6081, 1, max_chunk=1)
             step_size_b0_sweep_protons_regs = client.read_input_registers_direct(6091, 1, max_chunk=1)
             xe_alicats_pressure_regs = client.read_input_registers_direct(6101, 1, max_chunk=1)
+            nitrogen_alicats_pressure_regs = client.read_input_registers_direct(6111, 1, max_chunk=1)
+            chiller_temp_setpoint_regs = client.read_input_registers_direct(6121, 1, max_chunk=1)
+            seop_resonance_frequency_regs = client.read_input_registers_direct(6131, 1, max_chunk=1)
+            seop_resonance_frequency_tolerance_regs = client.read_input_registers_direct(6141, 1, max_chunk=1)
+            ir_spectrometer_number_of_scans_regs = client.read_input_registers_direct(6151, 1, max_chunk=1)
+            ir_spectrometer_exposure_duration_regs = client.read_input_registers_direct(6161, 1, max_chunk=1)
+            h1_reference_n_scans_regs = client.read_input_registers_direct(6171, 1, max_chunk=1)
+            h1_current_sweep_n_scans_regs = client.read_input_registers_direct(6181, 1, max_chunk=1)
+            baseline_correction_min_frequency_regs = client.read_input_registers_direct(6191, 1, max_chunk=1)
+            baseline_correction_max_frequency_regs = client.read_input_registers_direct(6201, 1, max_chunk=1)
             
             result = {}
             if magnet_psu_current_proton_nmr_regs and len(magnet_psu_current_proton_nmr_regs) >= 1:
@@ -3293,13 +3333,43 @@ class ModbusManager(QObject):
             if xe_alicats_pressure_regs and len(xe_alicats_pressure_regs) >= 1:
                 # Xe ALICATS pressure в Torr - преобразуем из int (Torr * 100) в float
                 result['xe_alicats_pressure'] = float(int(xe_alicats_pressure_regs[0])) / 100.0
+            if nitrogen_alicats_pressure_regs and len(nitrogen_alicats_pressure_regs) >= 1:
+                # Nitrogen ALICATS pressure в Torr - преобразуем из int (Torr * 100) в float
+                result['nitrogen_alicats_pressure'] = float(int(nitrogen_alicats_pressure_regs[0])) / 100.0
+            if chiller_temp_setpoint_regs and len(chiller_temp_setpoint_regs) >= 1:
+                # Chiller Temp setpoint - значение уже в нужных единицах (предполагаем что это int)
+                result['chiller_temp_setpoint'] = float(int(chiller_temp_setpoint_regs[0]))
+            if seop_resonance_frequency_regs and len(seop_resonance_frequency_regs) >= 1:
+                # SEOP Resonance Frequency в nm - преобразуем из int (nm * 100) в float
+                result['seop_resonance_frequency'] = float(int(seop_resonance_frequency_regs[0])) / 100.0
+            if seop_resonance_frequency_tolerance_regs and len(seop_resonance_frequency_tolerance_regs) >= 1:
+                # SEOP Resonance Frequency Tolerance - значение уже в нужных единицах (предполагаем что это int)
+                result['seop_resonance_frequency_tolerance'] = float(int(seop_resonance_frequency_tolerance_regs[0]))
+            if ir_spectrometer_number_of_scans_regs and len(ir_spectrometer_number_of_scans_regs) >= 1:
+                # IR spectrometer number of scans - значение уже в нужных единицах (предполагаем что это int)
+                result['ir_spectrometer_number_of_scans'] = float(int(ir_spectrometer_number_of_scans_regs[0]))
+            if ir_spectrometer_exposure_duration_regs and len(ir_spectrometer_exposure_duration_regs) >= 1:
+                # IR spectrometer exposure duration в ms - преобразуем из int (ms * 100) в float
+                result['ir_spectrometer_exposure_duration'] = float(int(ir_spectrometer_exposure_duration_regs[0])) / 100.0
+            if h1_reference_n_scans_regs and len(h1_reference_n_scans_regs) >= 1:
+                # 1H Reference N Scans - значение уже в нужных единицах (предполагаем что это int)
+                result['h1_reference_n_scans'] = float(int(h1_reference_n_scans_regs[0]))
+            if h1_current_sweep_n_scans_regs and len(h1_current_sweep_n_scans_regs) >= 1:
+                # 1H Current Sweep N Scans - значение уже в нужных единицах (предполагаем что это int)
+                result['h1_current_sweep_n_scans'] = float(int(h1_current_sweep_n_scans_regs[0]))
+            if baseline_correction_min_frequency_regs and len(baseline_correction_min_frequency_regs) >= 1:
+                # Baseline correction min frequency в kHz - преобразуем из int (kHz * 100) в float
+                result['baseline_correction_min_frequency'] = float(int(baseline_correction_min_frequency_regs[0])) / 100.0
+            if baseline_correction_max_frequency_regs and len(baseline_correction_max_frequency_regs) >= 1:
+                # Baseline correction max frequency в kHz - преобразуем из int (kHz * 100) в float
+                result['baseline_correction_max_frequency'] = float(int(baseline_correction_max_frequency_regs[0])) / 100.0
             
             return result
         
         self._enqueue_read("additional_parameters", task)
     
     def _applyAdditionalParametersValue(self, value: object):
-        """Применение результатов чтения Additional Parameters (6011-6101)"""
+        """Применение результатов чтения Additional Parameters (6011-6201)"""
         self._reading_additional_parameters = False
         if value is None or not isinstance(value, dict):
             logger.warning(f"_applyAdditionalParametersValue: value is None or not dict: {value}")
@@ -3367,6 +3437,66 @@ class ModbusManager(QObject):
                 self._additional_xe_alicats_pressure = val
                 self.additionalXeAlicatsPressureChanged.emit(val)
                 logger.debug(f"Additional Xe ALICATS pressure: {val} Torr")
+        if 'nitrogen_alicats_pressure' in value:
+            val = float(value['nitrogen_alicats_pressure'])
+            if not self._additional_nitrogen_alicats_pressure_user_interaction:
+                self._additional_nitrogen_alicats_pressure = val
+                self.additionalNitrogenAlicatsPressureChanged.emit(val)
+                logger.debug(f"Additional Nitrogen ALICATS pressure: {val} Torr")
+        if 'chiller_temp_setpoint' in value:
+            val = float(value['chiller_temp_setpoint'])
+            if not self._additional_chiller_temp_setpoint_user_interaction:
+                self._additional_chiller_temp_setpoint = val
+                self.additionalChillerTempSetpointChanged.emit(val)
+                logger.debug(f"Additional Chiller Temp setpoint: {val}")
+        if 'seop_resonance_frequency' in value:
+            val = float(value['seop_resonance_frequency'])
+            if not self._additional_seop_resonance_frequency_user_interaction:
+                self._additional_seop_resonance_frequency = val
+                self.additionalSEOPResonanceFrequencyChanged.emit(val)
+                logger.debug(f"Additional SEOP Resonance Frequency: {val} nm")
+        if 'seop_resonance_frequency_tolerance' in value:
+            val = float(value['seop_resonance_frequency_tolerance'])
+            if not self._additional_seop_resonance_frequency_tolerance_user_interaction:
+                self._additional_seop_resonance_frequency_tolerance = val
+                self.additionalSEOPResonanceFrequencyToleranceChanged.emit(val)
+                logger.debug(f"Additional SEOP Resonance Frequency Tolerance: {val}")
+        if 'ir_spectrometer_number_of_scans' in value:
+            val = float(value['ir_spectrometer_number_of_scans'])
+            if not self._additional_ir_spectrometer_number_of_scans_user_interaction:
+                self._additional_ir_spectrometer_number_of_scans = val
+                self.additionalIRSpectrometerNumberOfScansChanged.emit(val)
+                logger.debug(f"Additional IR spectrometer number of scans: {val}")
+        if 'ir_spectrometer_exposure_duration' in value:
+            val = float(value['ir_spectrometer_exposure_duration'])
+            if not self._additional_ir_spectrometer_exposure_duration_user_interaction:
+                self._additional_ir_spectrometer_exposure_duration = val
+                self.additionalIRSpectrometerExposureDurationChanged.emit(val)
+                logger.debug(f"Additional IR spectrometer exposure duration: {val} ms")
+        if 'h1_reference_n_scans' in value:
+            val = float(value['h1_reference_n_scans'])
+            if not self._additional_1h_reference_n_scans_user_interaction:
+                self._additional_1h_reference_n_scans = val
+                self.additional1HReferenceNScansChanged.emit(val)
+                logger.debug(f"Additional 1H Reference N Scans: {val}")
+        if 'h1_current_sweep_n_scans' in value:
+            val = float(value['h1_current_sweep_n_scans'])
+            if not self._additional_1h_current_sweep_n_scans_user_interaction:
+                self._additional_1h_current_sweep_n_scans = val
+                self.additional1HCurrentSweepNScansChanged.emit(val)
+                logger.debug(f"Additional 1H Current Sweep N Scans: {val}")
+        if 'baseline_correction_min_frequency' in value:
+            val = float(value['baseline_correction_min_frequency'])
+            if not self._additional_baseline_correction_min_frequency_user_interaction:
+                self._additional_baseline_correction_min_frequency = val
+                self.additionalBaselineCorrectionMinFrequencyChanged.emit(val)
+                logger.debug(f"Additional Baseline correction min frequency: {val} kHz")
+        if 'baseline_correction_max_frequency' in value:
+            val = float(value['baseline_correction_max_frequency'])
+            if not self._additional_baseline_correction_max_frequency_user_interaction:
+                self._additional_baseline_correction_max_frequency = val
+                self.additionalBaselineCorrectionMaxFrequencyChanged.emit(val)
+                logger.debug(f"Additional Baseline correction max frequency: {val} kHz")
     
     # ===== Measured Parameters методы записи =====
     @Slot(float, result=bool)
@@ -3801,6 +3931,266 @@ class ModbusManager(QObject):
         """Уменьшение Xe ALICATS pressure на 0.01 Torr"""
         return self.setAdditionalXeAlicatsPressure(self._additional_xe_alicats_pressure - 0.01)
     
+    @Slot(float, result=bool)
+    def setAdditionalNitrogenAlicatsPressure(self, pressure_torr: float) -> bool:
+        """Установка Nitrogen ALICATS pressure в Torr (регистр 6111)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_nitrogen_alicats_pressure = pressure_torr
+        self._additional_nitrogen_alicats_pressure_user_interaction = True
+        self.additionalNitrogenAlicatsPressureChanged.emit(pressure_torr)
+        register_value = int(pressure_torr * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6111, register_value)
+            return bool(result)
+        self._enqueue_write("additional_nitrogen_alicats_pressure", task, {"pressure_torr": pressure_torr})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalNitrogenAlicatsPressure(self) -> bool:
+        """Увеличение Nitrogen ALICATS pressure на 0.01 Torr"""
+        return self.setAdditionalNitrogenAlicatsPressure(self._additional_nitrogen_alicats_pressure + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalNitrogenAlicatsPressure(self) -> bool:
+        """Уменьшение Nitrogen ALICATS pressure на 0.01 Torr"""
+        return self.setAdditionalNitrogenAlicatsPressure(self._additional_nitrogen_alicats_pressure - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalChillerTempSetpoint(self, setpoint: float) -> bool:
+        """Установка Chiller Temp setpoint (регистр 6121)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_chiller_temp_setpoint = setpoint
+        self._additional_chiller_temp_setpoint_user_interaction = True
+        self.additionalChillerTempSetpointChanged.emit(setpoint)
+        register_value = int(setpoint)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6121, register_value)
+            return bool(result)
+        self._enqueue_write("additional_chiller_temp_setpoint", task, {"setpoint": setpoint})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalChillerTempSetpoint(self) -> bool:
+        """Увеличение Chiller Temp setpoint на 1"""
+        return self.setAdditionalChillerTempSetpoint(self._additional_chiller_temp_setpoint + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalChillerTempSetpoint(self) -> bool:
+        """Уменьшение Chiller Temp setpoint на 1"""
+        return self.setAdditionalChillerTempSetpoint(self._additional_chiller_temp_setpoint - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditionalSEOPResonanceFrequency(self, frequency_nm: float) -> bool:
+        """Установка SEOP Resonance Frequency в nm (регистр 6131)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_seop_resonance_frequency = frequency_nm
+        self._additional_seop_resonance_frequency_user_interaction = True
+        self.additionalSEOPResonanceFrequencyChanged.emit(frequency_nm)
+        register_value = int(frequency_nm * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6131, register_value)
+            return bool(result)
+        self._enqueue_write("additional_seop_resonance_frequency", task, {"frequency_nm": frequency_nm})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalSEOPResonanceFrequency(self) -> bool:
+        """Увеличение SEOP Resonance Frequency на 0.01 nm"""
+        return self.setAdditionalSEOPResonanceFrequency(self._additional_seop_resonance_frequency + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalSEOPResonanceFrequency(self) -> bool:
+        """Уменьшение SEOP Resonance Frequency на 0.01 nm"""
+        return self.setAdditionalSEOPResonanceFrequency(self._additional_seop_resonance_frequency - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalSEOPResonanceFrequencyTolerance(self, tolerance: float) -> bool:
+        """Установка SEOP Resonance Frequency Tolerance (регистр 6141)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_seop_resonance_frequency_tolerance = tolerance
+        self._additional_seop_resonance_frequency_tolerance_user_interaction = True
+        self.additionalSEOPResonanceFrequencyToleranceChanged.emit(tolerance)
+        register_value = int(tolerance)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6141, register_value)
+            return bool(result)
+        self._enqueue_write("additional_seop_resonance_frequency_tolerance", task, {"tolerance": tolerance})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalSEOPResonanceFrequencyTolerance(self) -> bool:
+        """Увеличение SEOP Resonance Frequency Tolerance на 1"""
+        return self.setAdditionalSEOPResonanceFrequencyTolerance(self._additional_seop_resonance_frequency_tolerance + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalSEOPResonanceFrequencyTolerance(self) -> bool:
+        """Уменьшение SEOP Resonance Frequency Tolerance на 1"""
+        return self.setAdditionalSEOPResonanceFrequencyTolerance(self._additional_seop_resonance_frequency_tolerance - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditionalIRSpectrometerNumberOfScans(self, num_scans: float) -> bool:
+        """Установка IR spectrometer number of scans (регистр 6151)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_ir_spectrometer_number_of_scans = num_scans
+        self._additional_ir_spectrometer_number_of_scans_user_interaction = True
+        self.additionalIRSpectrometerNumberOfScansChanged.emit(num_scans)
+        register_value = int(num_scans)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6151, register_value)
+            return bool(result)
+        self._enqueue_write("additional_ir_spectrometer_number_of_scans", task, {"num_scans": num_scans})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalIRSpectrometerNumberOfScans(self) -> bool:
+        """Увеличение IR spectrometer number of scans на 1"""
+        return self.setAdditionalIRSpectrometerNumberOfScans(self._additional_ir_spectrometer_number_of_scans + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalIRSpectrometerNumberOfScans(self) -> bool:
+        """Уменьшение IR spectrometer number of scans на 1"""
+        return self.setAdditionalIRSpectrometerNumberOfScans(self._additional_ir_spectrometer_number_of_scans - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditionalIRSpectrometerExposureDuration(self, duration_ms: float) -> bool:
+        """Установка IR spectrometer exposure duration в ms (регистр 6161)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_ir_spectrometer_exposure_duration = duration_ms
+        self._additional_ir_spectrometer_exposure_duration_user_interaction = True
+        self.additionalIRSpectrometerExposureDurationChanged.emit(duration_ms)
+        register_value = int(duration_ms * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6161, register_value)
+            return bool(result)
+        self._enqueue_write("additional_ir_spectrometer_exposure_duration", task, {"duration_ms": duration_ms})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalIRSpectrometerExposureDuration(self) -> bool:
+        """Увеличение IR spectrometer exposure duration на 0.01 ms"""
+        return self.setAdditionalIRSpectrometerExposureDuration(self._additional_ir_spectrometer_exposure_duration + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalIRSpectrometerExposureDuration(self) -> bool:
+        """Уменьшение IR spectrometer exposure duration на 0.01 ms"""
+        return self.setAdditionalIRSpectrometerExposureDuration(self._additional_ir_spectrometer_exposure_duration - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditional1HReferenceNScans(self, num_scans: float) -> bool:
+        """Установка 1H Reference N Scans (регистр 6171)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_1h_reference_n_scans = num_scans
+        self._additional_1h_reference_n_scans_user_interaction = True
+        self.additional1HReferenceNScansChanged.emit(num_scans)
+        register_value = int(num_scans)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6171, register_value)
+            return bool(result)
+        self._enqueue_write("additional_1h_reference_n_scans", task, {"num_scans": num_scans})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditional1HReferenceNScans(self) -> bool:
+        """Увеличение 1H Reference N Scans на 1"""
+        return self.setAdditional1HReferenceNScans(self._additional_1h_reference_n_scans + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditional1HReferenceNScans(self) -> bool:
+        """Уменьшение 1H Reference N Scans на 1"""
+        return self.setAdditional1HReferenceNScans(self._additional_1h_reference_n_scans - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditional1HCurrentSweepNScans(self, num_scans: float) -> bool:
+        """Установка 1H Current Sweep N Scans (регистр 6181)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_1h_current_sweep_n_scans = num_scans
+        self._additional_1h_current_sweep_n_scans_user_interaction = True
+        self.additional1HCurrentSweepNScansChanged.emit(num_scans)
+        register_value = int(num_scans)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6181, register_value)
+            return bool(result)
+        self._enqueue_write("additional_1h_current_sweep_n_scans", task, {"num_scans": num_scans})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditional1HCurrentSweepNScans(self) -> bool:
+        """Увеличение 1H Current Sweep N Scans на 1"""
+        return self.setAdditional1HCurrentSweepNScans(self._additional_1h_current_sweep_n_scans + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditional1HCurrentSweepNScans(self) -> bool:
+        """Уменьшение 1H Current Sweep N Scans на 1"""
+        return self.setAdditional1HCurrentSweepNScans(self._additional_1h_current_sweep_n_scans - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditionalBaselineCorrectionMinFrequency(self, frequency_khz: float) -> bool:
+        """Установка Baseline correction min frequency в kHz (регистр 6191)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_baseline_correction_min_frequency = frequency_khz
+        self._additional_baseline_correction_min_frequency_user_interaction = True
+        self.additionalBaselineCorrectionMinFrequencyChanged.emit(frequency_khz)
+        register_value = int(frequency_khz * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6191, register_value)
+            return bool(result)
+        self._enqueue_write("additional_baseline_correction_min_frequency", task, {"frequency_khz": frequency_khz})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalBaselineCorrectionMinFrequency(self) -> bool:
+        """Увеличение Baseline correction min frequency на 0.01 kHz"""
+        return self.setAdditionalBaselineCorrectionMinFrequency(self._additional_baseline_correction_min_frequency + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalBaselineCorrectionMinFrequency(self) -> bool:
+        """Уменьшение Baseline correction min frequency на 0.01 kHz"""
+        return self.setAdditionalBaselineCorrectionMinFrequency(self._additional_baseline_correction_min_frequency - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalBaselineCorrectionMaxFrequency(self, frequency_khz: float) -> bool:
+        """Установка Baseline correction max frequency в kHz (регистр 6201)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_baseline_correction_max_frequency = frequency_khz
+        self._additional_baseline_correction_max_frequency_user_interaction = True
+        self.additionalBaselineCorrectionMaxFrequencyChanged.emit(frequency_khz)
+        register_value = int(frequency_khz * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6201, register_value)
+            return bool(result)
+        self._enqueue_write("additional_baseline_correction_max_frequency", task, {"frequency_khz": frequency_khz})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalBaselineCorrectionMaxFrequency(self) -> bool:
+        """Увеличение Baseline correction max frequency на 0.01 kHz"""
+        return self.setAdditionalBaselineCorrectionMaxFrequency(self._additional_baseline_correction_max_frequency + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalBaselineCorrectionMaxFrequency(self) -> bool:
+        """Уменьшение Baseline correction max frequency на 0.01 kHz"""
+        return self.setAdditionalBaselineCorrectionMaxFrequency(self._additional_baseline_correction_max_frequency - 0.01)
+    
     # Методы setValue для TextField (ввод с клавиатуры)
     @Slot(float, result=bool)
     def setAdditionalMagnetPSUCurrentProtonNMRValue(self, current_a: float) -> bool:
@@ -3880,6 +4270,86 @@ class ModbusManager(QObject):
         self._additional_xe_alicats_pressure = pressure_torr
         self.additionalXeAlicatsPressureChanged.emit(pressure_torr)
         self._additional_xe_alicats_pressure_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalNitrogenAlicatsPressureValue(self, pressure_torr: float) -> bool:
+        """Обновление внутреннего значения Nitrogen ALICATS pressure без отправки на устройство"""
+        self._additional_nitrogen_alicats_pressure = pressure_torr
+        self.additionalNitrogenAlicatsPressureChanged.emit(pressure_torr)
+        self._additional_nitrogen_alicats_pressure_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalChillerTempSetpointValue(self, setpoint: float) -> bool:
+        """Обновление внутреннего значения Chiller Temp setpoint без отправки на устройство"""
+        self._additional_chiller_temp_setpoint = setpoint
+        self.additionalChillerTempSetpointChanged.emit(setpoint)
+        self._additional_chiller_temp_setpoint_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalSEOPResonanceFrequencyValue(self, frequency_nm: float) -> bool:
+        """Обновление внутреннего значения SEOP Resonance Frequency без отправки на устройство"""
+        self._additional_seop_resonance_frequency = frequency_nm
+        self.additionalSEOPResonanceFrequencyChanged.emit(frequency_nm)
+        self._additional_seop_resonance_frequency_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalSEOPResonanceFrequencyToleranceValue(self, tolerance: float) -> bool:
+        """Обновление внутреннего значения SEOP Resonance Frequency Tolerance без отправки на устройство"""
+        self._additional_seop_resonance_frequency_tolerance = tolerance
+        self.additionalSEOPResonanceFrequencyToleranceChanged.emit(tolerance)
+        self._additional_seop_resonance_frequency_tolerance_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalIRSpectrometerNumberOfScansValue(self, num_scans: float) -> bool:
+        """Обновление внутреннего значения IR spectrometer number of scans без отправки на устройство"""
+        self._additional_ir_spectrometer_number_of_scans = num_scans
+        self.additionalIRSpectrometerNumberOfScansChanged.emit(num_scans)
+        self._additional_ir_spectrometer_number_of_scans_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalIRSpectrometerExposureDurationValue(self, duration_ms: float) -> bool:
+        """Обновление внутреннего значения IR spectrometer exposure duration без отправки на устройство"""
+        self._additional_ir_spectrometer_exposure_duration = duration_ms
+        self.additionalIRSpectrometerExposureDurationChanged.emit(duration_ms)
+        self._additional_ir_spectrometer_exposure_duration_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditional1HReferenceNScansValue(self, num_scans: float) -> bool:
+        """Обновление внутреннего значения 1H Reference N Scans без отправки на устройство"""
+        self._additional_1h_reference_n_scans = num_scans
+        self.additional1HReferenceNScansChanged.emit(num_scans)
+        self._additional_1h_reference_n_scans_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditional1HCurrentSweepNScansValue(self, num_scans: float) -> bool:
+        """Обновление внутреннего значения 1H Current Sweep N Scans без отправки на устройство"""
+        self._additional_1h_current_sweep_n_scans = num_scans
+        self.additional1HCurrentSweepNScansChanged.emit(num_scans)
+        self._additional_1h_current_sweep_n_scans_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalBaselineCorrectionMinFrequencyValue(self, frequency_khz: float) -> bool:
+        """Обновление внутреннего значения Baseline correction min frequency без отправки на устройство"""
+        self._additional_baseline_correction_min_frequency = frequency_khz
+        self.additionalBaselineCorrectionMinFrequencyChanged.emit(frequency_khz)
+        self._additional_baseline_correction_min_frequency_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalBaselineCorrectionMaxFrequencyValue(self, frequency_khz: float) -> bool:
+        """Обновление внутреннего значения Baseline correction max frequency без отправки на устройство"""
+        self._additional_baseline_correction_max_frequency = frequency_khz
+        self.additionalBaselineCorrectionMaxFrequencyChanged.emit(frequency_khz)
+        self._additional_baseline_correction_max_frequency_user_interaction = True
         return True
     
     @Slot(int, bool, result=bool)
