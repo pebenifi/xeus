@@ -4246,6 +4246,34 @@ Item {
                                         if (expandedMenuItem === modelData) {
                                             expandedMenuItem = ""
                                         }
+                                    } else if (modelData === "6 Additional Parameters") {
+                                        console.log("Additional Parameters clicked, enabling polling")
+                                        // Включаем опрос Additional Parameters по требованию
+                                        if (modbusManager) {
+                                            modbusManager.enableAdditionalParametersPolling()
+                                        }
+                                        // Показываем таблицу Additional Parameters
+                                        additionalParametersGrid.visible = true
+                                        seopParametersGrid.visible = false
+                                        calculatedParametersGrid.visible = false
+                                        measuredParametersGrid.visible = false
+                                        relayTableGrid.visible = false
+                                        valvesFansTableGrid.visible = false
+                                        powerSupplyGrid.visible = false
+                                        pidControllerGrid.visible = false
+                                        waterChillerGrid.visible = false
+                                        alicatsGrid.visible = false
+                                        vacuumControllerGrid.visible = false
+                                        laserGrid.visible = false
+                                        paramGrid.visible = false
+                                        infoTitle.text = "6 Additional Parameters"
+                                        infoSubtitle.text = menuItemContainer.groupData.label
+                                        infoContent.text = "Additional Parameters control"
+                                        console.log("Additional Parameters grid visible:", additionalParametersGrid.visible)
+                                        // Не раскрываем подменю для Additional Parameters
+                                        if (expandedMenuItem === modelData) {
+                                            expandedMenuItem = ""
+                                        }
                                     } else {
                                         // Для остальных меню - переключаем раскрытие
                                         if (expandedMenuItem === modelData) {
