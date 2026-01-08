@@ -199,6 +199,17 @@ class ModbusManager(QObject):
     measuredHP129XeNMRSignalChanged = Signal(float)  # HP 129Xe NMR Signal (регистр 5061) - только чтение
     measuredHP129XeT2Changed = Signal(float)  # HP 129Xe T2 в ms (регистр 5071) - чтение и запись
     measuredT2CorrectionFactorChanged = Signal(float)  # T2* correction factor (регистр 5081) - только чтение
+    # Additional Parameters signals
+    additionalMagnetPSUCurrentProtonNMRChanged = Signal(float)  # Magnet PSU current for proton NMR в A (регистр 6011) - чтение и запись
+    additionalMagnetPSUCurrent129XeNMRChanged = Signal(float)  # Magnet PSU current for 129Xe NMR в A (регистр 6021) - чтение и запись
+    additionalOperationalLaserPSUCurrentChanged = Signal(float)  # Operational Laser PSU current в A (регистр 6031) - чтение и запись
+    additionalRFPulseDurationChanged = Signal(float)  # RF pulse duration (регистр 6041) - чтение и запись
+    additionalResonanceFrequencyChanged = Signal(float)  # Resonance frequency в kHz (регистр 6051) - чтение и запись
+    additionalProtonRFPulsePowerChanged = Signal(float)  # Proton RF pulse power в % (регистр 6061) - чтение и запись
+    additionalHP129XeRFPulsePowerChanged = Signal(float)  # HP 129Xe RF pulse power в % (регистр 6071) - чтение и запись
+    additionalStepSizeB0SweepHP129XeChanged = Signal(float)  # Step size during B0 field sweep for HP 129Xe в A (регистр 6081) - чтение и запись
+    additionalStepSizeB0SweepProtonsChanged = Signal(float)  # Step size during B0 field sweep for protons в A (регистр 6091) - чтение и запись
+    additionalXeAlicatsPressureChanged = Signal(float)  # Xe ALICATS pressure в Torr (регистр 6101) - чтение и запись
     externalRelaysChanged = Signal(int, str)  # value, binary_string - для регистра 1020
     opCellHeatingStateChanged = Signal(bool)  # OP cell heating (реле 7)
     # Сигналы для паузы/возобновления опросов (используется при переключении экранов)
@@ -318,6 +329,28 @@ class ModbusManager(QObject):
         self._measured_hp_129xe_nmr_signal = 0.0  # HP 129Xe NMR Signal (регистр 5061) - только чтение
         self._measured_hp_129xe_t2 = 0.0  # HP 129Xe T2 в ms (регистр 5071) - чтение и запись
         self._measured_t2_correction_factor = 0.0  # T2* correction factor (регистр 5081) - только чтение
+        # Additional Parameters state variables
+        self._additional_magnet_psu_current_proton_nmr = 0.0  # Magnet PSU current for proton NMR в A (регистр 6011) - чтение и запись
+        self._additional_magnet_psu_current_129xe_nmr = 0.0  # Magnet PSU current for 129Xe NMR в A (регистр 6021) - чтение и запись
+        self._additional_operational_laser_psu_current = 0.0  # Operational Laser PSU current в A (регистр 6031) - чтение и запись
+        self._additional_rf_pulse_duration = 0.0  # RF pulse duration (регистр 6041) - чтение и запись
+        self._additional_resonance_frequency = 0.0  # Resonance frequency в kHz (регистр 6051) - чтение и запись
+        self._additional_proton_rf_pulse_power = 0.0  # Proton RF pulse power в % (регистр 6061) - чтение и запись
+        self._additional_hp_129xe_rf_pulse_power = 0.0  # HP 129Xe RF pulse power в % (регистр 6071) - чтение и запись
+        self._additional_step_size_b0_sweep_hp_129xe = 0.0  # Step size during B0 field sweep for HP 129Xe в A (регистр 6081) - чтение и запись
+        self._additional_step_size_b0_sweep_protons = 0.0  # Step size during B0 field sweep for protons в A (регистр 6091) - чтение и запись
+        self._additional_xe_alicats_pressure = 0.0  # Xe ALICATS pressure в Torr (регистр 6101) - чтение и запись
+        # Флаги взаимодействия пользователя для автообновления
+        self._additional_magnet_psu_current_proton_nmr_user_interaction = False
+        self._additional_magnet_psu_current_129xe_nmr_user_interaction = False
+        self._additional_operational_laser_psu_current_user_interaction = False
+        self._additional_rf_pulse_duration_user_interaction = False
+        self._additional_resonance_frequency_user_interaction = False
+        self._additional_proton_rf_pulse_power_user_interaction = False
+        self._additional_hp_129xe_rf_pulse_power_user_interaction = False
+        self._additional_step_size_b0_sweep_hp_129xe_user_interaction = False
+        self._additional_step_size_b0_sweep_protons_user_interaction = False
+        self._additional_xe_alicats_pressure_user_interaction = False
         # Флаги взаимодействия пользователя для автообновления
         self._measured_cold_cell_ir_signal_user_interaction = False
         self._measured_hot_cell_ir_signal_user_interaction = False
@@ -529,6 +562,7 @@ class ModbusManager(QObject):
             self._seop_parameters_timer,
             self._calculated_parameters_timer,
             self._measured_parameters_timer,
+            self._additional_parameters_timer,
         ]
         
         # Worker-поток для Modbus I/O (чтобы UI не подвисал)
@@ -841,6 +875,26 @@ class ModbusManager(QObject):
         if self._measured_parameters_timer.isActive():
             self._measured_parameters_timer.stop()
             logger.info("⏸ Опрос Measured Parameters выключен")
+    
+    @Slot()
+    def enableAdditionalParametersPolling(self):
+        """Включить чтение регистров Additional Parameters (6011-6101) по требованию (например, при открытии Additional Parameters)"""
+        logger.info(f"enableAdditionalParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+        if self._is_connected and not self._polling_paused:
+            if not self._additional_parameters_timer.isActive():
+                self._additional_parameters_timer.start()
+                logger.info("▶️ Опрос Additional Parameters включен")
+            else:
+                logger.info("⏸ Опрос Additional Parameters уже активен")
+        else:
+            logger.warning(f"⏸ Опрос Additional Parameters не включен: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
+    
+    @Slot()
+    def disableAdditionalParametersPolling(self):
+        """Выключить чтение регистров Additional Parameters по требованию (например, при закрытии Additional Parameters)"""
+        if self._additional_parameters_timer.isActive():
+            self._additional_parameters_timer.stop()
+            logger.info("⏸ Опрос Additional Parameters выключен")
     
     @Slot()
     def refreshUIFromCache(self):
@@ -1232,6 +1286,8 @@ class ModbusManager(QObject):
             self._applyCalculatedParametersValue(value)
         elif key == "measured_parameters":
             self._applyMeasuredParametersValue(value)
+        elif key == "additional_parameters":
+            self._applyAdditionalParametersValue(value)
         elif key == "1020":
             self._applyExternalRelays1020Value(value)
         elif key == "ir":
@@ -3178,6 +3234,134 @@ class ModbusManager(QObject):
             self.measuredT2CorrectionFactorChanged.emit(val)
             logger.debug(f"Measured T2* correction factor: {val}")
     
+    def _readAdditionalParameters(self):
+        """Чтение регистров Additional Parameters (6011-6101)"""
+        if not self._is_connected or self._modbus_client is None or self._reading_additional_parameters:
+            return
+
+        self._reading_additional_parameters = True
+        client = self._modbus_client
+        
+        def task():
+            """Чтение всех регистров Additional Parameters"""
+            # Регистры 6011-6101
+            magnet_psu_current_proton_nmr_regs = client.read_input_registers_direct(6011, 1, max_chunk=1)
+            magnet_psu_current_129xe_nmr_regs = client.read_input_registers_direct(6021, 1, max_chunk=1)
+            operational_laser_psu_current_regs = client.read_input_registers_direct(6031, 1, max_chunk=1)
+            rf_pulse_duration_regs = client.read_input_registers_direct(6041, 1, max_chunk=1)
+            resonance_frequency_regs = client.read_input_registers_direct(6051, 1, max_chunk=1)
+            proton_rf_pulse_power_regs = client.read_input_registers_direct(6061, 1, max_chunk=1)
+            hp_129xe_rf_pulse_power_regs = client.read_input_registers_direct(6071, 1, max_chunk=1)
+            step_size_b0_sweep_hp_129xe_regs = client.read_input_registers_direct(6081, 1, max_chunk=1)
+            step_size_b0_sweep_protons_regs = client.read_input_registers_direct(6091, 1, max_chunk=1)
+            xe_alicats_pressure_regs = client.read_input_registers_direct(6101, 1, max_chunk=1)
+            
+            result = {}
+            if magnet_psu_current_proton_nmr_regs and len(magnet_psu_current_proton_nmr_regs) >= 1:
+                # Magnet PSU current for proton NMR в A - преобразуем из int (A * 100) в float
+                result['magnet_psu_current_proton_nmr'] = float(int(magnet_psu_current_proton_nmr_regs[0])) / 100.0
+            if magnet_psu_current_129xe_nmr_regs and len(magnet_psu_current_129xe_nmr_regs) >= 1:
+                # Magnet PSU current for 129Xe NMR в A - преобразуем из int (A * 100) в float
+                result['magnet_psu_current_129xe_nmr'] = float(int(magnet_psu_current_129xe_nmr_regs[0])) / 100.0
+            if operational_laser_psu_current_regs and len(operational_laser_psu_current_regs) >= 1:
+                # Operational Laser PSU current в A - преобразуем из int (A * 100) в float
+                result['operational_laser_psu_current'] = float(int(operational_laser_psu_current_regs[0])) / 100.0
+            if rf_pulse_duration_regs and len(rf_pulse_duration_regs) >= 1:
+                # RF pulse duration - значение уже в нужных единицах
+                result['rf_pulse_duration'] = float(int(rf_pulse_duration_regs[0]))
+            if resonance_frequency_regs and len(resonance_frequency_regs) >= 1:
+                # Resonance frequency в kHz - преобразуем из int (kHz * 100) в float
+                result['resonance_frequency'] = float(int(resonance_frequency_regs[0])) / 100.0
+            if proton_rf_pulse_power_regs and len(proton_rf_pulse_power_regs) >= 1:
+                # Proton RF pulse power в % - преобразуем из int (% * 100) в float
+                result['proton_rf_pulse_power'] = float(int(proton_rf_pulse_power_regs[0])) / 100.0
+            if hp_129xe_rf_pulse_power_regs and len(hp_129xe_rf_pulse_power_regs) >= 1:
+                # HP 129Xe RF pulse power в % - преобразуем из int (% * 100) в float
+                result['hp_129xe_rf_pulse_power'] = float(int(hp_129xe_rf_pulse_power_regs[0])) / 100.0
+            if step_size_b0_sweep_hp_129xe_regs and len(step_size_b0_sweep_hp_129xe_regs) >= 1:
+                # Step size during B0 field sweep for HP 129Xe в A - преобразуем из int (A * 100) в float
+                result['step_size_b0_sweep_hp_129xe'] = float(int(step_size_b0_sweep_hp_129xe_regs[0])) / 100.0
+            if step_size_b0_sweep_protons_regs and len(step_size_b0_sweep_protons_regs) >= 1:
+                # Step size during B0 field sweep for protons в A - преобразуем из int (A * 100) в float
+                result['step_size_b0_sweep_protons'] = float(int(step_size_b0_sweep_protons_regs[0])) / 100.0
+            if xe_alicats_pressure_regs and len(xe_alicats_pressure_regs) >= 1:
+                # Xe ALICATS pressure в Torr - преобразуем из int (Torr * 100) в float
+                result['xe_alicats_pressure'] = float(int(xe_alicats_pressure_regs[0])) / 100.0
+            
+            return result
+        
+        self._enqueue_read("additional_parameters", task)
+    
+    def _applyAdditionalParametersValue(self, value: object):
+        """Применение результатов чтения Additional Parameters (6011-6101)"""
+        self._reading_additional_parameters = False
+        if value is None or not isinstance(value, dict):
+            logger.warning(f"_applyAdditionalParametersValue: value is None or not dict: {value}")
+            return
+        
+        logger.debug(f"_applyAdditionalParametersValue: received value={value}")
+        
+        if 'magnet_psu_current_proton_nmr' in value:
+            val = float(value['magnet_psu_current_proton_nmr'])
+            if not self._additional_magnet_psu_current_proton_nmr_user_interaction:
+                self._additional_magnet_psu_current_proton_nmr = val
+                self.additionalMagnetPSUCurrentProtonNMRChanged.emit(val)
+                logger.debug(f"Additional Magnet PSU current for proton NMR: {val} A")
+        if 'magnet_psu_current_129xe_nmr' in value:
+            val = float(value['magnet_psu_current_129xe_nmr'])
+            if not self._additional_magnet_psu_current_129xe_nmr_user_interaction:
+                self._additional_magnet_psu_current_129xe_nmr = val
+                self.additionalMagnetPSUCurrent129XeNMRChanged.emit(val)
+                logger.debug(f"Additional Magnet PSU current for 129Xe NMR: {val} A")
+        if 'operational_laser_psu_current' in value:
+            val = float(value['operational_laser_psu_current'])
+            if not self._additional_operational_laser_psu_current_user_interaction:
+                self._additional_operational_laser_psu_current = val
+                self.additionalOperationalLaserPSUCurrentChanged.emit(val)
+                logger.debug(f"Additional Operational Laser PSU current: {val} A")
+        if 'rf_pulse_duration' in value:
+            val = float(value['rf_pulse_duration'])
+            if not self._additional_rf_pulse_duration_user_interaction:
+                self._additional_rf_pulse_duration = val
+                self.additionalRFPulseDurationChanged.emit(val)
+                logger.debug(f"Additional RF pulse duration: {val}")
+        if 'resonance_frequency' in value:
+            val = float(value['resonance_frequency'])
+            if not self._additional_resonance_frequency_user_interaction:
+                self._additional_resonance_frequency = val
+                self.additionalResonanceFrequencyChanged.emit(val)
+                logger.debug(f"Additional Resonance frequency: {val} kHz")
+        if 'proton_rf_pulse_power' in value:
+            val = float(value['proton_rf_pulse_power'])
+            if not self._additional_proton_rf_pulse_power_user_interaction:
+                self._additional_proton_rf_pulse_power = val
+                self.additionalProtonRFPulsePowerChanged.emit(val)
+                logger.debug(f"Additional Proton RF pulse power: {val}%")
+        if 'hp_129xe_rf_pulse_power' in value:
+            val = float(value['hp_129xe_rf_pulse_power'])
+            if not self._additional_hp_129xe_rf_pulse_power_user_interaction:
+                self._additional_hp_129xe_rf_pulse_power = val
+                self.additionalHP129XeRFPulsePowerChanged.emit(val)
+                logger.debug(f"Additional HP 129Xe RF pulse power: {val}%")
+        if 'step_size_b0_sweep_hp_129xe' in value:
+            val = float(value['step_size_b0_sweep_hp_129xe'])
+            if not self._additional_step_size_b0_sweep_hp_129xe_user_interaction:
+                self._additional_step_size_b0_sweep_hp_129xe = val
+                self.additionalStepSizeB0SweepHP129XeChanged.emit(val)
+                logger.debug(f"Additional Step size during B0 field sweep for HP 129Xe: {val} A")
+        if 'step_size_b0_sweep_protons' in value:
+            val = float(value['step_size_b0_sweep_protons'])
+            if not self._additional_step_size_b0_sweep_protons_user_interaction:
+                self._additional_step_size_b0_sweep_protons = val
+                self.additionalStepSizeB0SweepProtonsChanged.emit(val)
+                logger.debug(f"Additional Step size during B0 field sweep for protons: {val} A")
+        if 'xe_alicats_pressure' in value:
+            val = float(value['xe_alicats_pressure'])
+            if not self._additional_xe_alicats_pressure_user_interaction:
+                self._additional_xe_alicats_pressure = val
+                self.additionalXeAlicatsPressureChanged.emit(val)
+                logger.debug(f"Additional Xe ALICATS pressure: {val} Torr")
+    
     # ===== Measured Parameters методы записи =====
     @Slot(float, result=bool)
     def setMeasuredColdCellIRSignal(self, value: float) -> bool:
@@ -3348,6 +3532,348 @@ class ModbusManager(QObject):
         self._measured_hp_129xe_t2 = value_ms
         self.measuredHP129XeT2Changed.emit(value_ms)
         self._measured_hp_129xe_t2_user_interaction = True
+        return True
+    
+    # ===== Additional Parameters методы записи =====
+    @Slot(float, result=bool)
+    def setAdditionalMagnetPSUCurrentProtonNMR(self, current_a: float) -> bool:
+        """Установка Magnet PSU current for proton NMR в A (регистр 6011)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_magnet_psu_current_proton_nmr = current_a
+        self._additional_magnet_psu_current_proton_nmr_user_interaction = True
+        self.additionalMagnetPSUCurrentProtonNMRChanged.emit(current_a)
+        register_value = int(current_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6011, register_value)
+            return bool(result)
+        self._enqueue_write("additional_magnet_psu_current_proton_nmr", task, {"current_a": current_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalMagnetPSUCurrentProtonNMR(self) -> bool:
+        """Увеличение Magnet PSU current for proton NMR на 0.01 A"""
+        return self.setAdditionalMagnetPSUCurrentProtonNMR(self._additional_magnet_psu_current_proton_nmr + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalMagnetPSUCurrentProtonNMR(self) -> bool:
+        """Уменьшение Magnet PSU current for proton NMR на 0.01 A"""
+        return self.setAdditionalMagnetPSUCurrentProtonNMR(self._additional_magnet_psu_current_proton_nmr - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalMagnetPSUCurrent129XeNMR(self, current_a: float) -> bool:
+        """Установка Magnet PSU current for 129Xe NMR в A (регистр 6021)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_magnet_psu_current_129xe_nmr = current_a
+        self._additional_magnet_psu_current_129xe_nmr_user_interaction = True
+        self.additionalMagnetPSUCurrent129XeNMRChanged.emit(current_a)
+        register_value = int(current_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6021, register_value)
+            return bool(result)
+        self._enqueue_write("additional_magnet_psu_current_129xe_nmr", task, {"current_a": current_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalMagnetPSUCurrent129XeNMR(self) -> bool:
+        """Увеличение Magnet PSU current for 129Xe NMR на 0.01 A"""
+        return self.setAdditionalMagnetPSUCurrent129XeNMR(self._additional_magnet_psu_current_129xe_nmr + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalMagnetPSUCurrent129XeNMR(self) -> bool:
+        """Уменьшение Magnet PSU current for 129Xe NMR на 0.01 A"""
+        return self.setAdditionalMagnetPSUCurrent129XeNMR(self._additional_magnet_psu_current_129xe_nmr - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalOperationalLaserPSUCurrent(self, current_a: float) -> bool:
+        """Установка Operational Laser PSU current в A (регистр 6031)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_operational_laser_psu_current = current_a
+        self._additional_operational_laser_psu_current_user_interaction = True
+        self.additionalOperationalLaserPSUCurrentChanged.emit(current_a)
+        register_value = int(current_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6031, register_value)
+            return bool(result)
+        self._enqueue_write("additional_operational_laser_psu_current", task, {"current_a": current_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalOperationalLaserPSUCurrent(self) -> bool:
+        """Увеличение Operational Laser PSU current на 0.01 A"""
+        return self.setAdditionalOperationalLaserPSUCurrent(self._additional_operational_laser_psu_current + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalOperationalLaserPSUCurrent(self) -> bool:
+        """Уменьшение Operational Laser PSU current на 0.01 A"""
+        return self.setAdditionalOperationalLaserPSUCurrent(self._additional_operational_laser_psu_current - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalRFPulseDuration(self, duration: float) -> bool:
+        """Установка RF pulse duration (регистр 6041)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_rf_pulse_duration = duration
+        self._additional_rf_pulse_duration_user_interaction = True
+        self.additionalRFPulseDurationChanged.emit(duration)
+        register_value = int(duration)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6041, register_value)
+            return bool(result)
+        self._enqueue_write("additional_rf_pulse_duration", task, {"duration": duration})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalRFPulseDuration(self) -> bool:
+        """Увеличение RF pulse duration на 1"""
+        return self.setAdditionalRFPulseDuration(self._additional_rf_pulse_duration + 1.0)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalRFPulseDuration(self) -> bool:
+        """Уменьшение RF pulse duration на 1"""
+        return self.setAdditionalRFPulseDuration(self._additional_rf_pulse_duration - 1.0)
+    
+    @Slot(float, result=bool)
+    def setAdditionalResonanceFrequency(self, frequency_khz: float) -> bool:
+        """Установка Resonance frequency в kHz (регистр 6051)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_resonance_frequency = frequency_khz
+        self._additional_resonance_frequency_user_interaction = True
+        self.additionalResonanceFrequencyChanged.emit(frequency_khz)
+        register_value = int(frequency_khz * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6051, register_value)
+            return bool(result)
+        self._enqueue_write("additional_resonance_frequency", task, {"frequency_khz": frequency_khz})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalResonanceFrequency(self) -> bool:
+        """Увеличение Resonance frequency на 0.01 kHz"""
+        return self.setAdditionalResonanceFrequency(self._additional_resonance_frequency + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalResonanceFrequency(self) -> bool:
+        """Уменьшение Resonance frequency на 0.01 kHz"""
+        return self.setAdditionalResonanceFrequency(self._additional_resonance_frequency - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalProtonRFPulsePower(self, power_percent: float) -> bool:
+        """Установка Proton RF pulse power в % (регистр 6061)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_proton_rf_pulse_power = power_percent
+        self._additional_proton_rf_pulse_power_user_interaction = True
+        self.additionalProtonRFPulsePowerChanged.emit(power_percent)
+        register_value = int(power_percent * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6061, register_value)
+            return bool(result)
+        self._enqueue_write("additional_proton_rf_pulse_power", task, {"power_percent": power_percent})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalProtonRFPulsePower(self) -> bool:
+        """Увеличение Proton RF pulse power на 0.01%"""
+        return self.setAdditionalProtonRFPulsePower(self._additional_proton_rf_pulse_power + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalProtonRFPulsePower(self) -> bool:
+        """Уменьшение Proton RF pulse power на 0.01%"""
+        return self.setAdditionalProtonRFPulsePower(self._additional_proton_rf_pulse_power - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalHP129XeRFPulsePower(self, power_percent: float) -> bool:
+        """Установка HP 129Xe RF pulse power в % (регистр 6071)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_hp_129xe_rf_pulse_power = power_percent
+        self._additional_hp_129xe_rf_pulse_power_user_interaction = True
+        self.additionalHP129XeRFPulsePowerChanged.emit(power_percent)
+        register_value = int(power_percent * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6071, register_value)
+            return bool(result)
+        self._enqueue_write("additional_hp_129xe_rf_pulse_power", task, {"power_percent": power_percent})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalHP129XeRFPulsePower(self) -> bool:
+        """Увеличение HP 129Xe RF pulse power на 0.01%"""
+        return self.setAdditionalHP129XeRFPulsePower(self._additional_hp_129xe_rf_pulse_power + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalHP129XeRFPulsePower(self) -> bool:
+        """Уменьшение HP 129Xe RF pulse power на 0.01%"""
+        return self.setAdditionalHP129XeRFPulsePower(self._additional_hp_129xe_rf_pulse_power - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalStepSizeB0SweepHP129Xe(self, step_size_a: float) -> bool:
+        """Установка Step size during B0 field sweep for HP 129Xe в A (регистр 6081)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_step_size_b0_sweep_hp_129xe = step_size_a
+        self._additional_step_size_b0_sweep_hp_129xe_user_interaction = True
+        self.additionalStepSizeB0SweepHP129XeChanged.emit(step_size_a)
+        register_value = int(step_size_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6081, register_value)
+            return bool(result)
+        self._enqueue_write("additional_step_size_b0_sweep_hp_129xe", task, {"step_size_a": step_size_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalStepSizeB0SweepHP129Xe(self) -> bool:
+        """Увеличение Step size during B0 field sweep for HP 129Xe на 0.01 A"""
+        return self.setAdditionalStepSizeB0SweepHP129Xe(self._additional_step_size_b0_sweep_hp_129xe + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalStepSizeB0SweepHP129Xe(self) -> bool:
+        """Уменьшение Step size during B0 field sweep for HP 129Xe на 0.01 A"""
+        return self.setAdditionalStepSizeB0SweepHP129Xe(self._additional_step_size_b0_sweep_hp_129xe - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalStepSizeB0SweepProtons(self, step_size_a: float) -> bool:
+        """Установка Step size during B0 field sweep for protons в A (регистр 6091)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_step_size_b0_sweep_protons = step_size_a
+        self._additional_step_size_b0_sweep_protons_user_interaction = True
+        self.additionalStepSizeB0SweepProtonsChanged.emit(step_size_a)
+        register_value = int(step_size_a * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6091, register_value)
+            return bool(result)
+        self._enqueue_write("additional_step_size_b0_sweep_protons", task, {"step_size_a": step_size_a})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalStepSizeB0SweepProtons(self) -> bool:
+        """Увеличение Step size during B0 field sweep for protons на 0.01 A"""
+        return self.setAdditionalStepSizeB0SweepProtons(self._additional_step_size_b0_sweep_protons + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalStepSizeB0SweepProtons(self) -> bool:
+        """Уменьшение Step size during B0 field sweep for protons на 0.01 A"""
+        return self.setAdditionalStepSizeB0SweepProtons(self._additional_step_size_b0_sweep_protons - 0.01)
+    
+    @Slot(float, result=bool)
+    def setAdditionalXeAlicatsPressure(self, pressure_torr: float) -> bool:
+        """Установка Xe ALICATS pressure в Torr (регистр 6101)"""
+        if not self._is_connected or self._modbus_client is None:
+            return False
+        self._additional_xe_alicats_pressure = pressure_torr
+        self._additional_xe_alicats_pressure_user_interaction = True
+        self.additionalXeAlicatsPressureChanged.emit(pressure_torr)
+        register_value = int(pressure_torr * 100)
+        client = self._modbus_client
+        def task() -> bool:
+            result = client.write_holding_register(6101, register_value)
+            return bool(result)
+        self._enqueue_write("additional_xe_alicats_pressure", task, {"pressure_torr": pressure_torr})
+        return True
+    
+    @Slot(result=bool)
+    def increaseAdditionalXeAlicatsPressure(self) -> bool:
+        """Увеличение Xe ALICATS pressure на 0.01 Torr"""
+        return self.setAdditionalXeAlicatsPressure(self._additional_xe_alicats_pressure + 0.01)
+    
+    @Slot(result=bool)
+    def decreaseAdditionalXeAlicatsPressure(self) -> bool:
+        """Уменьшение Xe ALICATS pressure на 0.01 Torr"""
+        return self.setAdditionalXeAlicatsPressure(self._additional_xe_alicats_pressure - 0.01)
+    
+    # Методы setValue для TextField (ввод с клавиатуры)
+    @Slot(float, result=bool)
+    def setAdditionalMagnetPSUCurrentProtonNMRValue(self, current_a: float) -> bool:
+        """Обновление внутреннего значения Magnet PSU current for proton NMR без отправки на устройство"""
+        self._additional_magnet_psu_current_proton_nmr = current_a
+        self.additionalMagnetPSUCurrentProtonNMRChanged.emit(current_a)
+        self._additional_magnet_psu_current_proton_nmr_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalMagnetPSUCurrent129XeNMRValue(self, current_a: float) -> bool:
+        """Обновление внутреннего значения Magnet PSU current for 129Xe NMR без отправки на устройство"""
+        self._additional_magnet_psu_current_129xe_nmr = current_a
+        self.additionalMagnetPSUCurrent129XeNMRChanged.emit(current_a)
+        self._additional_magnet_psu_current_129xe_nmr_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalOperationalLaserPSUCurrentValue(self, current_a: float) -> bool:
+        """Обновление внутреннего значения Operational Laser PSU current без отправки на устройство"""
+        self._additional_operational_laser_psu_current = current_a
+        self.additionalOperationalLaserPSUCurrentChanged.emit(current_a)
+        self._additional_operational_laser_psu_current_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalRFPulseDurationValue(self, duration: float) -> bool:
+        """Обновление внутреннего значения RF pulse duration без отправки на устройство"""
+        self._additional_rf_pulse_duration = duration
+        self.additionalRFPulseDurationChanged.emit(duration)
+        self._additional_rf_pulse_duration_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalResonanceFrequencyValue(self, frequency_khz: float) -> bool:
+        """Обновление внутреннего значения Resonance frequency без отправки на устройство"""
+        self._additional_resonance_frequency = frequency_khz
+        self.additionalResonanceFrequencyChanged.emit(frequency_khz)
+        self._additional_resonance_frequency_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalProtonRFPulsePowerValue(self, power_percent: float) -> bool:
+        """Обновление внутреннего значения Proton RF pulse power без отправки на устройство"""
+        self._additional_proton_rf_pulse_power = power_percent
+        self.additionalProtonRFPulsePowerChanged.emit(power_percent)
+        self._additional_proton_rf_pulse_power_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalHP129XeRFPulsePowerValue(self, power_percent: float) -> bool:
+        """Обновление внутреннего значения HP 129Xe RF pulse power без отправки на устройство"""
+        self._additional_hp_129xe_rf_pulse_power = power_percent
+        self.additionalHP129XeRFPulsePowerChanged.emit(power_percent)
+        self._additional_hp_129xe_rf_pulse_power_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalStepSizeB0SweepHP129XeValue(self, step_size_a: float) -> bool:
+        """Обновление внутреннего значения Step size during B0 field sweep for HP 129Xe без отправки на устройство"""
+        self._additional_step_size_b0_sweep_hp_129xe = step_size_a
+        self.additionalStepSizeB0SweepHP129XeChanged.emit(step_size_a)
+        self._additional_step_size_b0_sweep_hp_129xe_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalStepSizeB0SweepProtonsValue(self, step_size_a: float) -> bool:
+        """Обновление внутреннего значения Step size during B0 field sweep for protons без отправки на устройство"""
+        self._additional_step_size_b0_sweep_protons = step_size_a
+        self.additionalStepSizeB0SweepProtonsChanged.emit(step_size_a)
+        self._additional_step_size_b0_sweep_protons_user_interaction = True
+        return True
+    
+    @Slot(float, result=bool)
+    def setAdditionalXeAlicatsPressureValue(self, pressure_torr: float) -> bool:
+        """Обновление внутреннего значения Xe ALICATS pressure без отправки на устройство"""
+        self._additional_xe_alicats_pressure = pressure_torr
+        self.additionalXeAlicatsPressureChanged.emit(pressure_torr)
+        self._additional_xe_alicats_pressure_user_interaction = True
         return True
     
     @Slot(int, bool, result=bool)

@@ -486,6 +486,9 @@ Item {
             // При изменении активного параметра отключаем опрос Measured Parameters
             modbusManager.disableMeasuredParametersPolling()
             measuredParametersGrid.visible = false
+            // При изменении активного параметра отключаем опрос Additional Parameters
+            modbusManager.disableAdditionalParametersPolling()
+            additionalParametersGrid.visible = false
         }
     }
 
@@ -3602,6 +3605,537 @@ Item {
                         }
                     }
 
+                    // Таблица Additional Parameters для "6 Additional Parameters" меню
+                    Column {
+                        id: additionalParametersGrid
+                        width: parent.width
+                        spacing: 0
+                        visible: false
+
+                        // Magnet PSU current for proton NMR
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Magnet PSU current for proton NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalMagnetPSUCurrentProtonNMR
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalMagnetPSUCurrentProtonNMRValue(val)
+                                            modbusManager.setAdditionalMagnetPSUCurrentProtonNMR(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalMagnetPSUCurrentProtonNMR()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalMagnetPSUCurrentProtonNMR()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Magnet PSU current for 129Xe NMR
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Magnet PSU current for 129Xe NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalMagnetPSUCurrent129XeNMR
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalMagnetPSUCurrent129XeNMRValue(val)
+                                            modbusManager.setAdditionalMagnetPSUCurrent129XeNMR(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalMagnetPSUCurrent129XeNMR()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalMagnetPSUCurrent129XeNMR()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Operational Laser PSU current
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Operational Laser PSU current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalOperationalLaserPSUCurrent
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalOperationalLaserPSUCurrentValue(val)
+                                            modbusManager.setAdditionalOperationalLaserPSUCurrent(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalOperationalLaserPSUCurrent()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalOperationalLaserPSUCurrent()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // RF pulse duration
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "RF pulse duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalRFPulseDuration
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalRFPulseDurationValue(val)
+                                            modbusManager.setAdditionalRFPulseDuration(val)
+                                        }
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalRFPulseDuration()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalRFPulseDuration()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Resonance frequency
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Resonance frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalResonanceFrequency
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalResonanceFrequencyValue(val)
+                                            modbusManager.setAdditionalResonanceFrequency(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "kHz"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalResonanceFrequency()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalResonanceFrequency()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Proton RF pulse power
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Proton RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalProtonRFPulsePower
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalProtonRFPulsePowerValue(val)
+                                            modbusManager.setAdditionalProtonRFPulsePower(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalProtonRFPulsePower()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalProtonRFPulsePower()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // HP 129Xe RF pulse power
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "HP 129Xe RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalHP129XeRFPulsePower
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalHP129XeRFPulsePowerValue(val)
+                                            modbusManager.setAdditionalHP129XeRFPulsePower(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "%"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalHP129XeRFPulsePower()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalHP129XeRFPulsePower()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Step size during B0 field sweep for HP 129Xe
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Step size during B0 field sweep for HP 129Xe:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalStepSizeB0SweepHP129Xe
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalStepSizeB0SweepHP129XeValue(val)
+                                            modbusManager.setAdditionalStepSizeB0SweepHP129Xe(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalStepSizeB0SweepHP129Xe()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalStepSizeB0SweepHP129Xe()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Step size during B0 field sweep for protons
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Step size during B0 field sweep for protons:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalStepSizeB0SweepProtons
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalStepSizeB0SweepProtonsValue(val)
+                                            modbusManager.setAdditionalStepSizeB0SweepProtons(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalStepSizeB0SweepProtons()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalStepSizeB0SweepProtons()
+                                    }
+                                }
+                            }
+                        }
+                        Rectangle { width: parent.width; height: 1; color: "#e0e0e0" }
+
+                        // Xe ALICATS pressure
+                        Row {
+                            width: parent.width
+                            spacing: 16
+                            padding: 4
+                            Text { text: "Xe ALICATS pressure:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
+                            Item { width: 20; height: 1 } // Spacer
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 8
+                                TextField {
+                                    id: additionalXeAlicatsPressure
+                                    width: 100
+                                    height: 28
+                                    font.pixelSize: 11
+                                    placeholderText: "0.00"
+                                    onEditingFinished: {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val) && modbusManager) {
+                                            modbusManager.setAdditionalXeAlicatsPressureValue(val)
+                                            modbusManager.setAdditionalXeAlicatsPressure(val)
+                                        }
+                                    }
+                                }
+                                Text { text: "Torr"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▲"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.increaseAdditionalXeAlicatsPressure()
+                                    }
+                                }
+                                Button {
+                                    width: 30
+                                    height: 28
+                                    text: "▼"
+                                    font.pixelSize: 10
+                                    onClicked: {
+                                        if (modbusManager) modbusManager.decreaseAdditionalXeAlicatsPressure()
+                                    }
+                                }
+                            }
+                        }
+
+                        // Connections для обновления значений Additional Parameters
+                        Connections {
+                            target: modbusManager
+                            function onAdditionalMagnetPSUCurrentProtonNMRChanged(value) {
+                                if (!additionalMagnetPSUCurrentProtonNMR.activeFocus) {
+                                    additionalMagnetPSUCurrentProtonNMR.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalMagnetPSUCurrent129XeNMRChanged(value) {
+                                if (!additionalMagnetPSUCurrent129XeNMR.activeFocus) {
+                                    additionalMagnetPSUCurrent129XeNMR.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalOperationalLaserPSUCurrentChanged(value) {
+                                if (!additionalOperationalLaserPSUCurrent.activeFocus) {
+                                    additionalOperationalLaserPSUCurrent.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalRFPulseDurationChanged(value) {
+                                if (!additionalRFPulseDuration.activeFocus) {
+                                    additionalRFPulseDuration.text = value.toFixed(0)
+                                }
+                            }
+                            function onAdditionalResonanceFrequencyChanged(value) {
+                                if (!additionalResonanceFrequency.activeFocus) {
+                                    additionalResonanceFrequency.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalProtonRFPulsePowerChanged(value) {
+                                if (!additionalProtonRFPulsePower.activeFocus) {
+                                    additionalProtonRFPulsePower.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalHP129XeRFPulsePowerChanged(value) {
+                                if (!additionalHP129XeRFPulsePower.activeFocus) {
+                                    additionalHP129XeRFPulsePower.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalStepSizeB0SweepHP129XeChanged(value) {
+                                if (!additionalStepSizeB0SweepHP129Xe.activeFocus) {
+                                    additionalStepSizeB0SweepHP129Xe.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalStepSizeB0SweepProtonsChanged(value) {
+                                if (!additionalStepSizeB0SweepProtons.activeFocus) {
+                                    additionalStepSizeB0SweepProtons.text = value.toFixed(2)
+                                }
+                            }
+                            function onAdditionalXeAlicatsPressureChanged(value) {
+                                if (!additionalXeAlicatsPressure.activeFocus) {
+                                    additionalXeAlicatsPressure.text = value.toFixed(2)
+                                }
+                            }
+                        }
+                    }
+
                     // Таблица Laser для Laser меню
                     Column {
                         id: laserGrid
@@ -4175,6 +4709,7 @@ Item {
                                         seopParametersGrid.visible = true
                                         calculatedParametersGrid.visible = false
                                         measuredParametersGrid.visible = false
+                                        additionalParametersGrid.visible = false
                                         relayTableGrid.visible = false
                                         valvesFansTableGrid.visible = false
                                         powerSupplyGrid.visible = false
