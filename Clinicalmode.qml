@@ -486,6 +486,9 @@ Item {
             // При изменении активного параметра отключаем опрос Measured Parameters
             modbusManager.disableMeasuredParametersPolling()
             measuredParametersGrid.visible = false
+            // При изменении активного параметра отключаем опрос Additional Parameters
+            modbusManager.disableAdditionalParametersPolling()
+            additionalParametersGrid.visible = false
         }
     }
 
