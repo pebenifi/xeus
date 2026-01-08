@@ -4231,7 +4231,7 @@ Item {
                                         measuredParametersGrid.visible = true
                                         seopParametersGrid.visible = false
                                         calculatedParametersGrid.visible = false
-                                        measuredParametersGrid.visible = false
+                                        additionalParametersGrid.visible = false
                                         relayTableGrid.visible = false
                                         valvesFansTableGrid.visible = false
                                         powerSupplyGrid.visible = false
