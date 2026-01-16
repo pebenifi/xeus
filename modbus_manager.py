@@ -2554,6 +2554,8 @@ class ModbusManager(QObject):
         Returns:
             True если успешно, False в противном случае
         """
+        # Логируем действие
+        self._addLog(f"Xenon Pressure: {pressure} Torr")
         logger.info(f"🔵 setXenonPressure вызван с давлением: {pressure} Torr")
         
         # Обновляем статус (даже без подключения)
@@ -2659,6 +2661,8 @@ class ModbusManager(QObject):
         Returns:
             True если успешно, False в противном случае
         """
+        # Логируем действие
+        self._addLog(f"N2 Pressure: {pressure} Torr")
         logger.info(f"🔵 setN2Pressure вызван с давлением: {pressure} Torr")
         
         # Обновляем статус (даже без подключения)
@@ -3720,6 +3724,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMeasuredHotCellIRSignal(self, value: float) -> bool:
         """Установка Hot Cell IR Signal (регистр 5031)"""
+        # Логируем действие
+        self._addLog(f"Hot Cell IR Signal: {value}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._measured_hot_cell_ir_signal = value
@@ -3746,6 +3752,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMeasuredWater1HNMRReferenceSignal(self, value: float) -> bool:
         """Установка Water 1H NMR Reference Signal (регистр 5041)"""
+        # Логируем действие
+        self._addLog(f"Water 1H NMR Reference Signal: {value}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._measured_water_1h_nmr_reference_signal = value
@@ -3772,6 +3780,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMeasuredWaterT2(self, value_ms: float) -> bool:
         """Установка Water T2 в ms (регистр 5051)"""
+        # Логируем действие
+        self._addLog(f"Water T2: {value_ms} ms")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._measured_water_t2 = value_ms
@@ -3798,6 +3808,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMeasuredHP129XeT2(self, value_ms: float) -> bool:
         """Установка HP 129Xe T2 в ms (регистр 5071)"""
+        # Логируем действие
+        self._addLog(f"HP 129Xe T2: {value_ms} ms")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._measured_hp_129xe_t2 = value_ms
@@ -3866,6 +3878,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalMagnetPSUCurrentProtonNMR(self, current_a: float) -> bool:
         """Установка Magnet PSU current for proton NMR в A (регистр 6011)"""
+        # Логируем действие
+        self._addLog(f"Magnet PSU Current Proton NMR: {current_a} A")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_magnet_psu_current_proton_nmr = current_a
@@ -3892,6 +3906,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalMagnetPSUCurrent129XeNMR(self, current_a: float) -> bool:
         """Установка Magnet PSU current for 129Xe NMR в A (регистр 6021)"""
+        # Логируем действие
+        self._addLog(f"Magnet PSU Current 129Xe NMR: {current_a} A")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_magnet_psu_current_129xe_nmr = current_a
@@ -3918,6 +3934,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalOperationalLaserPSUCurrent(self, current_a: float) -> bool:
         """Установка Operational Laser PSU current в A (регистр 6031)"""
+        # Логируем действие
+        self._addLog(f"Operational Laser PSU Current: {current_a} A")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_operational_laser_psu_current = current_a
@@ -3944,6 +3962,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalRFPulseDuration(self, duration: float) -> bool:
         """Установка RF pulse duration (регистр 6041)"""
+        # Логируем действие
+        self._addLog(f"RF Pulse Duration: {duration}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_rf_pulse_duration = duration
@@ -3970,6 +3990,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalResonanceFrequency(self, frequency_khz: float) -> bool:
         """Установка Resonance frequency в kHz (регистр 6051)"""
+        # Логируем действие
+        self._addLog(f"Resonance Frequency: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_resonance_frequency = frequency_khz
@@ -3996,6 +4018,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalProtonRFPulsePower(self, power_percent: float) -> bool:
         """Установка Proton RF pulse power в % (регистр 6061)"""
+        # Логируем действие
+        self._addLog(f"Proton RF Pulse Power: {power_percent}%")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_proton_rf_pulse_power = power_percent
@@ -4022,6 +4046,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalHP129XeRFPulsePower(self, power_percent: float) -> bool:
         """Установка HP 129Xe RF pulse power в % (регистр 6071)"""
+        # Логируем действие
+        self._addLog(f"HP 129Xe RF Pulse Power: {power_percent}%")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_hp_129xe_rf_pulse_power = power_percent
@@ -4048,6 +4074,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalStepSizeB0SweepHP129Xe(self, step_size_a: float) -> bool:
         """Установка Step size during B0 field sweep for HP 129Xe в A (регистр 6081)"""
+        # Логируем действие
+        self._addLog(f"Step Size B0 Sweep HP 129Xe: {step_size_a} A")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_step_size_b0_sweep_hp_129xe = step_size_a
@@ -4074,6 +4102,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalStepSizeB0SweepProtons(self, step_size_a: float) -> bool:
         """Установка Step size during B0 field sweep for protons в A (регистр 6091)"""
+        # Логируем действие
+        self._addLog(f"Step Size B0 Sweep Protons: {step_size_a} A")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_step_size_b0_sweep_protons = step_size_a
@@ -4100,6 +4130,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalXeAlicatsPressure(self, pressure_torr: float) -> bool:
         """Установка Xe ALICATS pressure в Torr (регистр 6101)"""
+        # Логируем действие
+        self._addLog(f"Xe ALICATS Pressure: {pressure_torr} Torr")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_xe_alicats_pressure = pressure_torr
@@ -4126,6 +4158,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalNitrogenAlicatsPressure(self, pressure_torr: float) -> bool:
         """Установка Nitrogen ALICATS pressure в Torr (регистр 6111)"""
+        # Логируем действие
+        self._addLog(f"Nitrogen ALICATS Pressure: {pressure_torr} Torr")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_nitrogen_alicats_pressure = pressure_torr
@@ -4152,6 +4186,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalChillerTempSetpoint(self, setpoint: float) -> bool:
         """Установка Chiller Temp setpoint (регистр 6121)"""
+        # Логируем действие
+        self._addLog(f"Chiller Temp Setpoint: {setpoint}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_chiller_temp_setpoint = setpoint
@@ -4178,6 +4214,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalSEOPResonanceFrequency(self, frequency_nm: float) -> bool:
         """Установка SEOP Resonance Frequency в nm (регистр 6131)"""
+        # Логируем действие
+        self._addLog(f"SEOP Resonance Frequency: {frequency_nm} nm")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_seop_resonance_frequency = frequency_nm
@@ -4204,6 +4242,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalSEOPResonanceFrequencyTolerance(self, tolerance: float) -> bool:
         """Установка SEOP Resonance Frequency Tolerance (регистр 6141)"""
+        # Логируем действие
+        self._addLog(f"SEOP Resonance Frequency Tolerance: {tolerance}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_seop_resonance_frequency_tolerance = tolerance
@@ -4230,6 +4270,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalIRSpectrometerNumberOfScans(self, num_scans: float) -> bool:
         """Установка IR spectrometer number of scans (регистр 6151)"""
+        # Логируем действие
+        self._addLog(f"IR Spectrometer Number of Scans: {num_scans}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_ir_spectrometer_number_of_scans = num_scans
@@ -4256,6 +4298,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalIRSpectrometerExposureDuration(self, duration_ms: float) -> bool:
         """Установка IR spectrometer exposure duration в ms (регистр 6161)"""
+        # Логируем действие
+        self._addLog(f"IR Spectrometer Exposure Duration: {duration_ms} ms")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_ir_spectrometer_exposure_duration = duration_ms
@@ -4282,6 +4326,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditional1HReferenceNScans(self, num_scans: float) -> bool:
         """Установка 1H Reference N Scans (регистр 6171)"""
+        # Логируем действие
+        self._addLog(f"1H Reference N Scans: {num_scans}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_1h_reference_n_scans = num_scans
@@ -4308,6 +4354,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditional1HCurrentSweepNScans(self, num_scans: float) -> bool:
         """Установка 1H Current Sweep N Scans (регистр 6181)"""
+        # Логируем действие
+        self._addLog(f"1H Current Sweep N Scans: {num_scans}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_1h_current_sweep_n_scans = num_scans
@@ -4334,6 +4382,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalBaselineCorrectionMinFrequency(self, frequency_khz: float) -> bool:
         """Установка Baseline correction min frequency в kHz (регистр 6191)"""
+        # Логируем действие
+        self._addLog(f"Baseline Correction Min Frequency: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_baseline_correction_min_frequency = frequency_khz
@@ -4360,6 +4410,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setAdditionalBaselineCorrectionMaxFrequency(self, frequency_khz: float) -> bool:
         """Установка Baseline correction max frequency в kHz (регистр 6201)"""
+        # Логируем действие
+        self._addLog(f"Baseline Correction Max Frequency: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._additional_baseline_correction_max_frequency = frequency_khz
@@ -4548,6 +4600,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeRFPulseFrequency(self, frequency_khz: float) -> bool:
         """Установка RF pulse frequency в kHz (регистр 6301)"""
+        # Логируем действие
+        self._addLog(f"RF Pulse Frequency: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_rf_pulse_frequency = frequency_khz
@@ -4574,6 +4628,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeRFPulsePower(self, power_percent: float) -> bool:
         """Установка RF pulse power в % (регистр 6311)"""
+        # Логируем действие
+        self._addLog(f"RF Pulse Power: {power_percent}%")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_rf_pulse_power = power_percent
@@ -4600,6 +4656,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeRFPulseDuration(self, duration_t2: float) -> bool:
         """Установка RF pulse duration в T/2 (регистр 6321)"""
+        # Логируем действие
+        self._addLog(f"RF Pulse Duration: {duration_t2} T/2")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_rf_pulse_duration = duration_t2
@@ -4626,6 +4684,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModePreAcquisition(self, duration_ms: float) -> bool:
         """Установка Pre acquisition в ms (регистр 6331)"""
+        # Логируем действие
+        self._addLog(f"Pre Acquisition: {duration_ms} ms")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_pre_acquisition = duration_ms
@@ -4652,6 +4712,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeNMRGain(self, gain_db: float) -> bool:
         """Установка NMR gain в dB (регистр 6341)"""
+        # Логируем действие
+        self._addLog(f"NMR Gain: {gain_db} dB")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_nmr_gain = gain_db
@@ -4678,6 +4740,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeNMRNumberOfScans(self, num_scans: float) -> bool:
         """Установка NMR number of scans (регистр 6351)"""
+        # Логируем действие
+        self._addLog(f"NMR Number of Scans: {num_scans}")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_nmr_number_of_scans = num_scans
@@ -4704,6 +4768,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeNMRRecovery(self, duration_ms: float) -> bool:
         """Установка NMR recovery в ms (регистр 6361)"""
+        # Логируем действие
+        self._addLog(f"NMR Recovery: {duration_ms} ms")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_nmr_recovery = duration_ms
@@ -4730,6 +4796,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeCenterFrequency(self, frequency_khz: float) -> bool:
         """Установка Center frequency в kHz (регистр 6371)"""
+        # Логируем действие
+        self._addLog(f"Center Frequency: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_center_frequency = frequency_khz
@@ -4756,6 +4824,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setManualModeFrequencySpan(self, frequency_khz: float) -> bool:
         """Установка Frequency span в kHz (регистр 6381)"""
+        # Логируем действие
+        self._addLog(f"Frequency Span: {frequency_khz} kHz")
         if not self._is_connected or self._modbus_client is None:
             return False
         self._manual_mode_frequency_span = frequency_khz
@@ -5539,6 +5609,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setLaserPSUCurrentSetpoint(self, current: float) -> bool:
         """Установка заданного тока Laser PSU (регистр 1241)"""
+        # Логируем действие
+        self._addLog(f"Laser PSU Current Setpoint: {current} A")
         logger.info(f"🔵 setLaserPSUCurrentSetpoint вызван с током: {current} A")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5554,6 +5626,8 @@ class ModbusManager(QObject):
     @Slot(bool, result=bool)
     def setLaserPSUPower(self, state: bool) -> bool:
         """Управление Laser PSU (регистр 1251: 1 = вкл, 0 = выкл)"""
+        # Логируем действие
+        self._addLog(f"Laser PSU Power: {'включен' if state else 'выключен'}")
         logger.info(f"🔵 setLaserPSUPower вызван: {state}")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5571,6 +5645,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMagnetPSUVoltageSetpoint(self, voltage: float) -> bool:
         """Установка заданного напряжения Magnet PSU (регистр 1311)"""
+        # Логируем действие
+        self._addLog(f"Magnet PSU Voltage Setpoint: {voltage} V")
         logger.info(f"🔵 setMagnetPSUVoltageSetpoint вызван с напряжением: {voltage} V")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5587,6 +5663,8 @@ class ModbusManager(QObject):
     @Slot(float, result=bool)
     def setMagnetPSUCurrentSetpoint(self, current: float) -> bool:
         """Установка заданного тока Magnet PSU (регистр 1331)"""
+        # Логируем действие
+        self._addLog(f"Magnet PSU Current Setpoint: {current} A")
         logger.info(f"🔵 setMagnetPSUCurrentSetpoint вызван с током: {current} A")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5602,6 +5680,8 @@ class ModbusManager(QObject):
     @Slot(bool, result=bool)
     def setMagnetPSUPower(self, state: bool) -> bool:
         """Управление Magnet PSU (регистр 1341: 1 = вкл, 0 = выкл)"""
+        # Логируем действие
+        self._addLog(f"Magnet PSU Power: {'включен' if state else 'выключен'}")
         logger.info(f"🔵 setMagnetPSUPower вызван: {state}")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5628,6 +5708,8 @@ class ModbusManager(QObject):
         Returns:
             True если успешно, False в противном случае
         """
+        # Логируем действие
+        self._addLog(f"PID Controller Temperature: {temperature}°C")
         logger.info(f"🔵 setPIDControllerTemperature вызван с температурой: {temperature}°C")
         
         # Обновляем статус (даже без подключения)
@@ -5696,6 +5778,8 @@ class ModbusManager(QObject):
     @Slot(bool, result=bool)
     def setPIDControllerPower(self, state: bool) -> bool:
         """Управление PID Controller (регистр 1431: 1 = вкл, 0 = выкл)"""
+        # Логируем действие
+        self._addLog(f"PID Controller Power: {'включен' if state else 'выключен'}")
         logger.info(f"🔵 setPIDControllerPower вызван: {state}")
         if not self._is_connected or self._modbus_client is None:
             return False
@@ -5723,6 +5807,8 @@ class ModbusManager(QObject):
         Returns:
             True если успешно, False в противном случае
         """
+        # Логируем действие
+        self._addLog(f"Water Chiller Temperature: {temperature}°C")
         logger.info(f"🔵 setWaterChillerTemperature вызван с температурой: {temperature}°C")
         
         # Обновляем статус (даже без подключения)
@@ -5791,6 +5877,8 @@ class ModbusManager(QObject):
     @Slot(bool, result=bool)
     def setLaserBeam(self, state: bool) -> bool:
         """Управление Beam Laser через регистр 1811 (1 = on, 0 = off)"""
+        # Логируем действие
+        self._addLog(f"Laser Beam: {'включен' if state else 'выключен'}")
         if not self._is_connected or self._modbus_client is None:
             logger.warning("Попытка установить Laser Beam без подключения")
             return False
@@ -6405,6 +6493,8 @@ class ModbusManager(QObject):
     @Slot(bool, result=bool)
     def setWaterChillerPower(self, state: bool) -> bool:
         """Управление Water Chiller (регистр 1541: 1 = вкл, 0 = выкл)"""
+        # Логируем действие
+        self._addLog(f"Water Chiller Power: {'включен' if state else 'выключен'}")
         logger.info(f"🔵 setWaterChillerPower вызван: {state}")
         if not self._is_connected or self._modbus_client is None:
             return False
