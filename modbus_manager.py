@@ -886,8 +886,10 @@ class ModbusManager(QObject):
         logger.info(f"enableSEOPParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
         if self._is_connected and not self._polling_paused:
             if not self._seop_parameters_timer.isActive():
+                # Сразу делаем первое чтение, не ждем таймера
+                self._readSEOPParameters()
                 self._seop_parameters_timer.start()
-                logger.info("▶️ Опрос SEOP Parameters включен")
+                logger.info("▶️ Опрос SEOP Parameters включен (первое чтение выполнено сразу)")
             else:
                 logger.info("⏸ Опрос SEOP Parameters уже активен")
         else:
@@ -926,8 +928,10 @@ class ModbusManager(QObject):
         logger.info(f"enableMeasuredParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
         if self._is_connected and not self._polling_paused:
             if not self._measured_parameters_timer.isActive():
+                # Сразу делаем первое чтение, не ждем таймера
+                self._readMeasuredParameters()
                 self._measured_parameters_timer.start()
-                logger.info("▶️ Опрос Measured Parameters включен")
+                logger.info("▶️ Опрос Measured Parameters включен (первое чтение выполнено сразу)")
             else:
                 logger.info("⏸ Опрос Measured Parameters уже активен")
         else:
@@ -946,8 +950,10 @@ class ModbusManager(QObject):
         logger.info(f"enableAdditionalParametersPolling вызван: _is_connected={self._is_connected}, _polling_paused={self._polling_paused}")
         if self._is_connected and not self._polling_paused:
             if not self._additional_parameters_timer.isActive():
+                # Сразу делаем первое чтение, не ждем таймера
+                self._readAdditionalParameters()
                 self._additional_parameters_timer.start()
-                logger.info("▶️ Опрос Additional Parameters включен")
+                logger.info("▶️ Опрос Additional Parameters включен (первое чтение выполнено сразу)")
             else:
                 logger.info("⏸ Опрос Additional Parameters уже активен")
         else:
