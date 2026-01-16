@@ -2523,7 +2523,6 @@ Item {
                                     font.pixelSize: 11
                                     placeholderText: "0:00"
                                     onEditingFinished: {
-                                        // Парсим формат m:s (например, "5:30" -> 330 секунд)
                                         var parts = text.split(":")
                                         if (parts.length === 2 && modbusManager) {
                                             var minutes = parseInt(parts[0]) || 0
