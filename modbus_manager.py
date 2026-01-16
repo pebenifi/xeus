@@ -3234,16 +3234,19 @@ class ModbusManager(QObject):
         client = self._modbus_client
         
         def task():
-            """Чтение всех регистров Measured Parameters"""
-            # Регистры 5011-5081
-            current_ir_signal_regs = client.read_input_registers_direct(5011, 1, max_chunk=1)
-            cold_cell_ir_signal_regs = client.read_input_registers_direct(5021, 1, max_chunk=1)
-            hot_cell_ir_signal_regs = client.read_input_registers_direct(5031, 1, max_chunk=1)
-            water_1h_nmr_reference_signal_regs = client.read_input_registers_direct(5041, 1, max_chunk=1)
-            water_t2_regs = client.read_input_registers_direct(5051, 1, max_chunk=1)
-            hp_129xe_nmr_signal_regs = client.read_input_registers_direct(5061, 1, max_chunk=1)
-            hp_129xe_t2_regs = client.read_input_registers_direct(5071, 1, max_chunk=1)
-            t2_correction_factor_regs = client.read_input_registers_direct(5081, 1, max_chunk=1)
+            """Чтение всех регистров Measured Parameters - читаем пакетом для ускорения"""
+            # Читаем все регистры одним запросом (5011-5081, всего 8 регистров с шагом 10)
+            all_regs_5011_5081 = client.read_input_registers_direct(5011, 8, max_chunk=8)  # 5011-5081
+            
+            # Извлекаем нужные регистры из пакета (каждый 10-й регистр)
+            current_ir_signal_regs = [all_regs_5011_5081[0]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 1 else None
+            cold_cell_ir_signal_regs = [all_regs_5011_5081[1]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 2 else None
+            hot_cell_ir_signal_regs = [all_regs_5011_5081[2]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 3 else None
+            water_1h_nmr_reference_signal_regs = [all_regs_5011_5081[3]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 4 else None
+            water_t2_regs = [all_regs_5011_5081[4]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 5 else None
+            hp_129xe_nmr_signal_regs = [all_regs_5011_5081[5]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 6 else None
+            hp_129xe_t2_regs = [all_regs_5011_5081[6]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 7 else None
+            t2_correction_factor_regs = [all_regs_5011_5081[7]] if all_regs_5011_5081 and len(all_regs_5011_5081) >= 8 else None
             
             result = {}
             if current_ir_signal_regs and len(current_ir_signal_regs) >= 1:
@@ -3339,28 +3342,35 @@ class ModbusManager(QObject):
         client = self._modbus_client
         
         def task():
-            """Чтение всех регистров Additional Parameters"""
-            # Регистры 6011-6201
-            magnet_psu_current_proton_nmr_regs = client.read_input_registers_direct(6011, 1, max_chunk=1)
-            magnet_psu_current_129xe_nmr_regs = client.read_input_registers_direct(6021, 1, max_chunk=1)
-            operational_laser_psu_current_regs = client.read_input_registers_direct(6031, 1, max_chunk=1)
-            rf_pulse_duration_regs = client.read_input_registers_direct(6041, 1, max_chunk=1)
-            resonance_frequency_regs = client.read_input_registers_direct(6051, 1, max_chunk=1)
-            proton_rf_pulse_power_regs = client.read_input_registers_direct(6061, 1, max_chunk=1)
-            hp_129xe_rf_pulse_power_regs = client.read_input_registers_direct(6071, 1, max_chunk=1)
-            step_size_b0_sweep_hp_129xe_regs = client.read_input_registers_direct(6081, 1, max_chunk=1)
-            step_size_b0_sweep_protons_regs = client.read_input_registers_direct(6091, 1, max_chunk=1)
-            xe_alicats_pressure_regs = client.read_input_registers_direct(6101, 1, max_chunk=1)
-            nitrogen_alicats_pressure_regs = client.read_input_registers_direct(6111, 1, max_chunk=1)
-            chiller_temp_setpoint_regs = client.read_input_registers_direct(6121, 1, max_chunk=1)
-            seop_resonance_frequency_regs = client.read_input_registers_direct(6131, 1, max_chunk=1)
-            seop_resonance_frequency_tolerance_regs = client.read_input_registers_direct(6141, 1, max_chunk=1)
-            ir_spectrometer_number_of_scans_regs = client.read_input_registers_direct(6151, 1, max_chunk=1)
-            ir_spectrometer_exposure_duration_regs = client.read_input_registers_direct(6161, 1, max_chunk=1)
-            h1_reference_n_scans_regs = client.read_input_registers_direct(6171, 1, max_chunk=1)
-            h1_current_sweep_n_scans_regs = client.read_input_registers_direct(6181, 1, max_chunk=1)
-            baseline_correction_min_frequency_regs = client.read_input_registers_direct(6191, 1, max_chunk=1)
-            baseline_correction_max_frequency_regs = client.read_input_registers_direct(6201, 1, max_chunk=1)
+            """Чтение всех регистров Additional Parameters - читаем пакетами для ускорения"""
+            # Читаем все регистры одним большим запросом (6011-6201, всего 20 регистров с шагом 10)
+            # Но регистры идут не подряд (6011, 6021, 6031...), поэтому читаем их отдельно, но оптимизируем
+            # Читаем пакетами по 5 регистров для ускорения
+            all_regs_6011_6101 = client.read_input_registers_direct(6011, 10, max_chunk=10)  # 6011-6101 (10 регистров)
+            all_regs_6111_6201 = client.read_input_registers_direct(6111, 10, max_chunk=10)  # 6111-6201 (10 регистров)
+            
+            # Извлекаем нужные регистры из пакетов (каждый 10-й регистр)
+            magnet_psu_current_proton_nmr_regs = [all_regs_6011_6101[0]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 1 else None
+            magnet_psu_current_129xe_nmr_regs = [all_regs_6011_6101[1]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 2 else None
+            operational_laser_psu_current_regs = [all_regs_6011_6101[2]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 3 else None
+            rf_pulse_duration_regs = [all_regs_6011_6101[3]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 4 else None
+            resonance_frequency_regs = [all_regs_6011_6101[4]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 5 else None
+            proton_rf_pulse_power_regs = [all_regs_6011_6101[5]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 6 else None
+            hp_129xe_rf_pulse_power_regs = [all_regs_6011_6101[6]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 7 else None
+            step_size_b0_sweep_hp_129xe_regs = [all_regs_6011_6101[7]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 8 else None
+            step_size_b0_sweep_protons_regs = [all_regs_6011_6101[8]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 9 else None
+            xe_alicats_pressure_regs = [all_regs_6011_6101[9]] if all_regs_6011_6101 and len(all_regs_6011_6101) >= 10 else None
+            
+            nitrogen_alicats_pressure_regs = [all_regs_6111_6201[0]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 1 else None
+            chiller_temp_setpoint_regs = [all_regs_6111_6201[1]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 2 else None
+            seop_resonance_frequency_regs = [all_regs_6111_6201[2]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 3 else None
+            seop_resonance_frequency_tolerance_regs = [all_regs_6111_6201[3]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 4 else None
+            ir_spectrometer_number_of_scans_regs = [all_regs_6111_6201[4]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 5 else None
+            ir_spectrometer_exposure_duration_regs = [all_regs_6111_6201[5]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 6 else None
+            h1_reference_n_scans_regs = [all_regs_6111_6201[6]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 7 else None
+            h1_current_sweep_n_scans_regs = [all_regs_6111_6201[7]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 8 else None
+            baseline_correction_min_frequency_regs = [all_regs_6111_6201[8]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 9 else None
+            baseline_correction_max_frequency_regs = [all_regs_6111_6201[9]] if all_regs_6111_6201 and len(all_regs_6111_6201) >= 10 else None
             
             result = {}
             if magnet_psu_current_proton_nmr_regs and len(magnet_psu_current_proton_nmr_regs) >= 1:
