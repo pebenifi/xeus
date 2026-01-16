@@ -76,13 +76,13 @@ class ModbusClient:
                         logger.info(f"Modbus {direction}: {hex_str}")
                         return packet
                     
-                    # Максимально короткий таймаут и без повторов, чтобы не блокировать UI
+                    # Устанавливаем разумный таймаут для стабильной работы
                     self.client = ModbusTcpClient(
                         host=self.host, 
                         port=self.port, 
                         framer=actual_framer,
-                        timeout=0.05,  # было 1с -> 50мс, чтобы не висеть на медленных ответах
-                        retries=0,     # без повторов, чтобы не удлинять ожидание
+                        timeout=1.0,  # 1 секунда для стабильной работы
+                        retries=1,     # 1 повтор для надежности
                         trace_packet=trace_packet  # Трассировка пакетов для отладки
                     )
                     
@@ -2064,22 +2064,28 @@ class ModbusClient:
             read_frame = self._build_read_frame_1131()
             parsed = None
             
+            # Устанавливаем таймаут на сокет для чтения
+            try:
+                sock.settimeout(1.0)  # 1 секунда таймаут
+            except Exception:
+                pass
+            
             for i in range(2):
                 try:
                     sock.sendall(read_frame)
-                    time.sleep(0.01)  # Минимальная задержка для быстрой записи для избежания блокировки UI
+                    time.sleep(0.02)  # Небольшая задержка для стабильности
                     resp = sock.recv(256)
                     if resp:
                         parsed = self._parse_read_response_1131(resp)
                         if parsed is not None:
                             break
-                except (ConnectionError, OSError) as e:
+                except (ConnectionError, OSError, socket.timeout) as e:
                     if i == 0:
                         logger.debug(f"Первая попытка чтения регистра 1131 не удалась (это нормально): {e}")
                     else:
-                        raise
+                        logger.warning(f"Вторая попытка чтения регистра 1131 не удалась: {e}")
                 if i < 1:
-                    time.sleep(0.05)  # Минимальная задержка между попытками для быстрой записи
+                    time.sleep(0.1)  # Задержка между попытками
             
             return parsed
         except Exception as e:
@@ -2152,8 +2158,21 @@ class ModbusClient:
         Returns:
             True если успешно, False в противном случае
         """
-        # Читаем текущее состояние
-        current_value = self.read_register_1131_direct()
+        # Пробуем сначала использовать стандартный метод pymodbus
+        current_value = None
+        try:
+            if self.client is not None and self.client.is_socket_open():
+                result = self.client.read_input_registers(1131, count=1, device_id=self.unit_id)
+                if not result.isError() and result.registers:
+                    current_value = result.registers[0]
+                    logger.debug(f"Регистр 1131 прочитан через pymodbus: {current_value}")
+        except Exception as e:
+            logger.debug(f"Не удалось прочитать регистр 1131 через pymodbus: {e}")
+        
+        # Если стандартный метод не сработал, пробуем прямой сокет
+        if current_value is None:
+            current_value = self.read_register_1131_direct()
+        
         if current_value is None:
             logger.error("Не удалось прочитать текущее состояние регистра 1131")
             return False
