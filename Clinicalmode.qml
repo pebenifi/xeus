@@ -2315,6 +2315,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseSEOPCellMinTemp()
                                     }
@@ -2324,6 +2327,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseSEOPCellMinTemp()
                                     }
@@ -2502,6 +2508,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2516,6 +2525,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseSEOPLoopTime()
                                     }
@@ -2525,6 +2537,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseSEOPLoopTime()
                                     }
@@ -2944,6 +2959,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseInt(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2996,6 +3014,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseInt(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3714,6 +3735,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseMeasuredHP129XeT2()
                                     }
@@ -3723,6 +3747,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseMeasuredHP129XeT2()
                                     }
@@ -5506,6 +5533,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeFrequencySpan()
                                     }
@@ -5515,6 +5545,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeFrequencySpan()
                                     }
