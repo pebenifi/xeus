@@ -1546,7 +1546,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: laserVoltageSetpoint
-                                    background: Rectangle {                                        color: "#979797"                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -1586,14 +1585,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: laserCurrentSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                             }
@@ -1677,17 +1675,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: magnetVoltageSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "V"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                             }
@@ -1723,20 +1717,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: magnetCurrentSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "A"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                             }
@@ -1858,23 +1845,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: pidControllerSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -1985,26 +1962,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: xenonSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "Torr"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -2058,29 +2022,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: n2Setpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "Torr"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -2172,7 +2120,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
                             Text { text: "Laser Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
@@ -2183,6 +2130,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2220,7 +2170,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
                             Text { text: "Laser Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
@@ -2231,6 +2180,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2268,7 +2220,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
                             Text { text: "SEOP Cell Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
@@ -2279,6 +2230,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2316,48 +2270,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
                             Text { text: "SEOP Cell Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopCellMinTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2395,52 +2320,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP Ramp Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "SEOP Ramp Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopRampTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -2471,55 +2363,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "SEOP Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2557,58 +2413,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Cell Refill Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Cell Refill Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopCellRefillTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -2639,57 +2456,12 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP loop time:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "SEOP loop time:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopLoopTime
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -2731,65 +2503,21 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP process duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "SEOP process duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopProcessDuration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0:00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
+                                        // Парсим формат m:s (например, "5:30" -> 330 секунд)
                                         var parts = text.split(":")
                                         if (parts.length === 2 && modbusManager) {
                                             var minutes = parseInt(parts[0]) || 0
@@ -2828,67 +2556,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Laser Max Output Power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Laser Max Output Power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopLaserMaxOutputPower
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -2926,70 +2606,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Laser PSU Max Current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Laser PSU Max Current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopLaserPSUMaxCurrent
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3027,73 +2656,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Water Chiller Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Water Chiller Max Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopWaterChillerMaxTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3131,76 +2706,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Water Chiller Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Water Chiller Min Temp:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopWaterChillerMinTemp
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3238,79 +2756,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "129Xe concentration of the gas mixture:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "129Xe concentration of the gas mixture:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopXeConcentration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3348,82 +2806,19 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Water Proton Concentration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Water Proton Concentration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopWaterProtonConcentration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -3461,81 +2856,12 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Cell number:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Cell number:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopCellNumber
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -3576,84 +2902,12 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Refill cycle:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Text { text: "Refill cycle:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 150 }
                             Row {
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 8
                                 TextField {
                                     id: seopRefillCycle
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -3793,8 +3047,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3819,8 +3071,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3845,8 +3095,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "The buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "The buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3871,8 +3119,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Error bar for Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Error bar for Electron Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3897,8 +3143,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Error bar for 129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Error bar for 129Xe Polarization:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3923,8 +3167,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Error bar for the buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Error bar for the buildup rate:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3949,8 +3191,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Fitted 129Xe Polarization maximum:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Fitted 129Xe Polarization maximum:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -3975,8 +3215,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Fitted 129Xe Polarization max error bar:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Fitted 129Xe Polarization max error bar:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4001,8 +3239,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "HP 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "HP 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4027,8 +3263,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Error bar for 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Error bar for 129Xe T1:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4095,8 +3329,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Current IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Current IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4120,8 +3352,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Cold Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Cold Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4129,79 +3359,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredColdCellIRSignal
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -4241,8 +3398,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Hot Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Hot Cell IR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4250,82 +3405,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredHotCellIRSignal
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -4365,8 +3444,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Water 1H NMR Reference Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Water 1H NMR Reference Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4374,85 +3451,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredWater1HNMRReferenceSignal
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -4492,8 +3490,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Water T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Water T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4501,88 +3497,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredWaterT2
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -4623,8 +3537,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "HP 129Xe NMR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "HP 129Xe NMR Signal:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4648,8 +3560,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "HP 129Xe T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "HP 129Xe T2:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4657,91 +3567,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredHP129XeT2
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -4782,8 +3607,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "T2* correction factor:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "T2* correction factor:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4853,8 +3676,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Magnet PSU current for proton NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Magnet PSU current for proton NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4862,98 +3683,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalMagnetPSUCurrentProtonNMR
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -4990,8 +3726,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Magnet PSU current for 129Xe NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Magnet PSU current for 129Xe NMR:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -4999,101 +3733,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalMagnetPSUCurrent129XeNMR
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5130,8 +3776,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Operational Laser PSU current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Operational Laser PSU current:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5139,104 +3783,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalOperationalLaserPSUCurrent
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5273,8 +3826,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "RF pulse duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "RF pulse duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5282,107 +3833,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalRFPulseDuration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5418,8 +3875,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Resonance frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Resonance frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5427,110 +3882,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalResonanceFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5567,8 +3925,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Proton RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Proton RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5576,113 +3932,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalProtonRFPulsePower
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5719,8 +3975,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "HP 129Xe RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "HP 129Xe RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5728,116 +3982,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalHP129XeRFPulsePower
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -5874,8 +4025,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Step size during B0 field sweep for HP 129Xe:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Step size during B0 field sweep for HP 129Xe:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -5883,119 +4032,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalStepSizeB0SweepHP129Xe
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6032,8 +4075,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Step size during B0 field sweep for protons:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Step size during B0 field sweep for protons:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6041,122 +4082,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalStepSizeB0SweepProtons
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6193,8 +4125,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Xe ALICATS pressure:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Xe ALICATS pressure:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6202,125 +4132,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalXeAlicatsPressure
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6357,8 +4175,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Nitrogen ALICATS pressure:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Nitrogen ALICATS pressure:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6366,128 +4182,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalNitrogenAlicatsPressure
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6524,8 +4225,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Chiller Temp setpoint:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Chiller Temp setpoint:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6533,131 +4232,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalChillerTempSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6693,8 +4274,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP Resonance Frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "SEOP Resonance Frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6702,134 +4281,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalSEOPResonanceFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -6866,8 +4324,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "SEOP Resonance Frequency Tolerance:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "SEOP Resonance Frequency Tolerance:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -6875,137 +4331,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalSEOPResonanceFrequencyTolerance
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7041,8 +4373,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "IR spectrometer number of scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "IR spectrometer number of scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7050,140 +4380,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalIRSpectrometerNumberOfScans
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7219,8 +4422,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "IR spectrometer exposure duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "IR spectrometer exposure duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7228,143 +4429,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalIRSpectrometerExposureDuration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7401,8 +4472,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "1H Reference N Scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "1H Reference N Scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7410,146 +4479,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additional1HReferenceNScans
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7585,8 +4521,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "1H Current Sweep N Scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "1H Current Sweep N Scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7594,149 +4528,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additional1HCurrentSweepNScans
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7772,8 +4570,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Baseline correction min frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Baseline correction min frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7781,152 +4577,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalBaselineCorrectionMinFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -7963,8 +4620,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Baseline correction max frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Baseline correction max frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -7972,155 +4627,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalBaselineCorrectionMaxFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
@@ -8269,8 +4782,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "RF pulse frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "RF pulse frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -8278,154 +4789,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulseFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -8466,8 +4829,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "RF pulse power:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -8475,157 +4836,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulsePower
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -8666,8 +4876,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "RF pulse duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "RF pulse duration:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -8675,160 +4883,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulseDuration
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -8869,8 +4923,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Pre acquisition:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Pre acquisition:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -8878,163 +4930,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModePreAcquisition
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -9075,8 +4970,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "NMR gain:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "NMR gain:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -9084,166 +4977,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRGain
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -9284,8 +5017,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "NMR number of scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "NMR number of scans:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -9293,169 +5024,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRNumberOfScans
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -9495,8 +5063,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "NMR recovery:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "NMR recovery:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -9504,172 +5070,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRRecovery
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -9710,8 +5110,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Center frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Center frequency:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -9719,175 +5117,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeCenterFrequency
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -9928,8 +5157,6 @@ Item {
                             width: parent.width
                             spacing: 16
                             padding: 4
-                            background: Rectangle { color: "#979797" }
-                            Text { text: "Frequency span:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Text { text: "Frequency span:"; font.pixelSize: 12; color: "#666666"; anchors.verticalCenter: parent.verticalCenter; width: 200 }
                             Item { width: 20; height: 1 } // Spacer
                             Row {
@@ -9937,178 +5164,6 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeFrequencySpan
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -10358,188 +5413,10 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: waterChillerSetpoint
-
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
                                 }
                                 Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
