@@ -2474,7 +2474,8 @@ class ModbusClient:
                 out.extend(parsed)
                 current_addr += chunk
                 remaining -= chunk
-                time.sleep(0.01)
+                # Уменьшаем задержку для ускорения чтения множественных регистров
+                time.sleep(0.001)  # 1 мс вместо 10 мс
 
             return out
         finally:
