@@ -1413,6 +1413,63 @@ class ModbusClient:
             logger.error(f"Ошибка при чтении регистра 1411 через прямой сокет: {e}")
             return None
     
+    def read_register_1421_direct(self) -> Optional[int]:
+        """Чтение регистра 1421 (setpoint SEOP Cell) через прямой сокет (функция 04)"""
+        if self.client is None or not self.client.is_socket_open():
+            return None
+        
+        try:
+            # Получаем сокет из pymodbus клиента
+            sock = None
+            if hasattr(self.client, 'socket') and self.client.socket:
+                sock = self.client.socket
+            elif hasattr(self.client, 'transport'):
+                transport = self.client.transport
+                if hasattr(transport, 'socket') and transport.socket:
+                    sock = transport.socket
+                elif hasattr(transport, '_socket') and transport._socket:
+                    sock = transport._socket
+                elif hasattr(transport, 'sock') and transport.sock:
+                    sock = transport.sock
+                elif hasattr(transport, '_sock') and transport._sock:
+                    sock = transport._sock
+            
+            if sock is None:
+                logger.warning("Не удалось получить сокет для прямого чтения регистра 1421")
+                return None
+            
+            # Устанавливаем таймаут на сокет для чтения
+            try:
+                sock.settimeout(2.0)  # 2 секунды таймаут
+            except Exception:
+                pass
+            
+            # Отправляем запрос дважды (первый может потеряться)
+            read_frame = self._build_read_frame_1421()
+            parsed = None
+            
+            for i in range(2):
+                try:
+                    sock.sendall(read_frame)
+                    time.sleep(0.05)  # Задержка для стабильности
+                    resp = sock.recv(256)
+                    if resp:
+                        parsed = self._parse_read_response_1421(resp)
+                        if parsed is not None:
+                            break
+                except (ConnectionError, OSError, socket.timeout) as e:
+                    if i == 0:
+                        logger.debug(f"Первая попытка чтения регистра 1421 не удалась (это нормально): {e}")
+                    else:
+                        logger.warning(f"Вторая попытка чтения регистра 1421 не удалась: {e}")
+                if i < 1:
+                    time.sleep(0.1)  # Задержка между попытками
+            
+            return parsed
+        except Exception as e:
+            logger.error(f"Ошибка при чтении регистра 1421 через прямой сокет: {e}")
+            return None
+    
     def _build_read_frame_1341(self) -> bytes:
         """Формирование Modbus RTU фрейма для чтения регистра 1341 (функция 04)"""
         address = 1341
