@@ -3379,6 +3379,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseMeasuredColdCellIRSignal()
                                     }
@@ -3388,6 +3391,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseMeasuredColdCellIRSignal()
                                     }
@@ -3428,6 +3434,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseMeasuredHotCellIRSignal()
                                     }
@@ -3437,6 +3446,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseMeasuredHotCellIRSignal()
                                     }
@@ -3477,6 +3489,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseMeasuredWater1HNMRReferenceSignal()
                                     }
@@ -3486,6 +3501,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseMeasuredWater1HNMRReferenceSignal()
                                     }
@@ -3527,6 +3545,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseMeasuredWaterT2()
                                     }
@@ -3536,6 +3557,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseMeasuredWaterT2()
                                     }
@@ -3719,6 +3743,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalMagnetPSUCurrentProtonNMR()
                                     }
@@ -3728,6 +3755,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalMagnetPSUCurrentProtonNMR()
                                     }
@@ -3819,6 +3849,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalOperationalLaserPSUCurrent()
                                     }
@@ -3828,6 +3861,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalOperationalLaserPSUCurrent()
                                     }
@@ -3868,6 +3904,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalRFPulseDuration()
                                     }
@@ -3877,6 +3916,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalRFPulseDuration()
                                     }
@@ -3918,6 +3960,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalResonanceFrequency()
                                     }
@@ -3927,6 +3972,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalResonanceFrequency()
                                     }
@@ -3968,6 +4016,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalProtonRFPulsePower()
                                     }
@@ -3977,6 +4028,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalProtonRFPulsePower()
                                     }
@@ -4018,6 +4072,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalHP129XeRFPulsePower()
                                     }
@@ -4027,6 +4084,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalHP129XeRFPulsePower()
                                     }
@@ -4068,6 +4128,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalStepSizeB0SweepHP129Xe()
                                     }
@@ -4077,6 +4140,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalStepSizeB0SweepHP129Xe()
                                     }
@@ -4118,6 +4184,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalStepSizeB0SweepProtons()
                                     }
@@ -4127,6 +4196,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalStepSizeB0SweepProtons()
                                     }
@@ -4168,6 +4240,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalXeAlicatsPressure()
                                     }
@@ -4177,6 +4252,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalXeAlicatsPressure()
                                     }
@@ -4218,6 +4296,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalNitrogenAlicatsPressure()
                                     }
@@ -4227,6 +4308,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalNitrogenAlicatsPressure()
                                     }
@@ -4267,6 +4351,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalChillerTempSetpoint()
                                     }
@@ -4276,6 +4363,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalChillerTempSetpoint()
                                     }
@@ -4317,6 +4407,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalSEOPResonanceFrequency()
                                     }
@@ -4326,6 +4419,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalSEOPResonanceFrequency()
                                     }
@@ -4366,6 +4462,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalSEOPResonanceFrequencyTolerance()
                                     }
@@ -4375,6 +4474,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalSEOPResonanceFrequencyTolerance()
                                     }
@@ -4415,6 +4517,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalIRSpectrometerNumberOfScans()
                                     }
@@ -4424,6 +4529,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalIRSpectrometerNumberOfScans()
                                     }
@@ -4465,6 +4573,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalIRSpectrometerExposureDuration()
                                     }
@@ -4474,6 +4585,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalIRSpectrometerExposureDuration()
                                     }
@@ -4514,6 +4628,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditional1HReferenceNScans()
                                     }
@@ -4523,6 +4640,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditional1HReferenceNScans()
                                     }
@@ -4563,6 +4683,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditional1HCurrentSweepNScans()
                                     }
@@ -4572,6 +4695,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditional1HCurrentSweepNScans()
                                     }
@@ -4613,6 +4739,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalBaselineCorrectionMinFrequency()
                                     }
@@ -4622,6 +4751,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalBaselineCorrectionMinFrequency()
                                     }
@@ -4663,6 +4795,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseAdditionalBaselineCorrectionMaxFrequency()
                                     }
@@ -4672,6 +4807,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseAdditionalBaselineCorrectionMaxFrequency()
                                     }
@@ -4825,6 +4963,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeRFPulseFrequency()
                                     }
@@ -4834,6 +4975,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeRFPulseFrequency()
                                     }
@@ -4875,6 +5019,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeRFPulsePower()
                                     }
@@ -4884,6 +5031,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeRFPulsePower()
                                     }
@@ -4925,6 +5075,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeRFPulseDuration()
                                     }
@@ -4934,6 +5087,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeRFPulseDuration()
                                     }
@@ -4975,6 +5131,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModePreAcquisition()
                                     }
@@ -4984,6 +5143,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModePreAcquisition()
                                     }
@@ -5025,6 +5187,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeNMRGain()
                                     }
@@ -5034,6 +5199,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeNMRGain()
                                     }
@@ -5074,6 +5242,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeNMRNumberOfScans()
                                     }
@@ -5083,6 +5254,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeNMRNumberOfScans()
                                     }
@@ -5124,6 +5298,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeNMRRecovery()
                                     }
@@ -5133,6 +5310,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeNMRRecovery()
                                     }
@@ -5174,6 +5354,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseManualModeCenterFrequency()
                                     }
@@ -5183,6 +5366,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseManualModeCenterFrequency()
                                     }
