@@ -366,6 +366,19 @@ class ModbusClient:
                 # При таймауте НЕ закрываем соединение - оно может быть еще активным
             return False
     
+    def write_holding_register(self, address: int, value: int) -> bool:
+        """
+        Запись значения в holding register (алиас для write_register)
+        
+        Args:
+            address: Адрес регистра
+            value: Значение для записи
+            
+        Returns:
+            True если запись успешна, False в противном случае
+        """
+        return self.write_register(address, value)
+    
     def read_input_register(self, address: int) -> Optional[int]:
         """
         Чтение input register (для параметров типа '+')
