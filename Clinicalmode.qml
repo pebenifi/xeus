@@ -1546,7 +1546,7 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: laserVoltageSetpoint
-
+                                    background: Rectangle {                                        color: "#979797"                                    }
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
