@@ -5207,6 +5207,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onEditingFinished: {
                                         var val = parseFloat(text)
                                         if (!isNaN(val) && modbusManager) {
