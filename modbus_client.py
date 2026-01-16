@@ -2434,11 +2434,12 @@ class ModbusClient:
                 for attempt in range(2):
                     try:
                         sock.sendall(frame)
-                        time.sleep(0.01)  # аккуратная подача команд
+                        # Убираем задержку для ускорения чтения множественных регистров
+                        # time.sleep(0.01)  # Убрано для ускорения
 
                         resp = b""
                         # Собираем ответ до полного фрейма
-                        deadline = time.time() + 0.5
+                        deadline = time.time() + 0.3  # Уменьшаем deadline с 0.5 до 0.3 секунды
                         while time.time() < deadline:
                             try:
                                 part = sock.recv(512)
@@ -2464,7 +2465,7 @@ class ModbusClient:
                         # первая попытка может не удаться — повторяем один раз
                         if attempt == 1:
                             logger.warning(f"Direct multi-read failed at addr={current_addr} qty={chunk}: {e}")
-                        time.sleep(0.02)
+                        time.sleep(0.01)  # Уменьшаем задержку между попытками с 0.02 до 0.01
 
                 if parsed is None:
                     # Если не удалось прочитать — считаем, что соединение нестабильно
