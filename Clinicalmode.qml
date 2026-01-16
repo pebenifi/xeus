@@ -179,6 +179,9 @@ Item {
         Qt.callLater(function() {
             if (modbusManager) {
                 root.cachedIsConnected = modbusManager.isConnected
+                // Включаем опрос SEOP Parameters и Calculated Parameters для Current Values
+                modbusManager.enableSEOPParametersPolling()
+                modbusManager.enableCalculatedParametersPolling()
             }
         })
     }
