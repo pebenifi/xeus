@@ -1546,9 +1546,7 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: laserVoltageSetpoint
-                                    background: Rectangle {
-                                        color: "#979797"
-                                    }
+
                                     width: 100
                                     height: 28
                                     font.pixelSize: 11
@@ -1588,6 +1586,7 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: laserCurrentSetpoint
+
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -1678,6 +1677,10 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: magnetVoltageSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -1720,6 +1723,13 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: magnetCurrentSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -1848,6 +1858,16 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: pidControllerSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -1965,6 +1985,19 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: xenonSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2025,6 +2058,22 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: n2Setpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2129,6 +2178,25 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopLaserMaxTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2179,6 +2247,28 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopLaserMinTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2229,6 +2319,31 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopCellMaxTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2279,6 +2394,34 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopCellMinTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2329,6 +2472,37 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopRampTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2372,6 +2546,40 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2422,6 +2630,43 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopCellRefillTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2465,6 +2710,46 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopLoopTime
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2515,6 +2800,49 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopProcessDuration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2567,6 +2895,52 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopLaserMaxOutputPower
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2617,6 +2991,55 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopLaserPSUMaxCurrent
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2667,6 +3090,58 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopWaterChillerMaxTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2717,6 +3192,61 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopWaterChillerMinTemp
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2767,6 +3297,64 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopXeConcentration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2817,6 +3405,67 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopWaterProtonConcentration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2867,6 +3516,70 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopCellNumber
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -2916,6 +3629,73 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: seopRefillCycle
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3370,6 +4150,76 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredColdCellIRSignal
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3419,6 +4269,79 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredHotCellIRSignal
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3468,6 +4391,82 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredWater1HNMRReferenceSignal
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3517,6 +4516,85 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredWaterT2
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3590,6 +4668,88 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: measuredHP129XeT2
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3709,6 +4869,91 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalMagnetPSUCurrentProtonNMR
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3759,6 +5004,94 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalMagnetPSUCurrent129XeNMR
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3809,6 +5142,97 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalOperationalLaserPSUCurrent
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3859,6 +5283,100 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalRFPulseDuration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3908,6 +5426,103 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalResonanceFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -3958,6 +5573,106 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalProtonRFPulsePower
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4008,6 +5723,109 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalHP129XeRFPulsePower
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4058,6 +5876,112 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalStepSizeB0SweepHP129Xe
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4108,6 +6032,115 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalStepSizeB0SweepProtons
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4158,6 +6191,118 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalXeAlicatsPressure
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4208,6 +6353,121 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalNitrogenAlicatsPressure
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4258,6 +6518,124 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalChillerTempSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4307,6 +6685,127 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalSEOPResonanceFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4357,6 +6856,130 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalSEOPResonanceFrequencyTolerance
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4406,6 +7029,133 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalIRSpectrometerNumberOfScans
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4455,6 +7205,136 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalIRSpectrometerExposureDuration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4505,6 +7385,139 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additional1HReferenceNScans
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4554,6 +7567,142 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additional1HCurrentSweepNScans
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4603,6 +7752,145 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalBaselineCorrectionMinFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4653,6 +7941,148 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: additionalBaselineCorrectionMaxFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4815,6 +8245,151 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulseFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4865,6 +8440,154 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulsePower
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4915,6 +8638,157 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeRFPulseDuration
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -4965,6 +8839,160 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModePreAcquisition
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5015,6 +9043,163 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRGain
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5065,6 +9250,166 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRNumberOfScans
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5114,6 +9459,169 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeNMRRecovery
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5164,6 +9672,172 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeCenterFrequency
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5214,6 +9888,175 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: manualModeFrequencySpan
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
@@ -5466,6 +10309,178 @@ Item {
                                 spacing: 8
                                 TextField {
                                     id: waterChillerSetpoint
+
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     background: Rectangle {
                                         color: "#979797"
                                     }
