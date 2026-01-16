@@ -1550,6 +1550,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "V"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                             }
@@ -1859,6 +1862,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increasePIDControllerTemperature()
                                     }
@@ -1868,6 +1874,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreasePIDControllerTemperature()
                                     }
@@ -1976,6 +1985,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseXenonSetpoint()
                                     }
@@ -1985,6 +1997,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseXenonSetpoint()
                                     }
@@ -2036,6 +2051,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseN2Setpoint()
                                     }
@@ -2045,6 +2063,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseN2Setpoint()
                                     }
@@ -5774,6 +5795,9 @@ Item {
                                     height: 28
                                     font.pixelSize: 11
                                     placeholderText: "0.00"
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                 }
                                 Text { text: "°C"; font.pixelSize: 11; color: "#666666"; anchors.verticalCenter: parent.verticalCenter }
                                 Button {
@@ -5781,6 +5805,9 @@ Item {
                                     height: 28
                                     text: "▲"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.increaseWaterChillerTemperature()
                                     }
@@ -5790,6 +5817,9 @@ Item {
                                     height: 28
                                     text: "▼"
                                     font.pixelSize: 10
+                                    background: Rectangle {
+                                        color: "#979797"
+                                    }
                                     onClicked: {
                                         if (modbusManager) modbusManager.decreaseWaterChillerTemperature()
                                     }
