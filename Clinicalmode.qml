@@ -6008,7 +6008,7 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "034"
+                            text: modbusManager ? String(modbusManager.seopCellNumber).padStart(3, '0') : "000"
                         }
                     }
 
@@ -6035,7 +6035,7 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "104"
+                            text: modbusManager ? String(modbusManager.seopRefillCycle) : "0"
                         }
                     }
 
@@ -6062,7 +6062,12 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "45.3 - 2.1%"
+                            text: {
+                                if (!modbusManager) return "0 - 0%"
+                                var value = modbusManager.calculatedFittedXePolarizationMax || 0
+                                var error = modbusManager.calculatedFittedXePolarizationMaxError || 0
+                                return value.toFixed(1) + " - " + error.toFixed(1) + "%"
+                            }
                         }
                     }
 
@@ -6089,7 +6094,12 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "34.2 - 1.9%"
+                            text: {
+                                if (!modbusManager) return "0 - 0%"
+                                var value = modbusManager.calculatedXePolarization || 0
+                                var error = modbusManager.calculatedXePolarizationError || 0
+                                return value.toFixed(1) + " - " + error.toFixed(1) + "%"
+                            }
                         }
                     }
 
@@ -6116,7 +6126,12 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "0.055 - 0.005 min⁻¹"
+                            text: {
+                                if (!modbusManager) return "0 - 0 min⁻¹"
+                                var value = modbusManager.calculatedBuildupRate || 0
+                                var error = modbusManager.calculatedBuildupRateError || 0
+                                return value.toFixed(3) + " - " + error.toFixed(3) + " min⁻¹"
+                            }
                         }
                     }
 
@@ -6143,7 +6158,12 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "95.1 - 0.3 mins"
+                            text: {
+                                if (!modbusManager) return "0 - 0 mins"
+                                var value = modbusManager.calculatedHPXeT1 || 0
+                                var error = modbusManager.calculatedHPXeT1Error || 0
+                                return value.toFixed(1) + " - " + error.toFixed(1) + " mins"
+                            }
                         }
                     }
 
@@ -6170,7 +6190,12 @@ Item {
                             font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
-                            text: "60 - 1%"
+                            text: {
+                                if (!modbusManager) return "0 - 0%"
+                                var value = modbusManager.calculatedElectronPolarization || 0
+                                var error = modbusManager.calculatedElectronPolarizationError || 0
+                                return Math.round(value) + " - " + Math.round(error) + "%"
+                            }
                         }
                     }
                 }

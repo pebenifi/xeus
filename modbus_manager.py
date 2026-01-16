@@ -1075,6 +1075,66 @@ class ModbusManager(QObject):
         """Давление Vacuum в Torr (регистр 1701)"""
         return self._vacuum_pressure
     
+    @Property(int, notify=seopCellNumberChanged)
+    def seopCellNumber(self):
+        """Cell number (регистр 3171)"""
+        return self._seop_cell_number
+    
+    @Property(int, notify=seopRefillCycleChanged)
+    def seopRefillCycle(self):
+        """Refill cycle (регистр 3181)"""
+        return self._seop_refill_cycle
+    
+    @Property(float, notify=calculatedFittedXePolarizationMaxChanged)
+    def calculatedFittedXePolarizationMax(self):
+        """Fitted 129Xe Polarization maximum (регистр 4071)"""
+        return self._calculated_fitted_xe_polarization_max
+    
+    @Property(float, notify=calculatedFittedXePolarizationMaxErrorChanged)
+    def calculatedFittedXePolarizationMaxError(self):
+        """Fitted 129Xe Polarization max error bar (регистр 4081)"""
+        return self._calculated_fitted_xe_polarization_max_error
+    
+    @Property(float, notify=calculatedXePolarizationChanged)
+    def calculatedXePolarization(self):
+        """129Xe Polarization (регистр 4021)"""
+        return self._calculated_xe_polarization
+    
+    @Property(float, notify=calculatedXePolarizationErrorChanged)
+    def calculatedXePolarizationError(self):
+        """Error bar for 129Xe Polarization (регистр 4051)"""
+        return self._calculated_xe_polarization_error
+    
+    @Property(float, notify=calculatedBuildupRateChanged)
+    def calculatedBuildupRate(self):
+        """The buildup rate (g-SEOP) (регистр 4031)"""
+        return self._calculated_buildup_rate
+    
+    @Property(float, notify=calculatedBuildupRateErrorChanged)
+    def calculatedBuildupRateError(self):
+        """Error bar for the buildup rate (g-SEOP) (регистр 4061)"""
+        return self._calculated_buildup_rate_error
+    
+    @Property(float, notify=calculatedHPXeT1Changed)
+    def calculatedHPXeT1(self):
+        """HP 129Xe T1 (регистр 4091)"""
+        return self._calculated_hp_xe_t1
+    
+    @Property(float, notify=calculatedHPXeT1ErrorChanged)
+    def calculatedHPXeT1Error(self):
+        """Error bar for 129Xe T1 (регистр 4101)"""
+        return self._calculated_hp_xe_t1_error
+    
+    @Property(float, notify=calculatedElectronPolarizationChanged)
+    def calculatedElectronPolarization(self):
+        """Electron Polarization (PRb) (регистр 4011)"""
+        return self._calculated_electron_polarization
+    
+    @Property(float, notify=calculatedElectronPolarizationErrorChanged)
+    def calculatedElectronPolarizationError(self):
+        """Error bar for Electron Polarization (регистр 4041)"""
+        return self._calculated_electron_polarization_error
+    
     @Property(str)
     def host(self):
         """IP адрес устройства"""
