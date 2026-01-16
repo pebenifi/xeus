@@ -5911,6 +5911,46 @@ Item {
                 font.pixelSize: 18
                 font.bold: true
                 color: "#000000"
+                text: "Logs"
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#d3d3d3"
+            }
+
+            ScrollView {
+                id: logsScrollView
+                width: parent.width
+                height: (parent.height - 50) * 0.4
+                clip: true
+
+                TextArea {
+                    id: logsTextArea
+                    width: valuesPanel.width - 32
+                    readOnly: true
+                    font.pixelSize: 10
+                    font.family: "Courier"
+                    color: "#000000"
+                    background: Rectangle {
+                        color: "#ffffff"
+                    }
+                    text: "Logs will appear here..."
+                }
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#d3d3d3"
+            }
+
+            Text {
+                width: parent.width
+                font.pixelSize: 14
+                font.bold: true
+                color: "#000000"
                 text: "Current Values"
             }
 
@@ -5922,12 +5962,12 @@ Item {
 
             ScrollView {
                 width: parent.width
-                height: parent.height - 50
+                height: (parent.height - 50) * 0.6 - 40
                 clip: true
 
                 Column {
                     width: valuesPanel.width - 32
-                    spacing: 12
+                    spacing: 8
 
                     // Cell number
                     Column {
@@ -5936,14 +5976,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "Cell number(#317)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "034"
@@ -5963,14 +6003,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "Cell Refill(#318)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "104"
@@ -5990,14 +6030,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "PXe(fitted value#407)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "45.3 - 2.1%"
@@ -6017,14 +6057,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "PXe(Most recent#402)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "34.2 - 1.9%"
@@ -6044,14 +6084,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "g-SEOP(#403+#406)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "0.055 - 0.005 min⁻¹"
@@ -6071,14 +6111,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "T1(Most recent#409+#410)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "95.1 - 0.3 mins"
@@ -6098,14 +6138,14 @@ Item {
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 12
+                            font.pixelSize: 10
                             color: "#666666"
                             text: "Prb(most recent#401+#404)"
                         }
 
                         Text {
                             width: parent.width
-                            font.pixelSize: 14
+                            font.pixelSize: 11
                             font.bold: true
                             color: "#000000"
                             text: "60 - 1%"
