@@ -2068,7 +2068,8 @@ class ModbusManager(QObject):
 
             logger.info(
                 f"IR spectrum: raw meta[0..4]={meta[0:5]} meta_hex={[hex(int(x)) for x in meta[0:5]]} "
-                f"data_first10={data_regs[0:10]} data_last3={data_regs[-3:]}"
+                f"data_length={len(data_regs)} data_first10={data_regs[0:10]} data_last10={data_regs[-10:] if len(data_regs) >= 10 else data_regs} "
+                f"data_nonzero_count={sum(1 for v in data_regs if int(v) != 0)}"
             )
 
             status = int(meta[0])
@@ -2207,10 +2208,76 @@ class ModbusManager(QObject):
 
                 integral = self._registers_to_float_ir(int_r1, int_r2)
 
-            # Для логов/передачи: y_min/y_max по умолчанию берем из метаданных (как в регистре),
-            # но если невалидно — позже перетрем диапазоном по данным.
+            # y values (raw uint16 from device) - ВСЕ 58 точек
+            y_values_raw_u16 = [int(v) for v in data_regs[:58]]
+            if len(y_values_raw_u16) != 58:
+                logger.warning(f"IR spectrum: expected 58 points, got {len(y_values_raw_u16)}")
+            if not y_values_raw_u16:
+                logger.warning("IR spectrum: y_values empty (no points)")
+                return None
+
+            # Преобразование для отображения:
+            # Значения могут быть отрицательными -> интерпретируем как int16 (two's complement).
+            # => отображаем как int16 / 100.0
+            def _to_int16(u16: int) -> int:
+                return u16 - 65536 if u16 >= 32768 else u16
+
+            y_values_raw_i16 = [_to_int16(v) for v in y_values_raw_u16]
+            scale = 100.0
+            y_values = [float(v) / scale for v in y_values_raw_i16]
+
+            # Убеждаемся, что у нас ровно 58 точек
+            if len(y_values) != 58:
+                logger.warning(f"IR spectrum: after conversion expected 58 points, got {len(y_values)}")
+                # Обрезаем или дополняем до 58, если нужно
+                if len(y_values) > 58:
+                    y_values = y_values[:58]
+                elif len(y_values) < 58:
+                    logger.error(f"IR spectrum: insufficient data points: {len(y_values)} < 58")
+                    return None
+
+            # Собираем точки для графика (x равномерно от x_min до x_max)
+            # Шаг вычисляется как (x_max - x_min) / status, где status из регистра 400
+            # Но для растяжения на весь диапазон используем формулу:
+            # x[i] = x_min + (x_max - x_min) * i / (n-1), чтобы последняя точка была на x_max
+            # ВСЕ 58 точек должны быть построены и растянуты на весь диапазон [x_min, x_max]
+            points = []
+            if len(y_values) >= 2 and x_max != x_min and status > 0:
+                # Растягиваем все точки на весь диапазон от x_min до x_max
+                # Используем status для вычисления шага, но распределяем точки равномерно
+                for i, y in enumerate(y_values):
+                    if len(y_values) > 1:
+                        x_coord = x_min + (x_max - x_min) * float(i) / float(len(y_values) - 1)
+                    else:
+                        x_coord = x_min
+                    points.append({"x": x_coord, "y": float(y)})
+            elif len(y_values) >= 2 and x_max != x_min:
+                # Fallback: если status невалиден, используем старую формулу
+                step = (x_max - x_min) / float(len(y_values) - 1)
+                for i, y in enumerate(y_values):
+                    points.append({"x": x_min + step * i, "y": float(y)})
+            else:
+                for i, y in enumerate(y_values):
+                    points.append({"x": float(i), "y": float(y)})
+
+            # Для оси Y используем y_min/y_max из МЕТАДАННЫХ (регистры 405-408),
+            # а не из данных! Это важно для правильного отображения графика.
+            # y_min_meta и y_max_meta - это значения из метаданных устройства.
+            # Проверяем валидность: y_min должен быть < y_max, и оба должны быть разумными значениями
             y_min = float(y_min_meta) if math.isfinite(y_min_meta) else 0.0
             y_max = float(y_max_meta) if math.isfinite(y_max_meta) else 1.0
+            
+            # Проверяем, что метаданные валидны и разумны
+            # Если y_min >= y_max или значения выходят за разумные пределы, используем fallback
+            if (not math.isfinite(y_min_meta) or not math.isfinite(y_max_meta) or 
+                y_min >= y_max or y_min < -100 or y_max > 1000):
+                if y_values:
+                    y_min_data = float(min(y_values))
+                    y_max_data = float(max(y_values))
+                    if math.isfinite(y_min_data) and math.isfinite(y_max_data):
+                        y_min = y_min_data
+                        y_max = y_max_data
+                        logger.warning(f"IR spectrum: metadata y_min={y_min_meta:.6f} y_max={y_max_meta:.6f} invalid, using data range [{y_min:.6f}, {y_max:.6f}]")
 
             for name, val in (
                 ("x_min", x_min),
@@ -2224,48 +2291,27 @@ class ModbusManager(QObject):
                 if not math.isfinite(val):
                     logger.warning(f"IR spectrum: {name} is not finite: {val}")
 
-            # y values (raw uint16 from device)
-            y_values_raw_u16 = [int(v) for v in data_regs[:58]]
-            if not y_values_raw_u16:
-                logger.warning("IR spectrum: y_values empty (no points)")
-
-            # Преобразование для отображения:
-            # Значения могут быть отрицательными -> интерпретируем как int16 (two's complement).
-            # По данным устройства сырые значения ~4200 соответствуют пикам ~85, т.е. шаг ~0.02.
-            # => отображаем как int16 / 50.0 (получим примерно диапазон -10..85).
-            def _to_int16(u16: int) -> int:
-                return u16 - 65536 if u16 >= 32768 else u16
-
-            y_values_raw_i16 = [_to_int16(v) for v in y_values_raw_u16]
-            scale = 50.0
-            y_values = [float(v) / scale for v in y_values_raw_i16]
-
-            # Собираем точки для графика (x равномерно от x_min до x_max)
-            points = []
-            if len(y_values) >= 2 and x_max != x_min:
-                step = (x_max - x_min) / float(len(y_values) - 1)
-                for i, y in enumerate(y_values):
-                    points.append({"x": x_min + step * i, "y": float(y)})
-            else:
-                for i, y in enumerate(y_values):
-                    points.append({"x": float(i), "y": float(y)})
-
-            # Для отображения используем диапазон из преобразованных данных (0..100%)
-            # чтобы оси соответствовали тому, что рисуем.
-            if y_values:
-                y_min = float(min(y_values))
-                y_max = float(max(y_values))
-
+            # Вычисляем min/max из данных для сравнения
+            y_min_data = float(min(y_values)) if y_values else 0.0
+            y_max_data = float(max(y_values)) if y_values else 1.0
+            
+            # Форматируем метаданные для логирования
+            y_min_meta_str = f"{y_min_meta:.6f}" if math.isfinite(y_min_meta) else "nan"
+            y_max_meta_str = f"{y_max_meta:.6f}" if math.isfinite(y_max_meta) else "nan"
+            
             logger.info(
-                f"IR spectrum decoded: status={status} x=[{x_min},{x_max}] y=[{y_min},{y_max}] "
-                f"points={len(points)} raw_u16_range=[{min(y_values_raw_u16) if y_values_raw_u16 else 'n/a'},{max(y_values_raw_u16) if y_values_raw_u16 else 'n/a'}] "
+                f"IR spectrum decoded: status={status} x=[{x_min:.6f},{x_max:.6f}] "
+                f"y_axis=[{y_min:.6f},{y_max:.6f}] (from metadata) y_data_range=[{y_min_data:.6f},{y_max_data:.6f}] (from data) "
+                f"y_min_meta={y_min_meta_str} y_max_meta={y_max_meta_str} "
+                f"points={len(points)} (expected 58) raw_u16_range=[{min(y_values_raw_u16) if y_values_raw_u16 else 'n/a'},{max(y_values_raw_u16) if y_values_raw_u16 else 'n/a'}] "
                 f"raw_i16_range=[{min(y_values_raw_i16) if y_values_raw_i16 else 'n/a'},{max(y_values_raw_i16) if y_values_raw_i16 else 'n/a'}] "
-                f"scaled_y_range=[{y_min},{y_max}]"
+                f"first10_y_values={y_values[:10]} last10_y_values={y_values[-10:]}"
             )
 
             # Возвращаем только простые типы (int/float/str/list/dict), чтобы конвертировалось в QVariantMap
+            # ВАЖНО: убеждаемся, что передаем ровно 58 точек
             import json
-            return {
+            result = {
                 "status": status,
                 "x_min": float(x_min),
                 "x_max": float(x_max),
@@ -2290,11 +2336,26 @@ class ModbusManager(QObject):
                 "freq_variants": {k: float(v) for k, v in _float_variants_from_regs(freq_r1, freq_r2).items()},
                 "data_raw_u16": y_values_raw_u16,
                 "data_raw_i16": y_values_raw_i16,
-                "data": y_values,
+                "data": y_values,  # ВСЕ 58 точек
                 # JSON-версии для надежного парсинга в QML (иногда QVariantList ведет себя странно)
-                "data_json": json.dumps(y_values),
-                "points": points,
+                "data_json": json.dumps(y_values),  # ВСЕ 58 точек в JSON
+                "points": points,  # ВСЕ 58 точек с координатами x,y
             }
+            
+            # Финальная проверка: убеждаемся, что все массивы содержат 58 элементов
+            if len(result["data"]) != 58:
+                logger.error(f"IR spectrum: result.data length mismatch: {len(result['data'])} != 58")
+            if len(result["points"]) != 58:
+                logger.error(f"IR spectrum: result.points length mismatch: {len(result['points'])} != 58")
+            try:
+                data_json_parsed = json.loads(result["data_json"])
+                if len(data_json_parsed) != 58:
+                    logger.error(f"IR spectrum: result.data_json length mismatch: {len(data_json_parsed)} != 58")
+            except Exception as e:
+                logger.error(f"IR spectrum: failed to verify data_json: {e}")
+            
+            logger.info(f"IR spectrum: returning payload with {len(result['data'])} data points, {len(result['points'])} graph points")
+            return result
 
         self._enqueue_read("ir", task)
         return True

@@ -94,9 +94,35 @@ Rectangle {
         irAxisXMain.max = x1
         irAxisXMain.tickAnchor = x0
         var n = ys.length
-        var dx = (n > 1) ? ((x1 - x0) / (n - 1)) : 0.0
+        // Шаг вычисляется как (x_max - x_min) / status, где status из регистра 400
+        // Формула: dx = (x_max - x_min) / status, x[i] = x_min + dx * i
+        var status = Number(payload.status)
+        var dx = (status > 0 && isFinite(status)) ? ((x1 - x0) / status) : ((n > 1) ? ((x1 - x0) / (n - 1)) : 0.0)
 
-        // Ось Y по данным (принудительно приводим к Number, т.к. элементы могут быть QVariant)
+        // Ось Y берём из метаданных устройства: y_min (405-406), y_max (407-408)
+        var y0 = Number(payload.y_min)
+        var y1 = Number(payload.y_max)
+        if (!isFinite(y0) || !isFinite(y1) || y0 === y1) {
+            // Fallback: если метаданные невалидны, вычисляем из данных
+            y0 = Number(ys[0])
+            y1 = Number(ys[0])
+            for (var j = 1; j < n; j++) {
+                var yv = Number(ys[j])
+                if (isNaN(yv)) continue
+                if (yv < y0) y0 = yv
+                if (yv > y1) y1 = yv
+            }
+        }
+        if (y1 < y0) { var tmp = y0; y0 = y1; y1 = tmp }
+        if (y1 === y0) { y1 = y0 + 1.0 }
+        // Добавляем небольшой паддинг для лучшей видимости
+        var rangeY = y1 - y0
+        var padY = rangeY * 0.05
+        if (padY < 0.1) padY = 0.1
+        irAxisYMain.min = y0 - padY
+        irAxisYMain.max = y1 + padY
+        
+        // Вычисляем min/max из данных для логирования
         var minY = Number(ys[0])
         var maxY = Number(ys[0])
         for (var j = 1; j < n; j++) {
@@ -105,35 +131,50 @@ Rectangle {
             if (yv < minY) minY = yv
             if (yv > maxY) maxY = yv
         }
-        if (minY === maxY) { maxY = minY + 1 }
-        // паддинг, чтобы линия на y=0 не прилипала к нижней рамке и "не исчезала"
-        var rangeY = maxY - minY
-        var padY = rangeY * 0.05
-        if (padY < 0.1) padY = 0.1
-        irAxisYMain.min = minY - padY
-        irAxisYMain.max = maxY + padY
 
+        // Собираем все валидные точки в массив координат
+        // Растягиваем все точки на весь диапазон от x0 до x1, чтобы последняя точка была на x1
+        // Используем status для вычисления шага, но распределяем точки равномерно на весь диапазон
+        var pointsToAdd = []
+        var validPoints = 0
+        for (var i = 0; i < n; i++) {
+            // Формула: x[i] = x0 + (x1 - x0) * i / (n-1) - растягивает на весь диапазон
+            var x = (n > 1) ? (x0 + (x1 - x0) * i / (n - 1)) : x0
+            var y = Number(ys[i])
+            if (isFinite(x) && isFinite(y) && !isNaN(x) && !isNaN(y)) {
+                pointsToAdd.push({x: x, y: y})
+                validPoints++
+            }
+        }
+        
+        console.log("[IR] Screen01: prepared", validPoints, "valid points out of", n, "total, first=", 
+                   pointsToAdd.length > 0 ? (pointsToAdd[0].x + "," + pointsToAdd[0].y) : "none",
+                   "last=", pointsToAdd.length > 0 ? (pointsToAdd[pointsToAdd.length-1].x + "," + pointsToAdd[pointsToAdd.length-1].y) : "none")
+        
+        // Очищаем серию перед добавлением новых точек
         try {
-            if (splineSeries1.clear) splineSeries1.clear()
+            if (splineSeries1.clear) {
+                splineSeries1.clear()
+            }
         } catch (e) {
             console.log("[IR] Screen01: splineSeries1.clear() failed:", e)
         }
-
+        
+        // Добавляем все точки быстро в одном блоке
+        // QtGraphs будет пересчитывать сплайн только после завершения функции
         var added = 0
-        for (var i = 0; i < n; i++) {
-            var x = x0 + dx * i
-            var y = Number(ys[i])
-            if (isNaN(x) || isNaN(y)) continue
+        for (var j = 0; j < pointsToAdd.length; j++) {
             try {
                 if (splineSeries1.append) {
-                    splineSeries1.append(x, y)
+                    splineSeries1.append(pointsToAdd[j].x, pointsToAdd[j].y)
                     added++
                 }
             } catch (e2) {
-                console.log("[IR] Screen01: append failed at", i, x, y, e2)
-                // не прерываем: попробуем добавить остальные точки
+                console.log("[IR] Screen01: append failed at", j, pointsToAdd[j].x, pointsToAdd[j].y, e2)
             }
         }
+        
+        console.log("[IR] Screen01: added", added, "points out of", pointsToAdd.length, "prepared, series count=", (splineSeries1.count !== undefined ? splineSeries1.count : "unknown"))
 
         // Две "палки" (вертикальные маркеры) из метаданных:
         // - res_freq = регистры 409-410
@@ -155,7 +196,7 @@ Rectangle {
         }
         var xLastNonZero = (lastNonZero >= 0) ? (x0 + dx * lastNonZero) : null
         console.log("[IR] Screen01: n=", n, "dx=", dx, "points added =", added, "x0=", x0, "x_last=", (x0 + dx * (n - 1)),
-                    "axisY=", (minY - padY), (maxY + padY),
+                    "axisY=[" + (y0 - padY) + "," + (y1 + padY) + "] (from payload y_min=" + payload.y_min + " y_max=" + payload.y_max + ") dataY=[" + minY + "," + maxY + "]",
                     "res_freq=", resX, "freq=", freqX,
                     "lastNonZeroIdx=", lastNonZero, "xLastNonZero=", xLastNonZero,
                     "tail=", ys.slice(Math.max(0, n - 6)))
@@ -1183,10 +1224,11 @@ Rectangle {
             tickInterval: 0.5
         }
         ValueAxis { id: irAxisYMain; min: 0; max: 1 }
-        SplineSeries {
+        LineSeries {
             id: splineSeries1
-            // Линия спектра — красная
+            // Линия спектра — красная, без сглаживания
             color: "#ff0000"
+            width: 2
             XYPoint {
                 x: 1
                 y: 1
